@@ -1,4 +1,4 @@
-namespace lrtest_api
+namespace LRtest.Api
 {
     public class WeatherForecast
     {
