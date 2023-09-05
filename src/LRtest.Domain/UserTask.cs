@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LRtest.Enums
+namespace LRtest.Domain
 {
-    internal class FileName
+    internal class UserTask
     {
     }
 }
