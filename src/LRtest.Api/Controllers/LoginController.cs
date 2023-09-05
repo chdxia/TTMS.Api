@@ -2,6 +2,9 @@
 
 namespace LRtest.Api.Controllers
 {
+    /// <summary>
+    /// 登录
+    /// </summary>
     [ApiController]
     [Route("api/v1")]
     public class LoginController : ControllerBase
