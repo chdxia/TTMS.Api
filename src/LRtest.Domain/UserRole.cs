@@ -26,6 +26,6 @@ namespace LRtest.Domain
         /// 角色id
         /// </summary>
         [Column(Name = "role_id", DbType = "int8")]
-        public Role? RoleId { get; set; }
+        public Role RoleId { get; set; }
     }
 }
