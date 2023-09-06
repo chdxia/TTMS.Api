@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Api", "LRtest.Api\LR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.DTO", "LRtest.DTO\LRtest.DTO.csproj", "{C7280C26-C17F-49CE-BD00-0D3B930B8489}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRtest.Models", "LRtest.Domain\LRtest.Models.csproj", "{B20E4533-848C-47F0-A540-A126CF6723BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Domain", "LRtest.Domain\LRtest.Domain.csproj", "{B20E4533-848C-47F0-A540-A126CF6723BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRtest.Enums", "LRtest.Enums\LRtest.Enums.csproj", "{D688E016-E90B-4B57-90BF-3A08AD91B0F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Enums", "LRtest.Enums\LRtest.Enums.csproj", "{D688E016-E90B-4B57-90BF-3A08AD91B0F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRtest.Repositorys", "LRtest.Repositorys\LRtest.Repositorys.csproj", "{0ADE5AD6-046B-463B-95E1-001E73C8751C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Repositorys", "LRtest.Repositorys\LRtest.Repositorys.csproj", "{0ADE5AD6-046B-463B-95E1-001E73C8751C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
