@@ -19,32 +19,32 @@ namespace LRtest.Domain
         /// </summary>
         [Column(Name = "account", DbType = "varchar")]
         [Index(IsUnique = true)]
-        public string Account { get; set; }
+        public string? Account { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
         [Column(Name = "user_name", DbType = "varchar", IsNullable = true)]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         /// <summary>
         /// 用户邮箱
         /// </summary>
         [Column(Name = "email", DbType = "varchar")]
         [Index(IsUnique = true)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// 用户密码
         /// </summary>
         [Column(Name = "password", DbType = "varchar", IsNullable = true)]
-        public string PassWord { get; set; }
+        public string? PassWord { get; set; }
 
         /// <summary>
         /// 账号token
         /// </summary>
         [Column(Name = "access_token", DbType = "varchar", IsNullable = true)]
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
 
         /// <summary>
         /// 账号状态;t启用,f停用
