@@ -4,6 +4,8 @@
     /// 用户表
     /// </summary>
     [Table(Name = "user")]
+    [Index("user_account", "account", true)]
+    [Index("user_email", "email", true)]
     public class User
     {
         /// <summary>
@@ -16,7 +18,6 @@
         /// 账号
         /// </summary>
         [Column(Name = "account", DbType = "varchar")]
-        [Index(IsUnique = true)]
         public string? Account { get; set; }
 
         /// <summary>
@@ -29,7 +30,6 @@
         /// 用户邮箱
         /// </summary>
         [Column(Name = "email", DbType = "varchar")]
-        [Index(IsUnique = true)]
         public string? Email { get; set; }
 
         /// <summary>
