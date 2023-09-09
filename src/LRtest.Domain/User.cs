@@ -1,6 +1,4 @@
-﻿using FreeSql.DataAnnotations;
-
-namespace LRtest.Domain
+﻿namespace LRtest.Domain
 {
     /// <summary>
     /// 用户表

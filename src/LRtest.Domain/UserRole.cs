@@ -1,7 +1,4 @@
-﻿using FreeSql.DataAnnotations;
-using LRtest.Enums;
-
-namespace LRtest.Domain
+﻿namespace LRtest.Domain
 {
     /// <summary>
     /// 用户角色表

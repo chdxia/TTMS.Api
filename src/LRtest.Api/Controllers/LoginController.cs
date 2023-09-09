@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace LRtest.Api.Controllers
+﻿namespace LRtest.Api.Controllers
 {
     /// <summary>
     /// 登录
