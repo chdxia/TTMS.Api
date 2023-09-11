@@ -4,8 +4,6 @@
     /// 用户表
     /// </summary>
     [Table(Name = "user")]
-    [Index("user_account", "account", true)]
-    [Index("user_email", "email", true)]
     public class User
     {
         /// <summary>
@@ -15,22 +13,22 @@
         public long Id { get; set; }
 
         /// <summary>
-        /// 账号
+        /// 账号;唯一
         /// </summary>
         [Column(Name = "account", DbType = "varchar")]
-        public string? Account { get; set; }
+        public string Account { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户名
         /// </summary>
-        [Column(Name = "user_name", DbType = "varchar", IsNullable = true)]
-        public string? UserName { get; set; }
+        [Column(Name = "user_name", DbType = "varchar")]
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
-        /// 用户邮箱
+        /// 用户邮箱;唯一
         /// </summary>
         [Column(Name = "email", DbType = "varchar")]
-        public string? Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户密码
@@ -49,6 +47,12 @@
         /// </summary>
         [Column(Name = "state", DbType = "bool")]
         public bool State { get; set; }
+
+        /// <summary>
+        /// 是否删除;t已删除,f未删除
+        /// </summary>
+        [Column(Name = "is_delete", DbType = "bool")]
+        public bool IsDelete { get; set; }
 
         /// <summary>
         /// 创建时间
