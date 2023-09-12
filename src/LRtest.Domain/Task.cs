@@ -1,7 +1,6 @@
 ﻿namespace LRtest.Domain
 {
-    public class Class1
+    internal class Task
     {
-
     }
 }
