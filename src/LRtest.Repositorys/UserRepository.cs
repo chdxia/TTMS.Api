@@ -3,9 +3,14 @@ using LRtest.DTO.Response;
 
 namespace LRtest.Repositorys
 {
-    public class UserRepository
+    public class UserRepository : DefaultRepository<User, long>, IUserRepository
     {
         private readonly IFreeSql _fsql;
+
+        public UserRepository(IFreeSql fsql) : base(fsql)
+        {
+            _fsql = fsql;
+        }
 
         /// <summary>
         /// 分页获取用户列表
@@ -16,7 +21,7 @@ namespace LRtest.Repositorys
         {
             var query = _fsql.Select<User>()
                 .Where(a => !a.IsDelete)
-                .Where(a => request.State != null && request.State == a.State)
+                //.Where(a => request.State != null && request.State == a.State)
                 .WhereIf(!string.IsNullOrEmpty(request.Account), a => a.Account.Contains(request.Account))
                 .WhereIf(!string.IsNullOrEmpty(request.UserName), a => a.UserName.Contains(request.UserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))

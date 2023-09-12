@@ -8,17 +8,17 @@
         /// <summary>
         /// 账号
         /// </summary>
-        public string Account { get; set; } = string.Empty;
+        public string? Account { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        public string UserName { get; set; } = string.Empty;
+        public string? UserName { get; set; }
 
         /// <summary>
         /// 用户邮箱
         /// </summary>
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; }
         /// <summary>
         /// 账号状态
         /// </summary>
@@ -53,15 +53,5 @@
         /// 更新人
         /// </summary>
         public long? UpdateBy { get; set; }
-
-        /// <summary>
-        /// 分页
-        /// </summary>
-        public long PageIndex { get; set; } = 1;
-
-        /// <summary>
-        /// 分页
-        /// </summary>
-        public long PageSize { get; set; } = 20;
     }
 }
