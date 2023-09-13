@@ -17,7 +17,7 @@ namespace LRtest.Repositorys
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<UserReponse>> GetPageListAsync(UserRequest request)
+        public async Task<List<UserResponse>> GetPageListAsync(UserRequest request)
         {
             var query = _fsql.Select<User>()
                 .Where(a => !a.IsDelete)
@@ -32,7 +32,7 @@ namespace LRtest.Repositorys
                 .WhereIf(request.UpdateTimeEnd.HasValue, a=> a.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a=> a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
-            var List = await query.ToListAsync<UserReponse>();
+            var List = await query.ToListAsync<UserResponse>();
             return List;
         }
     }

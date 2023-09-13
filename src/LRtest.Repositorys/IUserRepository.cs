@@ -10,6 +10,6 @@ namespace LRtest.Repositorys
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<UserReponse>> GetPageListAsync(UserRequest request);
+        Task<List<UserResponse>> GetPageListAsync(UserRequest request);
     }
 }

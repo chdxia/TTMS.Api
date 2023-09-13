@@ -1,6 +1,6 @@
 ﻿namespace LRtest.DTO.Response
 {
-    public class UserReponse
+    public class UserResponse
     {
         /// <summary>
         /// 用户id
