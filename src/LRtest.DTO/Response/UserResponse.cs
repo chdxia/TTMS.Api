@@ -1,9 +1,6 @@
-﻿using System.Data;
-using System.Xml.Linq;
-
-namespace LRtest.DTO.Response
+﻿namespace LRtest.DTO.Response
 {
-    public class UserReponse
+    public class UserResponse
     {
         /// <summary>
         /// 用户id

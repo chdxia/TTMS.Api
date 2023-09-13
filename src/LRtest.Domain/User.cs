@@ -15,31 +15,31 @@
         /// <summary>
         /// 账号;唯一
         /// </summary>
-        [Column(Name = "account", DbType = "varchar(255)")]
+        [Column(Name = "account", DbType = "varchar")]
         public string? Account { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        [Column(Name = "user_name", DbType = "varchar(255)", IsNullable = true)]
+        [Column(Name = "user_name", DbType = "varchar", IsNullable = true)]
         public string? UserName { get; set; }
 
         /// <summary>
         /// 用户邮箱;唯一
         /// </summary>
-        [Column(Name = "email", DbType = "varchar(255)")]
+        [Column(Name = "email", DbType = "varchar")]
         public string? Email { get; set; }
 
         /// <summary>
         /// 用户密码
         /// </summary>
-        [Column(Name = "password", DbType = "varchar(255)", IsNullable = true)]
+        [Column(Name = "password", DbType = "varchar", IsNullable = true)]
         public string? PassWord { get; set; }
 
         /// <summary>
         /// 账号token
         /// </summary>
-        [Column(Name = "access_token", DbType = "varchar(255)", IsNullable = true)]
+        [Column(Name = "access_token", DbType = "varchar", IsNullable = true)]
         public string? AccessToken { get; set; }
 
         /// <summary>
