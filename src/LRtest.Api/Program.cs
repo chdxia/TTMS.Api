@@ -6,16 +6,6 @@ var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.Dev.json")
     .Build();
 
-Func<IServiceProvider, IFreeSql> fsqlFactory = r =>
-{
-    IFreeSql fsql = new FreeSql.FreeSqlBuilder()
-        .UseConnectionString(FreeSql.DataType.PostgreSQL, @config.GetSection("DBConnectionStrings")["DefaultConnection"])
-        .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}")) // 监听SQL语句
-        .UseAutoSyncStructure(true) // 自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表
-        .Build();
-    return fsql;
-};
-
 // 注册服务
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -27,7 +17,15 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Api.xml")); // 启用 XML 注释
 });
-builder.Services.AddSingleton(fsqlFactory);
+builder.Services.AddSingleton(r =>
+{
+    IFreeSql fsql = new FreeSql.FreeSqlBuilder()
+        .UseConnectionString(FreeSql.DataType.PostgreSQL, @config.GetSection("DBConnectionStrings")["DefaultConnection"])
+        .UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}")) // 监听SQL语句
+        .UseAutoSyncStructure(true) // 自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表
+        .Build();
+    return fsql;
+});
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 
 var app = builder.Build();
