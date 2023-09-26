@@ -25,6 +25,12 @@
         public string? UserName { get; set; }
 
         /// <summary>
+        /// 用户角色
+        /// </summary>
+        [Column(Name = "role_id", DbType = "int8")]
+        public Role RoleId { get; set; }
+
+        /// <summary>
         /// 用户邮箱;唯一
         /// </summary>
         [Column(Name = "email", DbType = "varchar")]

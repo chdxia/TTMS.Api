@@ -1,6 +1,10 @@
 ﻿namespace LRtest.Api.Controllers
 {
-    public class TasksController
+    /// <summary>
+    /// 任务
+    /// </summary>
+    [ApiExplorerSettings(GroupName = "任务")]
+    public class TasksController : BaseApiController
     {
     }
 }

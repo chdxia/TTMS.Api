@@ -3,9 +3,8 @@
     /// <summary>
     /// 用户
     /// </summary>
-    [ApiController]
-    [Route("/api/v1/Users")]
-    public class UsersController : Controller
+    [ApiExplorerSettings(GroupName = "用户")]
+    public class UsersController : BaseApiController
     {
         private readonly IUserRepository _repository;
 
@@ -19,11 +18,11 @@
         /// </summary>
         /// <returns></returns>
         [HttpPost("GetPageList")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<UserResponse>>))]
         public async Task<IActionResult> GetPageList([FromBody] UserRequest request)
         {
             var result = await _repository.GetPageListAsync(request);
-            return Ok(result);
+            return ToSuccessResult(result);
         }
 
     }

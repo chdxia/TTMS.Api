@@ -3,9 +3,8 @@
     /// <summary>
     /// 七牛服务
     /// </summary>
-    [ApiController]
-    [Route("[controller]")]
-    public class QiniuController : ControllerBase
+    [ApiExplorerSettings(GroupName = "七牛服务")]
+    public class QiniuController : BaseApiController
     {
     }
 }
