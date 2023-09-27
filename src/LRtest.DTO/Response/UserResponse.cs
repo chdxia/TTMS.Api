@@ -23,6 +23,11 @@
         public string? Email { get; set; }
 
         /// <summary>
+        /// 用户角色
+        /// </summary>
+        public Role RoleId { get; set; }
+
+        /// <summary>
         /// 账号状态
         /// </summary>
         public bool State { get; set; }

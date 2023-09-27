@@ -4,7 +4,7 @@
     /// 任务
     /// </summary>
     [ApiExplorerSettings(GroupName = "任务")]
-    public class TasksController : BaseApiController
+    public class TaskController : BaseApiController
     {
     }
 }
