@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LRtest.Enums\LRtest.Enums.csproj" />
+    <ProjectReference Include="..\LRtest.Enums\LRtest.Enum.csproj" />
   </ItemGroup>
 
 </Project>
