@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen(options =>
     {
         return true; // 包含所有控制器和操作方法，根据需要修改左面的逻辑来包含或排除特定的控制器和操作方法
     });
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Enum.xml"));
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.DTO.xml"));
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Api.xml")); // 启用 XML 注释
 });
 builder.Services.AddSingleton(r =>

@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LRtest.Domain\LRtest.Domain.csproj" />
+    <PackageReference Include="FreeSql" Version="3.2.800" />
+    <PackageReference Include="FreeSql.DbContext" Version="3.2.800" />
+    <PackageReference Include="FreeSql.Provider.PostgreSQL" Version="3.2.800" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
