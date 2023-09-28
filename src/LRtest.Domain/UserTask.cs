@@ -23,7 +23,7 @@
         /// 外键;任务id
         /// </summary>
         [Column(Name = "task_id", DbType = "int8")]
-        [Navigate(nameof(Task.Id))]
+        [Navigate(nameof(TaskItem.Id))]
         public int TaskId { get; set; }
     }
 }

@@ -6,11 +6,11 @@ namespace LRtest.Repository
     public interface IUserRepository : IBaseRepository<User, long>
     {
         /// <summary>
-        /// 分页获取用户列表
+        /// 根据id获取用户信息
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        Task<List<UserResponse>> GetPageListAsync(UserRequest request);
+        Task<UserResponse> GetByIdAsync(int id);
 
         /// <summary>
         /// 获取用户列表
@@ -20,10 +20,10 @@ namespace LRtest.Repository
         Task<List<UserResponse>> GetListAsync(UserRequest request);
 
         /// <summary>
-        /// 根据id获取用户信息
+        /// 分页获取用户列表
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        Task<UserResponse> GetByIdAsync(int id);
+        Task<List<UserResponse>> GetPageListAsync(UserRequest request);
     }
 }
