@@ -1,7 +1,4 @@
-﻿using LRtest.DTO.Request;
-using LRtest.DTO.Response;
-
-namespace LRtest.Repository
+﻿namespace LRtest.Repository
 {
     public interface IUserRepository : IBaseRepository<User, long>
     {

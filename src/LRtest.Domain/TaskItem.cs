@@ -3,7 +3,7 @@
     /// <summary>
     /// 任务表
     /// </summary>
-    public class Task
+    public class TaskItem
     {
         /// <summary>
         /// 主键id;任务id

@@ -53,5 +53,7 @@
             var result = await _repository.GetPageListAsync(request);
             return ToSuccessResult(result);
         }
+
+        [HttpPost("")]
     }
 }
