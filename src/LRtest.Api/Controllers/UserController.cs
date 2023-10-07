@@ -6,15 +6,15 @@
     [ApiExplorerSettings(GroupName = "用户")]
     public class UserController : BaseApiController
     {
-        private readonly IUserRepository _repository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// 初始化参数
         /// </summary>
-        /// <param name="repository"></param>
-        public UserController(IUserRepository repository)
+        /// <param name="userRepository"></param>
+        public UserController(IUserRepository userRepository)
         {
-            _repository = repository;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -24,9 +24,9 @@
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var result = await _repository.GetByIdAsync(id);
+            var result = await _userRepository.GetUserByIdAsync(id);
             return ToSuccessResult(result);
         }
 
@@ -36,9 +36,9 @@
         /// <returns></returns>
         [HttpPost("GetList")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<List<UserResponse>>))]
-        public async Task<IActionResult> GetList([FromBody] UserRequest request)
+        public async Task<IActionResult> GetListAsync([FromBody] UserRequest request)
         {
-            var result = await _repository.GetListAsync(request);
+            var result = await _userRepository.GetUserListAsync(request);
             return ToSuccessResult(result);
         }
 
@@ -48,12 +48,36 @@
         /// <returns></returns>
         [HttpPost("GetPageList")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<List<UserResponse>>))]
-        public async Task<IActionResult> GetPageList([FromBody] UserRequest request)
+        public async Task<IActionResult> GetPageListAsync([FromBody] UserRequest request)
         {
-            var result = await _repository.GetPageListAsync(request);
+            var result = await _userRepository.GetUserPageListAsync(request);
             return ToSuccessResult(result);
         }
 
-        [HttpPost("")]
+        /// <summary>
+        /// 新增用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("CreateUser")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
+        public async Task<IActionResult> CreateUserAsync([FromBody] UpdateUserRequest request)
+        {
+            var result = await _userRepository.UpdateUserAsync(request);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteUser")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel))]
+        public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request)
+        {
+            _ = await;
+            return ToSuccessResult();
+        }
     }
 }

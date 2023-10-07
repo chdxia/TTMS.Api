@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<UserResponse> GetByIdAsync(int id)
+        public async Task<UserResponse> GetUserByIdAsync(int id)
         {
             var query = _fsql.Select<User>().Where(a => a.Id == id);
             var result = await query.ToOneAsync<UserResponse>();
@@ -28,7 +28,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<UserResponse>> GetListAsync(UserRequest request)
+        public async Task<List<UserResponse>> GetUserListAsync(UserRequest request)
         {
             var query = _fsql.Select<User>()
                 .Where(a => !a.IsDelete)
@@ -52,7 +52,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<UserResponse>> GetPageListAsync(UserRequest request)
+        public async Task<List<UserResponse>> GetUserPageListAsync(UserRequest request)
         {
             var query = _fsql.Select<User>()
                 .Where(a => !a.IsDelete)
@@ -72,16 +72,30 @@
         }
 
         /// <summary>
-        /// 新增用户
+        /// 新增/编辑用户;无id表示新增;有id表示编辑
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<long> InsertAsync(UserRequest request)
+        public async Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
         {
-            var model = _mapper.Map<UserRequest, User>(request);
+            var model = _mapper.Map<UpdateUserRequest, User>(request);
+            if (request.Id is null)
+            {
+                model.IsDelete = false;
+                await InsertAsync(model);
+            }
+            else
+            {
+                await UpdateAsync(model);
+            }
+            var result = _mapper.Map<User, UserResponse>(model);
+            return result;
+        }
 
-            _ = await InsertAsync(model);
-            return model.Id;
+        public async Task<bool> UpdateUserAsync(DeleteUserRequest request)
+        {
+            //await _fsql.Update<User>();
+            return true;
         }
     }
 }

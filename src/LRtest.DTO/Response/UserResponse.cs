@@ -1,7 +1,7 @@
 ﻿namespace LRtest.DTO.Response
 {
     /// <summary>
-    /// 用户表返回参数
+    /// 返回参数;用户
     /// </summary>
     public class UserResponse
     {
