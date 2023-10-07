@@ -1,4 +1,4 @@
 ﻿global using Microsoft.AspNetCore.Mvc;
 global using LRtest.DTO.Request;
 global using LRtest.DTO.Response;
-global using LRtest.Repositorys;
+global using LRtest.Repository;

@@ -1,5 +1,8 @@
 ﻿namespace LRtest.DTO.Response
 {
+    /// <summary>
+    /// 返回参数;用户
+    /// </summary>
     public class UserResponse
     {
         /// <summary>
@@ -23,14 +26,14 @@
         public string? Email { get; set; }
 
         /// <summary>
+        /// 用户角色
+        /// </summary>
+        public Role RoleId { get; set; }
+
+        /// <summary>
         /// 账号状态
         /// </summary>
         public bool State { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 创建人
@@ -38,13 +41,18 @@
         public long CreateBy { get; set; }
 
         /// <summary>
-        /// 更新时间
+        /// 创建时间
         /// </summary>
-        public DateTime UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 更新人
         /// </summary>
         public long UpdateBy { get; set; }
+
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
     }
 }

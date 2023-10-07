@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace LRtest.Enums
+namespace LRtest.Enum
 {
     /// <summary>
     /// 角色枚举

@@ -3,9 +3,8 @@
     /// <summary>
     /// 登录
     /// </summary>
-    [ApiController]
-    [Route("api/v1")]
-    public class LoginController : ControllerBase
+    [ApiExplorerSettings(GroupName = "登录")]
+    public class LoginController : BaseApiController
     {
         /// <summary>
         /// 登录
