@@ -22,9 +22,10 @@ builder.Services.AddSwaggerGen(options =>
     {
         return true; // 包含所有控制器和操作方法，根据需要修改左面的逻辑来包含或排除特定的控制器和操作方法
     });
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Enum.xml")); // 启用 XML 注释
+    options.DocumentFilter<LRtest.Api.EnumDocumentFilter>(); // 显示枚举值;枚举属性;枚举描述
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Enums.xml"));
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.DTO.xml"));
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Api.xml"));
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Api.xml")); // 启用 XML 注释
 });
 
 builder.Services.AddSingleton(r =>

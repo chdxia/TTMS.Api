@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace LRtest.Enum
+namespace LRtest.Enums
 {
     /// <summary>
     /// 角色枚举
@@ -8,27 +8,27 @@ namespace LRtest.Enum
     public enum Role
     {
         /// <summary>
-        /// admin
+        /// 管理员
         /// </summary>
-        [Description("admin")]
+        [Description("管理员")]
         admin = 0,
 
         /// <summary>
-        /// development
+        /// 开发者
         /// </summary>
-        [Description("development")]
+        [Description("开发者")]
         development = 1,
 
         /// <summary>
-        /// tester
+        /// 测试
         /// </summary>
-        [Description("tester")]
+        [Description("测试")]
         tester = 2,
 
         /// <summary>
-        /// visitor
+        /// 访客
         /// </summary>
-        [Description("visitor")]
+        [Description("访客")]
         visitor = 3,
     }
 }
