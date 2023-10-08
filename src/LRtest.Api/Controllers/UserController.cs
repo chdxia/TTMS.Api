@@ -55,7 +55,7 @@
         }
 
         /// <summary>
-        /// 新增用户
+        /// 新增/编辑用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -66,9 +66,9 @@
             var result = await _userRepository.UpdateUserAsync(request);
             return ToSuccessResult(result);
         }
-
+        /*
         /// <summary>
-        /// 删除用户
+        /// 批量删除用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -78,6 +78,6 @@
         {
             _ = await;
             return ToSuccessResult();
-        }
+        }*/
     }
 }

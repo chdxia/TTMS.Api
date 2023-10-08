@@ -1,1 +1,1 @@
-﻿global using LRtest.Enum;
+﻿global using LRtest.Enums;

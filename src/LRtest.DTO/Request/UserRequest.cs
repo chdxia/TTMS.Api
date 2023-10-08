@@ -6,9 +6,9 @@
     public class UpdateUserRequest
     {
         /// <summary>
-        /// 用户id
+        /// 用户id;无id表示新增;有id表示编辑
         /// </summary>
-        public long? Id { get; set; }
+        public virtual long? Id { get; set; }
 
         /// <summary>
         /// 账号
@@ -46,6 +46,11 @@
     /// </summary>
     public class UserRequest : UpdateUserRequest
     {
+        /// <summary>
+        /// 用户id
+        /// </summary>
+        public override long? Id { get; set; }
+
         /// <summary>
         /// 创建人
         /// </summary>

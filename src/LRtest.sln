@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.DTO", "LRtest.DTO\LR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Domain", "LRtest.Domain\LRtest.Domain.csproj", "{B20E4533-848C-47F0-A540-A126CF6723BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Enum", "LRtest.Enums\LRtest.Enum.csproj", "{D688E016-E90B-4B57-90BF-3A08AD91B0F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Enums", "LRtest.Enums\LRtest.Enums.csproj", "{D688E016-E90B-4B57-90BF-3A08AD91B0F2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LRtest.Repository", "LRtest.Repositorys\LRtest.Repository.csproj", "{0ADE5AD6-046B-463B-95E1-001E73C8751C}"
 EndProject

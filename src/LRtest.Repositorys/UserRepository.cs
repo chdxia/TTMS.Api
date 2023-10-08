@@ -72,7 +72,7 @@
         }
 
         /// <summary>
-        /// 新增/编辑用户;无id表示新增;有id表示编辑
+        /// 新增/编辑用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
