@@ -49,7 +49,7 @@
         /// <summary>
         /// 用户id
         /// </summary>
-        public override long? Id { get; set; }
+        public override long? Id { get; set; } // 此处是为了区分XML注释
 
         /// <summary>
         /// 创建人
@@ -90,6 +90,6 @@
         /// <summary>
         /// 用户id
         /// </summary>
-        public long[]? UserIds { get; set; }
+        public long[] UserIds { get; set; } = new long[0];
     }
 }

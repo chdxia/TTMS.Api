@@ -92,10 +92,18 @@
             return result;
         }
 
-        public async Task<bool> UpdateUserAsync(DeleteUserRequest request)
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteUserAsync(DeleteUserRequest request)
         {
-            //await _fsql.Update<User>();
-            return true;
+            var affectedRows = await _fsql.Update<User>()
+                .Set(a => a.IsDelete, true)
+                .Where(a => request.UserIds.Contains(a.Id))
+                .ExecuteAffrowsAsync();
+            return affectedRows > 0;
         }
     }
 }

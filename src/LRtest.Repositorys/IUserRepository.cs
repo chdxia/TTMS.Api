@@ -29,5 +29,12 @@
         /// <param name="request"></param>
         /// <returns></returns>
         Task<UserResponse> UpdateUserAsync(UpdateUserRequest request);
+        
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<bool> DeleteUserAsync(DeleteUserRequest request);
     }
 }
