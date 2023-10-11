@@ -18,9 +18,7 @@
         /// <returns></returns>
         public async Task<UserResponse> GetUserByIdAsync(int id)
         {
-            var query = _fsql.Select<User>().Where(a => a.Id == id);
-            var result = await query.ToOneAsync<UserResponse>();
-            return result;
+            return await _fsql.Select<User>().Where(a => a.Id == id).ToOneAsync<UserResponse>();
         }
 
         /// <summary>
@@ -72,24 +70,47 @@
         }
 
         /// <summary>
-        /// 新增/编辑用户
+        /// 新增/编辑用户;无id表示新增;有id表示编辑
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
+        public async Task<(bool, string, UserResponse?)> UpdateUserAsync(CreateUserRequest request)
         {
-            var model = _mapper.Map<UpdateUserRequest, User>(request);
-            if (request.Id is null)
+            var model = _mapper.Map<CreateUserRequest, User>(request);
+            if (request.Id == null)
             {
+                if (_fsql.Select<User>().Where(a => a.Account == request.Account).ToList().Any())
+                {
+                    return (false, "Account already exists", null); // 新增失败，账号已存在
+                }
+                else if (_fsql.Select<User>().Where(a => a.Email == request.Email).ToList().Any())
+                {
+                    return (false, "Email already exists", null); // 新增失败，邮箱已存在
+                }
                 model.IsDelete = false;
+                model.CreateTime = DateTime.Now;
+                model.UpdateTime = DateTime.Now;
                 await InsertAsync(model);
+            }
+            else if (!_fsql.Select<User>().Where(a => a.Id == request.Id).ToList().Any()) // 如果数据库没有这个用户Id
+            {
+                return (false, "User does not exist", null); // 修改失败，用户不存在
             }
             else
             {
+                if (_fsql.Select<User>().Where(a => a.Id != request.Id).Where(a => a.Account == request.Account).ToList().Any()) // 如果Account和其它用户一样
+                {
+                    return (false, "Account already exists", null); // 修改失败，账号已存在
+                }
+                else if (_fsql.Select<User>().Where(a => a.Id != request.Id).Where(a => a.Email == request.Email).ToList().Any()) // 如果Email和其它用户一样
+                {
+                    return (false, "Email already exists", null); // 修改失败，邮箱已存在
+                }
+                model.UpdateTime = DateTime.Now;
                 await UpdateAsync(model);
             }
             var result = _mapper.Map<User, UserResponse>(model);
-            return result;
+            return (true, "", result);
         }
 
         /// <summary>
@@ -97,13 +118,25 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteUserAsync(DeleteUserRequest request)
+        public async Task<(bool, string)> DeleteUserAsync(DeleteUserRequest request)
         {
+            if (!request.UserIds.Any())
+            {
+                return (false, "用户Id为空，请填写有效用户Id");
+            }
+            var existingUserIds = await _fsql.Select<User>()
+                .Where(a => request.UserIds.Contains(a.Id))
+                .ToListAsync();
+            var nonExistingUserIds = request.UserIds.Except(existingUserIds.Select(u => u.Id));
+            if (nonExistingUserIds.Any())
+            {
+                return (false, $"删除失败，以下用户ID不存在: {string.Join(", ", nonExistingUserIds)}");
+            }
             var affectedRows = await _fsql.Update<User>()
                 .Set(a => a.IsDelete, true)
                 .Where(a => request.UserIds.Contains(a.Id))
                 .ExecuteAffrowsAsync();
-            return affectedRows > 0;
+            return affectedRows > 0? (true, "") : (false, "删除失败");
         }
     }
 }

@@ -57,10 +57,10 @@
         /// <returns></returns>
         [HttpPost("CreateUser")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
-        public async Task<IActionResult> CreateUserAsync([FromBody] UpdateUserRequest request)
+        public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest request)
         {
-            var result = await _userRepository.UpdateUserAsync(request);
-            return ToSuccessResult(result);
+            var (ok, message, result) = await _userRepository.UpdateUserAsync(request);
+            return ok? ToSuccessResult(result) : ToFailResult(message);
         }
         
         /// <summary>
@@ -72,8 +72,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request)
         {
-            await _userRepository.DeleteUserAsync(request);
-            return ToSuccessResult();
+            var (ok, message) = await _userRepository.DeleteUserAsync(request);
+            return ok? ToSuccessResult(message) : ToFailResult(message);
         }
     }
 }

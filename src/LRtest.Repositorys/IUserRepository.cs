@@ -24,17 +24,17 @@
         Task<List<UserResponse>> GetUserPageListAsync(UserRequest request);
 
         /// <summary>
-        /// 新增用户
+        /// 新增/编辑用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<UserResponse> UpdateUserAsync(UpdateUserRequest request);
-        
+        Task<(bool, string, UserResponse?)> UpdateUserAsync(CreateUserRequest request);
+
         /// <summary>
         /// 删除用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<bool> DeleteUserAsync(DeleteUserRequest request);
+        Task<(bool, string)> DeleteUserAsync(DeleteUserRequest request);
     }
 }

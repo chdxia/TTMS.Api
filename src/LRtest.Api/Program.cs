@@ -42,7 +42,7 @@ builder.Services.AddSingleton(provider =>
 {
     var config = new MapperConfiguration(cfg =>
     {
-        cfg.CreateMap<UserRequest, User>(); // 映射规则
+        cfg.CreateMap<CreateUserRequest, User>(); // 映射规则
         cfg.CreateMap<User, UserResponse>();
     });
 

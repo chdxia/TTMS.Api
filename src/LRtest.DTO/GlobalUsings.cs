@@ -1,1 +1,2 @@
-﻿global using LRtest.Enums;
+﻿global using System.ComponentModel.DataAnnotations;
+global using LRtest.Enums;
