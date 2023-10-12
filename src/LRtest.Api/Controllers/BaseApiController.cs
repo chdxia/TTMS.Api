@@ -7,6 +7,7 @@
     /// </summary>
     [Route("api/v1/[controller]")]
     [ApiExplorerSettings(GroupName = "default")]
+    [ServiceFilter(typeof(ValidateModelAttribute))] // 应用自定义全局过滤器
     public abstract class BaseApiController : Controller
     {
         /// <summary>

@@ -12,7 +12,10 @@ var config = new ConfigurationBuilder()
 
 
 // 注册服务
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(LRtest.Api.ValidateModelAttribute)); // 注册自定义全局过滤器
+}).AddDataAnnotationsLocalization();
 
 builder.Services.AddEndpointsApiExplorer();
 
