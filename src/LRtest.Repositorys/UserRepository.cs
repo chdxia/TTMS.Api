@@ -70,45 +70,65 @@
         }
 
         /// <summary>
-        /// 新增/编辑用户;无id表示新增;有id表示编辑
+        /// 新增用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, UserResponse?)> UpdateUserAsync(CreateUserRequest request)
+        public async Task<(bool, string, UserResponse?)> InsertUserAsync(CreateUserRequest request)
         {
-            var model = _mapper.Map<CreateUserRequest, User>(request);
-            if (request.Id == null)
+            if (_fsql.Select<User>()
+                .Where(a => a.Account == request.Account)
+                .Where(a => a.IsDelete == false)
+                .ToList().Any())
             {
-                if (_fsql.Select<User>().Where(a => a.Account == request.Account).ToList().Any())
-                {
-                    return (false, "Account already exists", null); // 新增失败，账号已存在
-                }
-                else if (_fsql.Select<User>().Where(a => a.Email == request.Email).ToList().Any())
-                {
-                    return (false, "Email already exists", null); // 新增失败，邮箱已存在
-                }
-                model.IsDelete = false;
-                model.CreateTime = DateTime.Now;
-                model.UpdateTime = DateTime.Now;
-                await InsertAsync(model);
+                return (false, "Account already exists", null); // 新增失败，账号已存在
             }
-            else if (!_fsql.Select<User>().Where(a => a.Id == request.Id).ToList().Any()) // 如果数据库没有这个用户Id
+            else if (_fsql.Select<User>()
+                .Where(a => a.Email == request.Email)
+                .Where(a => a.IsDelete == false)
+                .ToList().Any())
+            {
+                return (false, "Email already exists", null); // 新增失败，邮箱已存在
+            }
+            var model = _mapper.Map<CreateUserRequest, User>(request);
+            model.IsDelete = false;
+            model.CreateTime = DateTime.Now;
+            model.UpdateTime = DateTime.Now;
+            await InsertAsync(model);
+            var result = _mapper.Map<User, UserResponse>(model);
+            return (true, "", result);
+        }
+
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<(bool, string, UserResponse?)> UpdateUserAsync(UpdateUserRequest request)
+        {
+            if(!_fsql.Select<User>().Where(a => a.Id == request.Id).ToList().Any()) // 如果数据库没有这个用户Id
             {
                 return (false, "User does not exist", null); // 修改失败，用户不存在
             }
-            else
+            else if (_fsql.Select<User>() // 如果Account和其它未删除用户一样
+                .Where(a => a.Id != request.Id)
+                .Where(a => a.Account == request.Account)
+                .Where(a => a.IsDelete == false)
+                .ToList().Any())
             {
-                if (_fsql.Select<User>().Where(a => a.Id != request.Id).Where(a => a.Account == request.Account).ToList().Any()) // 如果Account和其它用户一样
-                {
-                    return (false, "Account already exists", null); // 修改失败，账号已存在
-                }
-                else if (_fsql.Select<User>().Where(a => a.Id != request.Id).Where(a => a.Email == request.Email).ToList().Any()) // 如果Email和其它用户一样
-                {
-                    return (false, "Email already exists", null); // 修改失败，邮箱已存在
-                }
-                model.UpdateTime = DateTime.Now;
-                await UpdateAsync(model);
+                return (false, "Account already exists", null); // 修改失败，账号已存在
             }
+            else if (_fsql.Select<User>() // 如果Email和其它未删除用户一样
+                .Where(a => a.Id != request.Id)
+                .Where(a => a.Email == request.Email)
+                .Where(a => a.IsDelete == false)
+                .ToList().Any())
+            {
+                return (false, "Email already exists", null); // 修改失败，邮箱已存在
+            }
+            var model = _mapper.Map<UpdateUserRequest, User>(request);
+            model.UpdateTime = DateTime.Now;
+            await UpdateAsync(model);
             var result = _mapper.Map<User, UserResponse>(model);
             return (true, "", result);
         }

@@ -67,25 +67,20 @@
     }
 
     /// <summary>
-    /// 请求参数;新建/编辑用户
+    /// 请求参数;新建用户
     /// </summary>
     public class CreateUserRequest
     {
         /// <summary>
-        /// 用户id;无id表示新增;有id表示编辑
-        /// </summary>
-        public virtual long? Id { get; set; }
-
-        /// <summary>
         /// 账号
         /// </summary>
         [Required(ErrorMessage = "Account is required.")]
-        public string Account { get; set; } = string.Empty;
+        public string? Account { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        public string? UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户邮箱
@@ -110,6 +105,18 @@
         /// </summary>
         [Required(ErrorMessage = "State is required.")]
         public bool State { get; set; }
+    }
+
+    /// <summary>
+    /// 请求参数;编辑用户
+    /// </summary>
+    public class UpdateUserRequest : CreateUserRequest
+    {
+        /// <summary>
+        /// 用户Id
+        /// </summary>
+        [Required(ErrorMessage = "Id is required.")]
+        public long? Id { get; set; }
     }
 
     /// <summary>
