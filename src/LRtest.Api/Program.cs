@@ -17,6 +17,8 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(typeof(LRtest.Api.ValidateModelAttribute)); // 注册自定义全局过滤器
 }).AddDataAnnotationsLocalization();
 
+builder.Services.AddScoped<LRtest.Api.ValidateModelAttribute>();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>

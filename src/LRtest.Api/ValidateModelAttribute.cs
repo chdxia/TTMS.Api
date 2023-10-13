@@ -11,7 +11,21 @@ namespace LRtest.Api
         {
             if (!context.ModelState.IsValid)
             {
-                context.Result = new BadRequestObjectResult(context.ModelState); // 返回验证错误信息
+                var errorMessages = new List<string>();
+                foreach (var modelStateEntry in context.ModelState.Values)
+                {
+                    foreach (var error in modelStateEntry.Errors)
+                    {
+                        errorMessages.Add(error.ErrorMessage);
+                    }
+                }
+                var formattedErrorMessage = string.Join(", ", errorMessages);
+                var apiResult = new Controllers.ApiResultModel
+                {
+                    ErrorCode = 100,
+                    Msg = formattedErrorMessage
+                };
+                context.Result = new JsonResult(apiResult); // 返回验证错误信息
             }
         }
     }

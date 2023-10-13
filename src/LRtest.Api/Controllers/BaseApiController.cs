@@ -122,7 +122,7 @@
         /// <param name="errMsg"></param>
         /// <param name="errCode"></param>
         /// <returns></returns>
-        public ApiResultModel<T> ToFailResult(string errMsg = "操作失败", int errCode = 1)
+        public ApiResultModel<T> ToFailResult(string errMsg = "操作失败", int errCode = 100)
         {
             Msg = errMsg;
             ErrorCode = errCode;
@@ -159,7 +159,7 @@
             Body = string.Empty;
         }
 
-        public new ApiResultModel ToFailResult(string errMsg = "操作失败", int errCode = 1)
+        public new ApiResultModel ToFailResult(string errMsg = "操作失败", int errCode = 100)
         {
             Msg = errMsg;
             ErrorCode = errCode;
