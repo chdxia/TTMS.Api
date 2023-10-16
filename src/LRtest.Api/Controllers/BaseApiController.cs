@@ -1,4 +1,6 @@
-﻿namespace LRtest.Api.Controllers
+﻿using LRtest.Api.GlobalFilter;
+
+namespace LRtest.Api.Controllers
 {
     #region BaseApiController 控制器基类
 

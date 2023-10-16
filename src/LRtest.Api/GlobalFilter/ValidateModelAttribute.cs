@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace LRtest.Api
+namespace LRtest.Api.GlobalFilter
 {
     /// <summary>
     /// 自定义全局过滤器;用于request模型验证
