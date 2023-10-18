@@ -6,26 +6,26 @@ pipeline {
   }
   environment {def server = ''}
   stages {
-    stage('拉取代码') {
+    stage('远程拉取') {
       steps {
         // 初始化参数
         script {
           server = getServer()
         }
-        // 在目标服务器上拉取最新代码
-        sshCommand remote: server, command: 'echo "Hello, World!"'
+        // 在目标服务器上获取最新代码
+        sshCommand remote: server, command: 'cd /root/lrtest-api && git fetch'
       }
     }
-    stage('构建镜像') {
+    stage('远程构建') {
       steps {
         // 在目标服务器上构建docker镜像
-        sshCommand remote: server, command: 'echo "Hello, World!"'
+        sshCommand remote: server, command: 'cd /root/lrtest-api/src && docker build -t lrtest -f /LRtest.Api/Dockerfile .'
       }
     }
-    stage('启动镜像') {
+    stage('远程启动') {
       steps {
-        // 在目标服务器上启动docker镜像
-        sshCommand remote: server, command: 'echo "Hello, World!"'
+        // 在目标服务器上停止容器、并根据新构建的docker镜像启动容器
+        sshCommand remote: server, command: 'docker stop lrtest && docker run --rm -d -p 8082:80 --name lrtest lrtest'
       }
     }
   }
