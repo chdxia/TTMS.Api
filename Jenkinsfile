@@ -19,13 +19,13 @@ pipeline {
     stage('远程构建') {
       steps {
         // 在目标服务器上构建docker镜像
-        sshCommand remote: server, command: 'cd /root/lrtest-api/src && docker build -t lrtest -f /LRtest.Api/Dockerfile .'
+        sshCommand remote: server, command: 'cd /root/lrtest-api/src && podman build -t lrtest -f /LRtest.Api/Dockerfile .'
       }
     }
     stage('远程启动') {
       steps {
         // 在目标服务器上停止容器、并根据新构建的docker镜像启动容器
-        sshCommand remote: server, command: 'docker stop lrtest && docker run --rm -d -p 8082:80 --name lrtest lrtest'
+        sshCommand remote: server, command: 'podman stop lrtest && podman run --rm -d -p 8082:80 --name lrtest lrtest'
       }
     }
   }
