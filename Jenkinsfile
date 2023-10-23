@@ -11,19 +11,19 @@ pipeline {
         // 初始化参数
         script {server = getServer()}
         // 在目标服务器上获取最新代码
-        sshCommand remote: server, command: 'cd /root/lrtest-api && git fetch'
+        sshCommand remote: server, command: 'cd /root/TTMS-Api && git fetch'
       }
     }
     stage('远程构建') {
       steps {
         // 在目标服务器上构建docker镜像
-        sshCommand remote: server, command: 'cd /root/lrtest-api/src && podman build -t lrtest -f /LRtest.Api/Dockerfile .'
+        sshCommand remote: server, command: 'cd /root/TTMS-Api/src && podman build -t ttms -f /TTMS.Api/Dockerfile .'
       }
     }
     stage('远程启动') {
       steps {
         // 在目标服务器上停止容器、并根据新构建的docker镜像启动容器
-        sshCommand remote: server, command: 'podman stop lrtest && podman run --rm -d -p 8082:80 --name lrtest lrtest'
+        sshCommand remote: server, command: 'podman stop ttms && podman run --rm -d -p 8082:80 --name ttms ttms'
       }
     }
   }
