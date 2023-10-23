@@ -28,6 +28,20 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<UserResponse> UpdateUserAsync(UpdateUserRequest request);
+        Task<(bool, string, UserResponse?)> InsertUserAsync(CreateUserRequest request);
+
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<(bool, string, UserResponse?)> UpdateUserAsync(UpdateUserRequest request);
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<(bool, string)> DeleteUserAsync(DeleteUserRequest request);
     }
 }

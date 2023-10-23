@@ -1,4 +1,6 @@
 using AutoMapper;
+using LRtest.Api.GlobalFilter;
+using LRtest.Api.SwaggerConfig;
 using LRtest.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +14,12 @@ var config = new ConfigurationBuilder()
 
 
 // 注册服务
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ValidateModelAttribute)); // 注册自定义全局过滤器
+}).AddDataAnnotationsLocalization();
+
+builder.Services.AddScoped<ValidateModelAttribute>();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -22,9 +29,10 @@ builder.Services.AddSwaggerGen(options =>
     {
         return true; // 包含所有控制器和操作方法，根据需要修改左面的逻辑来包含或排除特定的控制器和操作方法
     });
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Enum.xml")); // 启用 XML 注释
+    options.DocumentFilter<EnumDocumentFilter>(); // 显示枚举值;枚举属性;枚举描述
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Api.xml")); // 启用 XML 注释
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.DTO.xml"));
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Api.xml"));
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "LRtest.Enums.xml"));
 });
 
 builder.Services.AddSingleton(r =>
@@ -41,7 +49,7 @@ builder.Services.AddSingleton(provider =>
 {
     var config = new MapperConfiguration(cfg =>
     {
-        cfg.CreateMap<UserRequest, User>(); // 映射规则
+        cfg.CreateMap<CreateUserRequest, User>(); // 映射规则
         cfg.CreateMap<User, UserResponse>();
     });
 

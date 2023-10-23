@@ -8,10 +8,6 @@
     {
         private readonly IUserRepository _userRepository;
 
-        /// <summary>
-        /// 初始化参数
-        /// </summary>
-        /// <param name="userRepository"></param>
         public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
@@ -20,7 +16,7 @@
         /// <summary>
         /// 根据id获取用户信息
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">用户id</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
@@ -61,14 +57,27 @@
         /// <returns></returns>
         [HttpPost("CreateUser")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
-        public async Task<IActionResult> CreateUserAsync([FromBody] UpdateUserRequest request)
+        public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest request)
         {
-            var result = await _userRepository.UpdateUserAsync(request);
-            return ToSuccessResult(result);
+            var (ok, message, result) = await _userRepository.InsertUserAsync(request);
+            return ok? ToSuccessResult(result) : ToFailResult(message);
         }
 
         /// <summary>
-        /// 删除用户
+        /// 编辑用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("UpdateUser")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserRequest request)
+        {
+            var (ok, message, result) = await _userRepository.UpdateUserAsync(request);
+            return ok ? ToSuccessResult(result) : ToFailResult(message);
+        }
+
+        /// <summary>
+        /// 批量删除用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -76,8 +85,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request)
         {
-            _ = await;
-            return ToSuccessResult();
+            var (ok, message) = await _userRepository.DeleteUserAsync(request);
+            return ok? ToSuccessResult(message) : ToFailResult(message);
         }
     }
 }

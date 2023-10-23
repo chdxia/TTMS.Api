@@ -18,9 +18,7 @@
         /// <returns></returns>
         public async Task<UserResponse> GetUserByIdAsync(int id)
         {
-            var query = _fsql.Select<User>().Where(a => a.Id == id);
-            var result = await query.ToOneAsync<UserResponse>();
-            return result;
+            return await _fsql.Select<User>().Where(a => a.Id == id).ToOneAsync<UserResponse>();
         }
 
         /// <summary>
@@ -72,30 +70,77 @@
         }
 
         /// <summary>
-        /// 新增/编辑用户;无id表示新增;有id表示编辑
+        /// 新增用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
+        public async Task<(bool, string, UserResponse?)> InsertUserAsync(CreateUserRequest request)
         {
-            var model = _mapper.Map<UpdateUserRequest, User>(request);
-            if (request.Id is null)
+            if (_fsql.Select<User>()
+                .Where(a => a.Account == request.Account || a.Email == request.Email)
+                .Where(a => a.IsDelete == false)
+                .ToList().Any())
             {
-                model.IsDelete = false;
-                await InsertAsync(model);
+                return (false, "Account or email already exists.", null); // 新增失败，账号或邮箱已存在
             }
-            else
-            {
-                await UpdateAsync(model);
-            }
+            var model = _mapper.Map<CreateUserRequest, User>(request);
+            model.IsDelete = false;
+            model.CreateTime = model.UpdateTime = DateTime.Now;
+            await InsertAsync(model);
             var result = _mapper.Map<User, UserResponse>(model);
-            return result;
+            return (true, "", result);
         }
 
-        public async Task<bool> UpdateUserAsync(DeleteUserRequest request)
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<(bool, string, UserResponse?)> UpdateUserAsync(UpdateUserRequest request)
         {
-            //await _fsql.Update<User>();
-            return true;
+            if(!_fsql.Select<User>().Where(a => a.Id == request.Id).ToList().Any()) // 如果用户表没有这个用户Id
+            {
+                return (false, "User does not exist.", null); // 修改失败，用户不存在
+            }
+            else if (_fsql.Select<User>() // 如果Account或Email和其它未删除用户一样
+                .Where(a => a.Id != request.Id)
+                .Where(a => a.Account == request.Account || a.Email == request.Email)
+                .Where(a => a.IsDelete == false)
+                .ToList().Any())
+            {
+                return (false, "Account or email already exists.", null); // 修改失败，账号或邮箱已存在
+            }
+            var model = _mapper.Map<UpdateUserRequest, User>(request);
+            model.UpdateTime = DateTime.Now;
+            await UpdateAsync(model);
+            var result = _mapper.Map<User, UserResponse>(model);
+            return (true, "", result);
+        }
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<(bool, string)> DeleteUserAsync(DeleteUserRequest request)
+        {
+            if (!request.UserIds.Any())
+            {
+                return (false, "用户Id为空，请填写有效用户Id.");
+            }
+            var existingUserIds = await _fsql.Select<User>()
+                .Where(a => request.UserIds.Contains(a.Id))
+                .ToListAsync();
+            var nonExistingUserIds = request.UserIds.Except(existingUserIds.Select(u => u.Id));
+            if (nonExistingUserIds.Any())
+            {
+                return (false, $"删除失败，以下用户ID不存在: {string.Join(", ", nonExistingUserIds)}.");
+            }
+            var affectedRows = await _fsql.Update<User>()
+                .Set(a => a.IsDelete, true)
+                .Where(a => request.UserIds.Contains(a.Id))
+                .ExecuteAffrowsAsync();
+            return affectedRows > 0? (true, "") : (false, "删除失败.");
         }
     }
 }

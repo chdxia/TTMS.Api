@@ -1,4 +1,6 @@
-﻿namespace LRtest.Api.Controllers
+﻿using LRtest.Api.GlobalFilter;
+
+namespace LRtest.Api.Controllers
 {
     #region BaseApiController 控制器基类
 
@@ -7,6 +9,7 @@
     /// </summary>
     [Route("api/v1/[controller]")]
     [ApiExplorerSettings(GroupName = "default")]
+    [ServiceFilter(typeof(ValidateModelAttribute))] // 应用自定义全局过滤器
     public abstract class BaseApiController : Controller
     {
         /// <summary>
@@ -121,7 +124,7 @@
         /// <param name="errMsg"></param>
         /// <param name="errCode"></param>
         /// <returns></returns>
-        public ApiResultModel<T> ToFailResult(string errMsg = "操作失败", int errCode = 1)
+        public ApiResultModel<T> ToFailResult(string errMsg = "操作失败", int errCode = 100)
         {
             Msg = errMsg;
             ErrorCode = errCode;
@@ -158,7 +161,7 @@
             Body = string.Empty;
         }
 
-        public new ApiResultModel ToFailResult(string errMsg = "操作失败", int errCode = 1)
+        public new ApiResultModel ToFailResult(string errMsg = "操作失败", int errCode = 100)
         {
             Msg = errMsg;
             ErrorCode = errCode;
