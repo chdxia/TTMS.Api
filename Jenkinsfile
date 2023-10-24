@@ -17,7 +17,7 @@ pipeline {
     stage('远程构建') {
       steps {
         // 在目标服务器上构建docker镜像
-        sshCommand remote: server, command: 'cd /root/TTMS-Api/src && podman build -t ttms -f /TTMS.Api/Dockerfile .'
+        sshCommand remote: server, command: 'cd /root/TTMS-Api/src && podman build -t ttms -f TTMS.Api/Dockerfile .'
       }
     }
     stage('远程启动') {

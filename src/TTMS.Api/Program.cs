@@ -1,6 +1,5 @@
 using AutoMapper;
-using TTMS.Api.GlobalFilter;
-using TTMS.Api.SwaggerConfig;
+using TTMS.Api.Core;
 using TTMS.Domain;
 
 var builder = WebApplication.CreateBuilder(args);

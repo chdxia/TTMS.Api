@@ -84,6 +84,10 @@
                 return (false, "Account or email already exists.", null); // 新增失败，账号或邮箱已存在
             }
             var model = _mapper.Map<CreateUserRequest, User>(request);
+            if (!string.IsNullOrEmpty(request.PassWord))
+            {
+                model.PassWord = request.PassWord;
+            }
             model.IsDelete = false;
             model.CreateTime = model.UpdateTime = DateTime.Now;
             await InsertAsync(model);

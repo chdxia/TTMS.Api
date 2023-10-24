@@ -8,6 +8,10 @@
     {
         private readonly IUserRepository _userRepository;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="userRepository"></param>
         public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
