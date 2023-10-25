@@ -3,7 +3,8 @@
     /// <summary>
     /// 任务表
     /// </summary>
-    public class TaskItem
+    [Table(Name = "user_task")]
+    public class Tsk
     {
         /// <summary>
         /// 主键id;任务id

@@ -4,7 +4,7 @@
     /// 用户任务表
     /// </summary>
     [Table(Name = "user_task")]
-    public class UserTask
+    public class UserTsk
     {
         /// <summary>
         /// 主键id
@@ -23,7 +23,7 @@
         /// 外键;任务id
         /// </summary>
         [Column(Name = "task_id", DbType = "int8")]
-        [Navigate(nameof(TaskItem.Id))]
+        [Navigate(nameof(Tsk.Id))]
         public int TaskId { get; set; }
     }
 }

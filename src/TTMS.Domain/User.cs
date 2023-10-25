@@ -10,7 +10,7 @@
         /// 主键id;用户id
         /// </summary>
         [Column(Name = "id", DbType = "int8", IsPrimary = true, IsIdentity = true)]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 账号;唯一
@@ -43,10 +43,16 @@
         public string? AccessToken { get; set; }
 
         /// <summary>
-        /// 用户角色
+        /// 分组id
         /// </summary>
-        [Column(Name = "role_id", DbType = "int8")]
-        public Role RoleId { get; set; }
+        [Column(Name = "group_id", DbType = "int8")]
+        public int GroupId { get; set; }
+
+        /// <summary>
+        /// 角色id
+        /// </summary>
+        [Column(Name = "role_type", DbType = "int8")]
+        public RoleType RoleType { get; set; }
 
         /// <summary>
         /// 账号状态;t启用,f停用
@@ -64,7 +70,7 @@
         /// 创建人
         /// </summary>
         [Column(Name = "create_by", DbType = "int8")]
-        public long CreateBy { get; set; }
+        public int CreateBy { get; set; }
 
         /// <summary>
         /// 创建时间
@@ -76,7 +82,7 @@
         /// 更新人
         /// </summary>
         [Column(Name = "update_by", DbType = "int8")]
-        public long UpdateBy { get; set; }
+        public int UpdateBy { get; set; }
 
         /// <summary>
         /// 更新时间

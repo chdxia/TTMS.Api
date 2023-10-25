@@ -28,7 +28,7 @@
         /// <summary>
         /// 用户角色
         /// </summary>
-        public Role? RoleId { get; set; }
+        public RoleType? RoleId { get; set; }
 
         /// <summary>
         /// 账号状态
@@ -98,7 +98,7 @@
         /// 用户角色
         /// </summary>
         [Required(ErrorMessage = "RoleId is required.")]
-        public Role RoleId { get; set; }
+        public RoleType RoleId { get; set; }
 
         /// <summary>
         /// 账号状态
@@ -128,6 +128,6 @@
         /// 用户id
         /// </summary>
         [Required(ErrorMessage = "UserIds is required.")]
-        public List<long> UserIds { get; set; } = new List<long>();
+        public List<int> UserIds { get; set; } = new List<int>();
     }
 }

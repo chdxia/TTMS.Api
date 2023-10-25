@@ -1,9 +1,51 @@
-﻿using TTMS.Api.GlobalFilter;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using TTMS.Api.Core;
 
 namespace TTMS.Api.Controllers
 {
-    #region BaseApiController 控制器基类
+    #region AuthorizeApiController 需要认证的控制器基类
+    /// <summary>
+    /// AuthorizeApiController 需要认证的控制器基类
+    /// </summary>
+    public abstract class AuthorizeApiController : BaseApiController
+    {
+        private readonly IAuthPermissionService _authPermissionService;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="authPermissionService"></param>
+        public AuthorizeApiController(IAuthPermissionService authPermissionService)
+        {
+            _authPermissionService = authPermissionService;
+        }
+        
+        /// <summary>
+        /// OnActionExecuting
+        /// </summary>
+        /// <param name="context"></param>
+        public override async void OnActionExecuting(ActionExecutingContext context)
+        {
+            // 获取当前访问的接口名称
+
+            // 获取当前用户的身份标识 token或者id
+
+            // 检查当前用户是否有访问该接口的权限
+            bool hasPermission = await _authPermissionService.HasPermissionAsync("interfaceName", "userId");
+
+            if (!hasPermission)
+            {
+                // 如果用户没有权限，可以返回一个未授权的结果，或者执行其他相应的操作
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
+            base.OnActionExecuting(context);
+        }
+    }
+    #endregion
+
+    #region BaseApiController 控制器基类
     /// <summary>
     /// BaseApiController 控制器基类
     /// </summary>
@@ -87,11 +129,9 @@ namespace TTMS.Api.Controllers
             });
         }
     }
-
     #endregion
 
     #region ApiResultModel 返回格式，带body
-
     /// <summary>
     /// 返回格式，带body
     /// </summary>
@@ -146,21 +186,28 @@ namespace TTMS.Api.Controllers
             return this;
         }
     }
-
     #endregion
 
     #region ApiResultModel 返回格式，不带body
-
     /// <summary>
     /// 返回格式，不带body
     /// </summary>
     public class ApiResultModel : ApiResultModel<string>
     {
+        /// <summary>
+        /// ApiResultModel
+        /// </summary>
         public ApiResultModel()
         {
             Body = string.Empty;
         }
 
+        /// <summary>
+        /// ToFailResult
+        /// </summary>
+        /// <param name="errMsg"></param>
+        /// <param name="errCode"></param>
+        /// <returns></returns>
         public new ApiResultModel ToFailResult(string errMsg = "操作失败", int errCode = 100)
         {
             Msg = errMsg;
@@ -168,6 +215,13 @@ namespace TTMS.Api.Controllers
             return this;
         }
 
+        /// <summary>
+        /// ToSucceedResult
+        /// </summary>
+        /// <param name="body"></param>
+        /// <param name="msg"></param>
+        /// <param name="errCode"></param>
+        /// <returns></returns>
         public new ApiResultModel ToSucceedResult(string body = "", string msg = "操作成功", int errCode = 0)
         {
             Msg = msg;
@@ -176,6 +230,5 @@ namespace TTMS.Api.Controllers
             return this;
         }
     }
-
     #endregion
 }
