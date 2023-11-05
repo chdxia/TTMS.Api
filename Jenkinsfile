@@ -23,7 +23,7 @@ pipeline {
     stage('远程启动') {
       steps {
         // 在目标服务器上停止容器、并根据新构建的docker镜像启动容器
-        sshCommand remote: server, command: 'podman stop ttms; podman run --rm -d -p 8082:80 --name ttms ttms'
+        sshCommand remote: server, command: 'podman stop ttms; podman rm ttms; podman run --rm -d -p 8082:80 --name ttms ttms'
       }
     }
   }
