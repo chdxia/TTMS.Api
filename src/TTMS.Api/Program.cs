@@ -1,5 +1,4 @@
 using AutoMapper;
-using TTMS.Api.Core;
 using TTMS.Domain;
 
 var builder = WebApplication.CreateBuilder(args);

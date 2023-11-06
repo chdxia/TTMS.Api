@@ -81,7 +81,7 @@
                 .Where(a => a.IsDelete == false)
                 .ToList().Any())
             {
-                return (false, "Account or email already exists.", null); // 新增失败，账号或邮箱已存在
+                return (false, "Account or email already exists.", null); // 新增失败，账户或邮箱已存在
             }
             var model = _mapper.Map<CreateUserRequest, User>(request);
             if (!string.IsNullOrEmpty(request.PassWord))
@@ -112,7 +112,7 @@
                 .Where(a => a.IsDelete == false)
                 .ToList().Any())
             {
-                return (false, "Account or email already exists.", null); // 修改失败，账号或邮箱已存在
+                return (false, "Account or email already exists.", null); // 修改失败，账户或邮箱已存在
             }
             var model = _mapper.Map<UpdateUserRequest, User>(request);
             model.UpdateTime = DateTime.Now;

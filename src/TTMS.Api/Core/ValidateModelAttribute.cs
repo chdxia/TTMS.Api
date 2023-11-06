@@ -24,7 +24,7 @@ namespace TTMS.Api.Core
                     }
                 }
                 var formattedErrorMessage = string.Join(", ", errorMessages);
-                var apiResult = new Controllers.ApiResultModel
+                var apiResult = new ApiResultModel
                 {
                     ErrorCode = 100,
                     Msg = formattedErrorMessage

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using TTMS.Api.Core;
 
-namespace TTMS.Api.Controllers
+namespace TTMS.Api.Core
 {
     #region AuthorizeApiController 需要认证的控制器基类
     /// <summary>

@@ -13,7 +13,7 @@
         public int Id { get; set; }
 
         /// <summary>
-        /// 账号;唯一
+        /// 账户名;唯一
         /// </summary>
         [Column(Name = "account", DbType = "varchar")]
         public string? Account { get; set; }
@@ -37,15 +37,16 @@
         public string? PassWord { get; set; }
 
         /// <summary>
-        /// 账号token
+        /// 账户token
         /// </summary>
         [Column(Name = "access_token", DbType = "varchar", IsNullable = true)]
         public string? AccessToken { get; set; }
 
         /// <summary>
-        /// 分组id
+        /// 外键;分组id
         /// </summary>
         [Column(Name = "group_id", DbType = "int8")]
+        [Navigate(nameof(Group.Id))]
         public int GroupId { get; set; }
 
         /// <summary>
@@ -55,7 +56,7 @@
         public RoleType RoleType { get; set; }
 
         /// <summary>
-        /// 账号状态;t启用,f停用
+        /// 账户状态;t启用,f停用
         /// </summary>
         [Column(Name = "state", DbType = "bool")]
         public bool State { get; set; }
@@ -79,13 +80,13 @@
         public DateTime? CreateTime { get; set; }
 
         /// <summary>
-        /// 更新人
+        /// 最后更新人
         /// </summary>
         [Column(Name = "update_by", DbType = "int8")]
         public int UpdateBy { get; set; }
 
         /// <summary>
-        /// 更新时间
+        /// 最后更新时间
         /// </summary>
         [Column(Name = "update_time", DbType = "timestamp")]
         public DateTime? UpdateTime { get; set; }
