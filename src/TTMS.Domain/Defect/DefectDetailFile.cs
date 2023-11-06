@@ -1,22 +1,35 @@
 ﻿namespace TTMS.Domain
 {
     /// <summary>
-    /// 分组表
+    /// 缺陷明细文件表
     /// </summary>
-    [Table(Name = "group")]
-    public class UserGroup
+    [Table(Name = "defect_detail_file")]
+    public class DefectDetailFile
     {
         /// <summary>
-        /// 主键id;分组id
+        /// 主键id
         /// </summary>
         [Column(Name = "id", DbType = "int8", IsPrimary = true, IsIdentity = true)]
         public int Id { get; set; }
 
         /// <summary>
-        /// 分组名
+        /// 外键;缺陷明细id
         /// </summary>
-        [Column(Name = "group_name", DbType = "varchar", IsNullable = true)]
-        public string? GroupName { get; set; }
+        [Column(Name = "defect_detail_id", DbType = "int8")]
+        [Navigate(nameof(DefectDetail.Id))]
+        public int DefectDetailId { get; set; }
+
+        /// <summary>
+        /// url
+        /// </summary>
+        [Column(Name = "url", DbType = "varchar", IsNullable = true)]
+        public string? Url { get; set; }
+
+        /// <summary>
+        /// 是否删除;t已删除,f未删除
+        /// </summary>
+        [Column(Name = "is_delete", DbType = "bool")]
+        public bool IsDelete { get; set; }
 
         /// <summary>
         /// 创建人
@@ -31,13 +44,13 @@
         public DateTime? CreateTime { get; set; }
 
         /// <summary>
-        /// 更新人
+        /// 最后更新人
         /// </summary>
         [Column(Name = "update_by", DbType = "int8")]
         public int UpdateBy { get; set; }
 
         /// <summary>
-        /// 更新时间
+        /// 最后更新时间
         /// </summary>
         [Column(Name = "update_time", DbType = "timestamp")]
         public DateTime? UpdateTime { get; set; }

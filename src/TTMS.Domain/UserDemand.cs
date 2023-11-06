@@ -1,10 +1,10 @@
 ﻿namespace TTMS.Domain
 {
     /// <summary>
-    /// 用户任务表
+    /// 需求负责人表
     /// </summary>
-    [Table(Name = "user_task")]
-    public class UserTsk
+    [Table(Name = "user_demand")]
+    public class UserDemand
     {
         /// <summary>
         /// 主键id
@@ -20,10 +20,10 @@
         public int UserId { get; set; }
 
         /// <summary>
-        /// 外键;任务id
+        /// 外键;需求id
         /// </summary>
-        [Column(Name = "task_id", DbType = "int8")]
-        [Navigate(nameof(Tsk.Id))]
-        public int TaskId { get; set; }
+        [Column(Name = "demand_id", DbType = "int8")]
+        [Navigate(nameof(Demand.Id))]
+        public int DemandId { get; set; }
     }
 }

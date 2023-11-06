@@ -42,5 +42,29 @@
         /// </summary>
         [Column(Name = "defect_state", DbType = "int8")]
         public DefectState DefectState { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        [Column(Name = "create_by", DbType = "int8")]
+        public int CreateBy { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [Column(Name = "create_time", DbType = "timestamp")]
+        public DateTime? CreateTime { get; set; }
+
+        /// <summary>
+        /// 最后更新人
+        /// </summary>
+        [Column(Name = "update_by", DbType = "int8")]
+        public int UpdateBy { get; set; }
+
+        /// <summary>
+        /// 最后更新时间
+        /// </summary>
+        [Column(Name = "update_time", DbType = "timestamp")]
+        public DateTime? UpdateTime { get; set; }
     }
 }

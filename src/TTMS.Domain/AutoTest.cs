@@ -1,13 +1,13 @@
 ﻿namespace TTMS.Domain
 {
     /// <summary>
-    /// 需求表
+    /// 自动化测试记录表
     /// </summary>
-    [Table(Name = "demand")]
-    public class Demand
+    [Table(Name = "auto_test")]
+    public class AutoTest
     {
         /// <summary>
-        /// 主键id;需求id
+        /// 主键id
         /// </summary>
         [Column(Name = "id", DbType = "int8", IsPrimary = true, IsIdentity = true)]
         public int Id { get; set; }
