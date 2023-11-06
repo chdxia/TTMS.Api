@@ -55,6 +55,7 @@ builder.Services.AddSingleton(provider =>
 });
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IGroupRepository, GroupRepository>();
 
 
 var app = builder.Build();
