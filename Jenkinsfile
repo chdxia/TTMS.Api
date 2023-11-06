@@ -11,7 +11,7 @@ pipeline {
         // 初始化参数
         script {server = getServer()}
         // 在目标服务器上获取最新代码
-        sshCommand remote: server, command: 'cd /root/TTMS.Api && git fetch'
+        sshCommand remote: server, command: 'cd /root/TTMS.Api && git pull'
       }
     }
     stage('远程构建') {
