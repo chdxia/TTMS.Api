@@ -49,6 +49,8 @@ builder.Services.AddSingleton(provider =>
     {
         cfg.CreateMap<CreateUserRequest, User>(); // 映射规则
         cfg.CreateMap<User, UserResponse>();
+        cfg.CreateMap<CreateGroupRequest, Group>(); // 映射规则
+        cfg.CreateMap<Group, GroupResponse>();
     });
 
     return config.CreateMapper();
