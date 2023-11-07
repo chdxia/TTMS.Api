@@ -109,7 +109,8 @@
         /// <returns></returns>
         public async Task<(bool, string, UserResponse?)> UpdateUserAsync(UpdateUserRequest request)
         {
-            if(!_fsql.Select<User>().Where(a => a.Id == request.Id).ToList().Any()) // 如果用户表没有这个用户Id
+            var model = await _fsql.Select<User>().Where(a => a.Id == request.Id).FirstAsync();
+            if(model == null) // 如果用户表没有这个用户Id
             {
                 return (false, "User does not exist.", null); // 修改失败，用户不存在
             }
@@ -121,7 +122,7 @@
             {
                 return (false, "Account or email already exists.", null); // 修改失败，账户或邮箱已存在
             }
-            var model = _mapper.Map<UpdateUserRequest, User>(request);
+            _mapper.Map(request, model);
             model.UpdateTime = DateTime.Now;
             try
             {

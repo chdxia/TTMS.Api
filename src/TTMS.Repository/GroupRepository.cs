@@ -61,11 +61,12 @@
         /// <returns></returns>
         public async Task<(bool, string, GroupResponse?)> UpdateGroupAsync(UpdateGroupRequest request)
         {
-            if(!_fsql.Select<Group>().Where(a => a.Id == request.Id).ToList().Any())
+            var model = await _fsql.Select<Group>().Where(a => a.Id == request.Id).FirstAsync();
+            if(model == null)
             {
                 return (false, "Group does not exist.", null);
             }
-            var model = _mapper.Map<UpdateGroupRequest, Group>(request);
+            _mapper.Map(request, model);
             model.UpdateTime = DateTime.Now;
             try
             {
