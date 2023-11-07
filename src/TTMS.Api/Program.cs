@@ -1,5 +1,6 @@
 using AutoMapper;
 using TTMS.Domain;
+using TTMS.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,9 +57,8 @@ builder.Services.AddSingleton(provider =>
     return config.CreateMapper();
 });
 
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IGroupRepository, GroupRepository>();
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 
 var app = builder.Build();
 
