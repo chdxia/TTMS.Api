@@ -2,48 +2,6 @@
 
 namespace TTMS.Api.Core
 {
-    #region AuthorizeApiController 需要认证的控制器基类
-    /// <summary>
-    /// AuthorizeApiController 需要认证的控制器基类
-    /// </summary>
-    public abstract class AuthorizeApiController : BaseApiController
-    {
-        private readonly IAuthPermissionService _authPermissionService;
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="authPermissionService"></param>
-        public AuthorizeApiController(IAuthPermissionService authPermissionService)
-        {
-            _authPermissionService = authPermissionService;
-        }
-        
-        /// <summary>
-        /// OnActionExecuting
-        /// </summary>
-        /// <param name="context"></param>
-        public override async void OnActionExecuting(ActionExecutingContext context)
-        {
-            // 获取当前访问的接口名称
-
-            // 获取当前用户的身份标识 token或者id
-
-            // 检查当前用户是否有访问该接口的权限
-            bool hasPermission = await _authPermissionService.HasPermissionAsync("interfaceName", "userId");
-
-            if (!hasPermission)
-            {
-                // 如果用户没有权限，可以返回一个未授权的结果，或者执行其他相应的操作
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-
-            base.OnActionExecuting(context);
-        }
-    }
-    #endregion
-
     #region BaseApiController 控制器基类
     /// <summary>
     /// BaseApiController 控制器基类
@@ -126,6 +84,48 @@ namespace TTMS.Api.Core
                 ErrorCode = 0,
                 Msg = msg
             });
+        }
+    }
+    #endregion
+
+    #region AuthorizeApiController 需要认证的控制器基类
+    /// <summary>
+    /// AuthorizeApiController 需要认证的控制器基类
+    /// </summary>
+    public abstract class AuthorizeApiController : BaseApiController
+    {
+        private readonly IAuthPermissionService _authPermissionService;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="authPermissionService"></param>
+        public AuthorizeApiController(IAuthPermissionService authPermissionService)
+        {
+            _authPermissionService = authPermissionService;
+        }
+        
+        /// <summary>
+        /// OnActionExecuting
+        /// </summary>
+        /// <param name="context"></param>
+        public override async void OnActionExecuting(ActionExecutingContext context)
+        {
+            // 获取当前访问的接口名称
+
+            // 获取当前用户的身份标识 token或者id
+
+            // 检查当前用户是否有访问该接口的权限
+            bool hasPermission = await _authPermissionService.HasPermissionAsync("interfaceName", "userId");
+
+            if (!hasPermission)
+            {
+                // 如果用户没有权限，可以返回一个未授权的结果，或者执行其他相应的操作
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
+            base.OnActionExecuting(context);
         }
     }
     #endregion
