@@ -90,9 +90,16 @@
             }
             model.IsDelete = false;
             model.CreateTime = model.UpdateTime = DateTime.Now;
-            await InsertAsync(model);
-            var result = _mapper.Map<User, UserResponse>(model);
-            return (true, "", result);
+            try
+            {
+                await InsertAsync(model);
+                var result = _mapper.Map<User, UserResponse>(model);
+                return (true, "", result);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, null);
+            }
         }
 
         /// <summary>
@@ -116,9 +123,16 @@
             }
             var model = _mapper.Map<UpdateUserRequest, User>(request);
             model.UpdateTime = DateTime.Now;
-            await UpdateAsync(model);
-            var result = _mapper.Map<User, UserResponse>(model);
-            return (true, "", result);
+            try
+            {
+                await UpdateAsync(model);
+                var result = _mapper.Map<User, UserResponse>(model);
+                return (true, "", result);
+            }
+            catch (Exception ex)
+            {
+                return(false, ex.Message, null);
+            }
         }
 
         /// <summary>

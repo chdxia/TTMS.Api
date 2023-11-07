@@ -42,9 +42,16 @@
             var model = _mapper.Map<CreateGroupRequest, Group>(request);
             model.IsDelete = false;
             model.CreateTime = model.UpdateTime = DateTime.Now;
-            await InsertAsync(model);
-            var result = _mapper.Map<Group, GroupResponse>(model);
-            return (true, "", result);
+            try
+            {
+                await InsertAsync(model);
+                var result = _mapper.Map<Group, GroupResponse>(model);
+                return (true, "", result);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, null);
+            }
         }
 
         /// <summary>
@@ -60,9 +67,16 @@
             }
             var model = _mapper.Map<UpdateGroupRequest, Group>(request);
             model.UpdateTime = DateTime.Now;
-            await UpdateAsync(model);
-            var result = _mapper.Map<Group, GroupResponse>(model);
-            return (true, "", result);
+            try
+            {
+                await UpdateAsync(model);
+                var result = _mapper.Map<Group, GroupResponse>(model);
+                return (true, "", result);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, null);
+            }
         }
 
         /// <summary>
@@ -76,7 +90,7 @@
             {
                 return (false, "分组Id为空，请填写有效分组Id.");
             }
-            var existingGroupIds = await _fsql.Select<User>()
+            var existingGroupIds = await _fsql.Select<Group>()
                 .Where(a => request.GroupIds.Contains(a.Id))
                 .ToListAsync();
             var nonExistingGroupIds = request.GroupIds.Except(existingGroupIds.Select(u => u.Id));

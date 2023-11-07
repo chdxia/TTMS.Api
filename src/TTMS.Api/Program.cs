@@ -1,6 +1,5 @@
 using AutoMapper;
 using TTMS.Domain;
-using TTMS.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,8 +48,10 @@ builder.Services.AddSingleton(provider =>
     var config = new MapperConfiguration(cfg =>
     {
         cfg.CreateMap<CreateUserRequest, User>(); // 映射规则
+        cfg.CreateMap<UpdateUserRequest, User>();
         cfg.CreateMap<User, UserResponse>();
         cfg.CreateMap<CreateGroupRequest, Group>(); // 映射规则
+        cfg.CreateMap<UpdateGroupRequest, Group>();
         cfg.CreateMap<Group, GroupResponse>();
     });
 
