@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<VersionInfoResponse>> GetVersionInfoListAsync(VersionInfoRequest request)
+        public async Task<List<VersionInfoResponse>> GetVersionInfoPageListAsync(VersionInfoRequest request)
         {
             var versions = await _fsql.Select<VersionInfo>()
                 .Where(a => !a.IsDelete)
