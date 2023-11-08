@@ -57,7 +57,7 @@
         }
 
         /// <summary>
-        /// 批量删除分组
+        /// 批量删除版本
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
