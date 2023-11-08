@@ -50,9 +50,18 @@ builder.Services.AddSingleton(provider =>
         cfg.CreateMap<CreateUserRequest, User>(); // 映射规则
         cfg.CreateMap<UpdateUserRequest, User>();
         cfg.CreateMap<User, UserResponse>();
-        cfg.CreateMap<CreateGroupRequest, Group>(); // 映射规则
+        cfg.CreateMap<CreateGroupRequest, Group>();
         cfg.CreateMap<UpdateGroupRequest, Group>();
         cfg.CreateMap<Group, GroupResponse>();
+        cfg.CreateMap<CreateVersionInfoRequest, VersionInfo>();
+        cfg.CreateMap<UpdateVersionInfoRequest, VersionInfo>();
+        cfg.CreateMap<VersionInfo, VersionInfoResponse>();
+        cfg.CreateMap<CreateDemandRequest, Demand>();
+        cfg.CreateMap<UpdateDemandRequest, Demand>();
+        cfg.CreateMap<Demand, DemandResponse>();
+        cfg.CreateMap<CreateDefectRequest, Defect>();
+        cfg.CreateMap<UpdateDefectRequest, Defect>();
+        cfg.CreateMap<Defect, DefectResponse>();
     });
 
     return config.CreateMapper();
@@ -60,6 +69,7 @@ builder.Services.AddSingleton(provider =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IVersionInfoRepository, VersionInfoRepository>();
 
 var app = builder.Build();
 
