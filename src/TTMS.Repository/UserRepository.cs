@@ -88,7 +88,6 @@
             {
                 model.PassWord = request.PassWord;
             }
-            model.IsDelete = false;
             model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
@@ -150,13 +149,14 @@
             var existingUserIds = await _fsql.Select<User>()
                 .Where(a => request.UserIds.Contains(a.Id))
                 .ToListAsync();
-            var nonExistingUserIds = request.UserIds.Except(existingUserIds.Select(u => u.Id));
+            var nonExistingUserIds = request.UserIds.Except(existingUserIds.Select(a => a.Id));
             if (nonExistingUserIds.Any())
             {
                 return (false, $"删除失败，以下用户ID不存在: {string.Join(", ", nonExistingUserIds)}.");
             }
             var affectedRows = await _fsql.Update<User>()
                 .Set(a => a.IsDelete, true)
+                .Set(a => a.UpdateTime, DateTime.Now)
                 .Where(a => request.UserIds.Contains(a.Id))
                 .ExecuteAffrowsAsync();
             return affectedRows > 0? (true, "") : (false, "删除失败.");

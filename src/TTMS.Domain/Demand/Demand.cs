@@ -55,6 +55,9 @@
         [Column(Name = "proposer_name", DbType = "varchar", IsNullable = true)]
         public string? ProposerName { get; set; }
 
+        /// <summary>
+        /// 需求提出时间
+        /// </summary>
         [Column(Name = "propose_time", DbType = "timestamp")]
         public DateTime? ProposeTime { get; set; }
 
@@ -63,6 +66,16 @@
         /// </summary>
         [Column(Name = "demand_priority", DbType = "int8")]
         public DemandPriority DemandPriority { get; set; }
+
+        /// <summary>
+        /// 开发
+        /// </summary>
+        public List<User> Developer { get; set; } = new List<User>();
+
+        /// <summary>
+        /// 测试
+        /// </summary>
+        public List<User> Tester { get; set; } = new List<User>();
 
         /// <summary>
         /// 需求状态
@@ -91,15 +104,15 @@
         /// <summary>
         /// 外键;版本id
         /// </summary>
-        [Column(Name = "user_id", DbType = "int8")]
-        [Navigate(nameof(Version.Id))]
-        public int VersionId { get; set; }
+        [Column(Name = "version_id", DbType = "int8")]
+        [Navigate(nameof(VersionInfo.Id))]
+        public int? VersionId { get; set; }
 
         /// <summary>
-        /// 是否删除;t已删除,f未删除
+        /// 是否删除;t已删除,f未删除;默认f
         /// </summary>
         [Column(Name = "is_delete", DbType = "bool")]
-        public bool IsDelete { get; set; }
+        public bool IsDelete { get; set; } = false;
 
         /// <summary>
         /// 创建人

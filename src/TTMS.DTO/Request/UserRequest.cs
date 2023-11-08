@@ -99,12 +99,6 @@
         /// </summary>
         [Required(ErrorMessage = "RoleId is required.")]
         public RoleType RoleId { get; set; }
-
-        /// <summary>
-        /// 账户状态
-        /// </summary>
-        [Required(ErrorMessage = "State is required.")]
-        public bool State { get; set; }
     }
 
     /// <summary>
@@ -117,6 +111,12 @@
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
         public int? Id { get; set; }
+
+        /// <summary>
+        /// 账户状态
+        /// </summary>
+        [Required(ErrorMessage = "State is required.")]
+        public bool State { get; set; }
     }
 
     /// <summary>

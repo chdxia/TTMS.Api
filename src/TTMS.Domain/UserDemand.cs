@@ -25,5 +25,11 @@
         [Column(Name = "demand_id", DbType = "int8")]
         [Navigate(nameof(Demand.Id))]
         public int DemandId { get; set; }
+
+        /// <summary>
+        /// 是否删除;t已删除,f未删除;默认f
+        /// </summary>
+        [Column(Name = "is_delete", DbType = "bool")]
+        public bool IsDelete { get; set; } = false;
     }
 }

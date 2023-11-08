@@ -40,7 +40,6 @@
         public async Task<(bool, string, GroupResponse?)> InsertGroupAsync(CreateGroupRequest request)
         {
             var model = _mapper.Map<CreateGroupRequest, Group>(request);
-            model.IsDelete = false;
             model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
@@ -94,13 +93,14 @@
             var existingGroupIds = await _fsql.Select<Group>()
                 .Where(a => request.GroupIds.Contains(a.Id))
                 .ToListAsync();
-            var nonExistingGroupIds = request.GroupIds.Except(existingGroupIds.Select(u => u.Id));
+            var nonExistingGroupIds = request.GroupIds.Except(existingGroupIds.Select(a => a.Id));
             if (nonExistingGroupIds.Any())
             {
                 return (false, $"删除失败，以下分组ID不存在: {string.Join(", ", nonExistingGroupIds)}.");
             }
             var affectedRows = await _fsql.Update<Group>()
                 .Set(a => a.IsDelete, true)
+                .Set(a => a.UpdateTime, DateTime.Now)
                 .Where(a => request.GroupIds.Contains(a.Id))
                 .ExecuteAffrowsAsync();
             return affectedRows > 0? (true, "") : (false, "删除失败.");

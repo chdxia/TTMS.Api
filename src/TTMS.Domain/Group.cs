@@ -19,10 +19,10 @@
         public string? GroupName { get; set; }
 
         /// <summary>
-        /// 是否删除;t已删除,f未删除
+        /// 是否删除;t已删除,f未删除;默认f
         /// </summary>
         [Column(Name = "is_delete", DbType = "bool")]
-        public bool IsDelete { get; set; }
+        public bool IsDelete { get; set; } = false;
 
         /// <summary>
         /// 创建人
