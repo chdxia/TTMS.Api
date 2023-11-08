@@ -3,8 +3,8 @@
     /// <summary>
     /// 版本表
     /// </summary>
-    [Table(Name = "version")]
-    public class Version
+    [Table(Name = "version_info")]
+    public class VersionInfo
     {
         /// <summary>
         /// 主键id;版本id
@@ -31,10 +31,10 @@
         public string? VersionNo { get; set; }
 
         /// <summary>
-        /// 报告状态;t已生成;f未生成
+        /// 报告状态;t已生成,f未生成;默认f
         /// </summary>
         [Column(Name = "report_state", DbType = "bool")]
-        public bool ReportState { get; set; }
+        public bool ReportState { get; set; } = false;
 
         /// <summary>
         /// 报告生成时间
@@ -49,10 +49,10 @@
         public string? ReportFile { get; set; }
 
         /// <summary>
-        /// 是否删除;t已删除,f未删除
+        /// 是否删除;t已删除,f未删除;默认f
         /// </summary>
         [Column(Name = "is_delete", DbType = "bool")]
-        public bool IsDelete { get; set; }
+        public bool IsDelete { get; set; } = false;
 
         /// <summary>
         /// 创建人
