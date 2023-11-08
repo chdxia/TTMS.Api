@@ -14,27 +14,27 @@ namespace TTMS.Enums
         open = 0,
 
         /// <summary>
-        /// 已拒绝
-        /// </summary>
-        [Description("已拒绝")]
-        mior = 1,
-
-        /// <summary>
-        /// 已处理
-        /// </summary>
-        [Description("已处理")]
-        resolved = 2,
-
-        /// <summary>
         /// 待验收
         /// </summary>
         [Description("待验收")]
-        major = 3,
+        testing = 3,
 
         /// <summary>
         /// 通过
         /// </summary>
         [Description("通过")]
-        minor = 4
+        pass = 4,
+
+        /// <summary>
+        /// 已拒绝
+        /// </summary>
+        [Description("已拒绝")]
+        rejected = 100,
+
+        /// <summary>
+        /// 挂起
+        /// </summary>
+        [Description("挂起")]
+        hold = 200 
     }
 }

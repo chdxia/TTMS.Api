@@ -41,12 +41,12 @@ namespace TTMS.Enums
         /// 已拒绝
         /// </summary>
         [Description("已拒绝")]
-        rejected = 5,
+        rejected = 100,
 
         /// <summary>
         /// 暂不处理
         /// </summary>
         [Description("暂不处理")]
-        notProcessed = 6,
+        notProcessed = 200,
     }
 }

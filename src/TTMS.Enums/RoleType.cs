@@ -35,7 +35,7 @@ namespace TTMS.Enums
         /// 开发
         /// </summary>
         [Description("开发")]
-        development = 4,
+        developer = 4,
 
         /// <summary>
         /// 测试
