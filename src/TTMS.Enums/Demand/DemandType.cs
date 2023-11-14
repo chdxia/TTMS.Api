@@ -8,15 +8,21 @@ namespace TTMS.Enums
     public enum DemandType
     {
         /// <summary>
-        /// 需求
+        /// 项目需求
         /// </summary>
-        [Description("需求")]
+        [Description("项目需求")]
         demand = 0,
 
         /// <summary>
-        /// 缺陷
+        /// 项目缺陷
         /// </summary>
-        [Description("缺陷")]
-        bug = 1
+        [Description("项目缺陷")]
+        bug = 1,
+
+        /// <summary>
+        /// 非项目需求
+        /// </summary>
+        [Description("非项目需求")]
+        otherDemand = 2
     }
 }
