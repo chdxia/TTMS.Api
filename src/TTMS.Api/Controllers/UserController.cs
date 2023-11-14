@@ -18,6 +18,27 @@
         }
 
         /// <summary>
+        /// 登录
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Login")]
+        public IActionResult UserLogin()
+        {
+            var data = new { Name = "John", Age = 30, City = "New York" };
+            return Ok(data);
+        }
+
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Logout")]
+        public IActionResult UserLogout()
+        {
+            return Ok("logout");
+        }
+
+        /// <summary>
         /// 根据id获取用户信息
         /// </summary>
         /// <param name="id">用户id</param>
