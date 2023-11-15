@@ -68,16 +68,6 @@
         public DemandPriority DemandPriority { get; set; }
 
         /// <summary>
-        /// 开发
-        /// </summary>
-        public List<User> Developer { get; set; } = new List<User>();
-
-        /// <summary>
-        /// 测试
-        /// </summary>
-        public List<User> Tester { get; set; } = new List<User>();
-
-        /// <summary>
         /// 需求状态
         /// </summary>
         [Column(Name = "demand_state", DbType = "int8")]

@@ -185,11 +185,6 @@
         public List<int> Tester { get; set; } = new List<int>();
 
         /// <summary>
-        /// 需求状态;默认待规划
-        /// </summary>
-        public DemandState DemandState { get; set; } = DemandState.toBePlanned;
-
-        /// <summary>
         /// 预计工时
         /// </summary>
         public int? WorkHours { get; set; }
@@ -215,6 +210,33 @@
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
         public int? Id { get; set; }
+
+        /// <summary>
+        /// 需求状态
+        /// </summary>
+        [Required(ErrorMessage = "DemandState is required.")]
+        public DemandState DemandState { get; set; }
+
+        /// <summary>
+        /// 版本id
+        /// </summary>
+        public int? VersionId { get; set; }
+    }
+
+    /// <summary>
+    /// 请求参数;批量关联版本
+    /// </summary>
+    public class UpdateDemandVersionRequest
+    {
+        /// <summary>
+        /// 版本id
+        /// </summary>
+        public int VersionId { get; set; }
+
+        /// <summary>
+        /// 需求id
+        /// </summary>
+        public List<int> DemandIds { get; set; } = new List<int>();
     }
 
     /// <summary>

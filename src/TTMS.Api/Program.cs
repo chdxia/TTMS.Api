@@ -70,6 +70,9 @@ builder.Services.AddSingleton(provider =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IVersionInfoRepository, VersionInfoRepository>();
+builder.Services.AddScoped<IDemandRepository, DemandRepository>();
+
+builder.Services.AddScoped<IDemandService, DemandService>();
 
 var app = builder.Build();
 
