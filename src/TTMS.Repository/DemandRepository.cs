@@ -132,37 +132,23 @@
         {
             // 获取数据库中与demandId相关的所有UserDemand记录
             var existingUserDemands = await _fsql.Select<UserDemand>().Where(a => a.DemandId == demandId).ToListAsync();
-            // 根据传入的userIds进行更新操作
-            foreach (var userId in userIds)
+
+            foreach (var existingUserDemand in existingUserDemands)
             {
-                var existingUserDemand = existingUserDemands.FirstOrDefault(a => a.UserId == userId);
-                if (existingUserDemand != null)
+                if (userIds.Contains(existingUserDemand.UserId))
                 {
-                    // 数据库中存在该记录将IsDelete设置为false
-                    existingUserDemand.IsDelete = false;
+                    existingUserDemand.IsDelete = false; // request中存在的关联记录，将IsDelete设置为false
                 }
                 else
                 {
-                    // 数据库中不存在该记录，创建新的UserDemand记录并设置IsDelete为false
-                    var newUserDemand = new UserDemand
-                    {
-                        DemandId = demandId,
-                        UserId = userId,
-                        IsDelete = false
-                    };
-                    _fsql.Insert(newUserDemand).ExecuteAffrows();
+                    existingUserDemand.IsDelete = true; // request中不存在的关联记录，将IsDelete设置为true
                 }
             }
-            // 对于数据库中存在但传入值中没有的记录，将其IsDelete设置为true
-            foreach (var existingUserDemand in existingUserDemands)
-            {
-                if (!userIds.Contains(existingUserDemand.UserId))
-                {
-                    existingUserDemand.IsDelete = true;
-                }
-            }
+            // request中存在，但数据库没有，直接新增关联记录
+            var newUserDemands = userIds.Where(userId => !existingUserDemands.Any(a => a.UserId == userId)).Select(userId => new UserDemand { DemandId = demandId, UserId = userId, IsDelete = false }).ToList();
+            existingUserDemands.AddRange(newUserDemands);
             var affectedRows = await _fsql.Update<UserDemand>().SetSource(existingUserDemands).ExecuteAffrowsAsync();
-            return (true, "UpdateUserDemand completed.");
+            return (affectedRows > 0, "UpdateUserDemand completed.");
         }
 
         /// <summary>
