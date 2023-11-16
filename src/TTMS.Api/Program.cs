@@ -1,6 +1,3 @@
-using AutoMapper;
-using TTMS.Domain;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -16,8 +13,6 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add(typeof(ValidateModelAttribute)); // 注册自定义全局过滤器
 }).AddDataAnnotationsLocalization();
-
-builder.Services.AddScoped<ValidateModelAttribute>();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -43,29 +38,7 @@ builder.Services.AddSingleton(r =>
     return fsql;
 });
 
-builder.Services.AddSingleton(provider =>
-{
-    var config = new MapperConfiguration(cfg =>
-    {
-        cfg.CreateMap<CreateUserRequest, User>(); // 映射规则
-        cfg.CreateMap<UpdateUserRequest, User>();
-        cfg.CreateMap<User, UserResponse>();
-        cfg.CreateMap<CreateGroupRequest, Group>();
-        cfg.CreateMap<UpdateGroupRequest, Group>();
-        cfg.CreateMap<Group, GroupResponse>();
-        cfg.CreateMap<CreateVersionInfoRequest, VersionInfo>();
-        cfg.CreateMap<UpdateVersionInfoRequest, VersionInfo>();
-        cfg.CreateMap<VersionInfo, VersionInfoResponse>();
-        cfg.CreateMap<CreateDemandRequest, Demand>();
-        cfg.CreateMap<UpdateDemandRequest, Demand>();
-        cfg.CreateMap<Demand, DemandResponse>();
-        cfg.CreateMap<CreateDefectRequest, Defect>();
-        cfg.CreateMap<UpdateDefectRequest, Defect>();
-        cfg.CreateMap<Defect, DefectResponse>();
-    });
-
-    return config.CreateMapper();
-});
+builder.Services.AddAutoMapper(typeof(TTMS.DTO.Mapper.UserMapper).Assembly); // 注册映射规则
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
