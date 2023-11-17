@@ -9,9 +9,9 @@ var config = new ConfigurationBuilder()
 
 
 // 注册服务
-builder.Services.AddControllers(options =>{options.Filters.Add(typeof(ValidateModelAttribute));}).AddDataAnnotationsLocalization(); // 注册自定义全局过滤器
+builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute))).AddDataAnnotationsLocalization(); // 注册控制器以及自定义全局过滤器
 
-builder.Services.AddScoped<ValidateModelAttribute>();
+builder.Services.AddScoped<ValidateModelAttribute>(); // 自定义全局过滤器
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -19,14 +19,11 @@ builder.Services.AddSwaggerGen(SwaggerProvider.ConfigureSwaggerGen); // Swagger�
 
 builder.Services.AddAutoMapper(typeof(TTMS.DTO.Mapper.UserMapper).Assembly); // 注册映射规则
 
-builder.Services.AddSingleton(r => FreeSqlProvider.CreateFreeSqlInstance(config)); // FreeSql实例
+builder.Services.AddSingleton(FreeSqlProvider.CreateFreeSqlInstance(config)); // 注册FreeSql实例
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IGroupRepository, GroupRepository>();
-builder.Services.AddScoped<IVersionInfoRepository, VersionInfoRepository>();
-builder.Services.AddScoped<IDemandRepository, DemandRepository>();
+RepositoryRegisterHelper.RegisterRepositories(builder.Services); // 批量注册Repository层接口
 
-builder.Services.AddScoped<IDemandService, DemandService>();
+ServiceRegisterHelper.RegisterServices(builder.Services); // 批量注册Service层接口
 
 var app = builder.Build();
 
