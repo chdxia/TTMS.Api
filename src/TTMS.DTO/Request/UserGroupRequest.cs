@@ -3,7 +3,7 @@
     /// <summary>
     /// 请求参数;查询分组
     /// </summary>
-    public class GroupRequest
+    public class UserGroupRequest
     {
         /// <summary>
         /// 分组id
@@ -49,7 +49,7 @@
     /// <summary>
     /// 请求参数;新建分组
     /// </summary>
-    public class CreateGroupRequest
+    public class CreateUserGroupRequest
     {
         /// <summary>
         /// 分组名
@@ -60,7 +60,7 @@
     /// <summary>
     /// 请求参数;编辑分组
     /// </summary>
-    public class UpdateGroupRequest : CreateGroupRequest
+    public class UpdateUserGroupRequest : CreateUserGroupRequest
     {
         /// <summary>
         /// 分组Id
@@ -72,7 +72,7 @@
     /// <summary>
     /// 请求参数;批量删除分组
     /// </summary>
-    public class DeleteGroupRequest
+    public class DeleteUserGroupRequest
     {
         /// <summary>
         /// 分组id

@@ -3,7 +3,7 @@
     /// <summary>
     /// 返回参数;分组
     /// </summary>
-    public class GroupResponse
+    public class UserGroupResponse
     {
         /// <summary>
         /// 分组id
