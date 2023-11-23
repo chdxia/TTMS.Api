@@ -26,6 +26,11 @@
         public string? Email { get; set; }
 
         /// <summary>
+        /// 分组id
+        /// </summary>
+        public int GroupId { get; set; }
+
+        /// <summary>
         /// 用户角色
         /// </summary>
         public RoleType RoleId { get; set; }

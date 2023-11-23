@@ -26,6 +26,11 @@
         public string? Email { get; set; }
 
         /// <summary>
+        /// 分组id
+        /// </summary>
+        public int? GroupId { get; set; }
+
+        /// <summary>
         /// 用户角色
         /// </summary>
         public RoleType? RoleId { get; set; }
@@ -88,6 +93,12 @@
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
         public string? Email { get; set; }
+
+        /// <summary>
+        /// 分组id
+        /// </summary>
+        [Required(ErrorMessage = "GroupId is required.")]
+        public int GroupId { get; set; }
 
         /// <summary>
         /// 用户密码

@@ -1,4 +1,4 @@
-namespace TTMS.Program
+namespace TTMS.Api
 {
     /// <summary>
     /// 应用程序入口
@@ -42,11 +42,11 @@ namespace TTMS.Program
 
             var app = builder.Build();
 
-            /*if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }*/
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
             app.UseSwagger();
             app.UseSwaggerUI();
 

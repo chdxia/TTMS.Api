@@ -34,6 +34,7 @@
                 .WhereIf(!string.IsNullOrEmpty(request.Account), a => a.Account.Contains(request.Account))
                 .WhereIf(!string.IsNullOrEmpty(request.UserName), a => a.UserName.Contains(request.UserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
+                .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
                 .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
                 .WhereIf(request.CreateTimeEnd.HasValue, a => a.CreateTime <= request.CreateTimeEnd)
                 .WhereIf(request.CreateBy.HasValue, a => a.CreateBy == request.CreateBy)
@@ -58,6 +59,7 @@
                 .WhereIf(!string.IsNullOrEmpty(request.Account), a => a.Account.Contains(request.Account))
                 .WhereIf(!string.IsNullOrEmpty(request.UserName), a => a.UserName.Contains(request.UserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
+                .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
                 .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
                 .WhereIf(request.CreateTimeEnd.HasValue, a=> a.CreateTime <= request.CreateTimeEnd)
                 .WhereIf(request.CreateBy.HasValue, a=> a.CreateBy == request.CreateBy)
@@ -76,12 +78,13 @@
         /// <returns></returns>
         public async Task<(bool, string, UserResponse?)> InsertUserAsync(CreateUserRequest request)
         {
-            if (_fsql.Select<User>()
-                .Where(a => a.Account == request.Account || a.Email == request.Email)
-                .Where(a => a.IsDelete == false)
-                .ToList().Any())
+            if (_fsql.Select<User>().Where(a => a.Account == request.Account || a.Email == request.Email).Where(a => a.IsDelete == false).ToList().Any())
             {
                 return (false, "Account or email already exists.", null); // 新增失败，账户或邮箱已存在
+            }
+            if (!_fsql.Select<UserGroup>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
+            {
+                return (false, "Group does not exist.", null); // 新增失败，分组不存在
             }
             var model = _mapper.Map<CreateUserRequest, User>(request);
             if (!string.IsNullOrEmpty(request.PassWord))
@@ -120,6 +123,10 @@
                 .ToList().Any())
             {
                 return (false, "Account or email already exists.", null); // 修改失败，账户或邮箱已存在
+            }
+            if (!_fsql.Select<UserGroup>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
+            {
+                return (false, "Group does not exist.", null); // 修改失败，分组不存在
             }
             _mapper.Map(request, model);
             model.UpdateTime = DateTime.Now;
