@@ -111,7 +111,7 @@
         /// <summary>
         /// 缺陷状态;默认待处理
         /// </summary>
-        public DefectState DefectState { get; set; } = DefectState.open;
+        public DefectState DefectState { get; set; } = DefectState.待处理;
     }
 
     /// <summary>

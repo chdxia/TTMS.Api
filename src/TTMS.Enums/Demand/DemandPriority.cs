@@ -11,24 +11,24 @@ namespace TTMS.Enums
         /// P0
         /// </summary>
         [Description("P0")]
-        p0 = 0,
+        P0 = 0,
 
         /// <summary>
         /// P1
         /// </summary>
         [Description("P1")]
-        p1 = 1,
+        P1 = 1,
 
         /// <summary>
         /// P1
         /// </summary>
         [Description("P2")]
-        p2 = 2,
+        P2 = 2,
 
         /// <summary>
         /// P1
         /// </summary>
         [Description("P3")]
-        p3 = 3
+        P3 = 3
     }
 }

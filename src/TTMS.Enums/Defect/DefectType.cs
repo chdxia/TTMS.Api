@@ -11,24 +11,24 @@ namespace TTMS.Enums
         /// 致命
         /// </summary>
         [Description("致命")]
-        blocker = 0,
+        致命 = 0,
 
         /// <summary>
         /// 严重
         /// </summary>
         [Description("严重")]
-        critical = 1,
+        严重 = 1,
 
         /// <summary>
         /// 一般
         /// </summary>
         [Description("一般")]
-        major = 2,
+        一般 = 2,
 
         /// <summary>
         /// 轻微
         /// </summary>
         [Description("轻微")]
-        minor = 3
+        轻微 = 3
     }
 }
