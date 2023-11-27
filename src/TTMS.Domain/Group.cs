@@ -1,10 +1,10 @@
 ﻿namespace TTMS.Domain
 {
     /// <summary>
-    /// 用户分组表
+    /// 分组表
     /// </summary>
-    [Table(Name = "user_group")]
-    public class UserGroup
+    [Table(Name = "group")]
+    public class Group
     {
         /// <summary>
         /// 主键id;分组id

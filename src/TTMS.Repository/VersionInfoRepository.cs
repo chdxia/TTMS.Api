@@ -31,7 +31,7 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .ToListAsync();
-            var groups = await _fsql.Select<UserGroup>().WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToListAsync();
+            var groups = await _fsql.Select<Group>().WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToListAsync();
             var versionInfoList = new List<VersionInfoResponse>();
             foreach (var version in versions)
             {

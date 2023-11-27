@@ -10,9 +10,9 @@
         /// </summary>
         public GroupMapper()
         {
-            CreateMap<CreateUserGroupRequest, UserGroup>().ReverseMap();
-            CreateMap<UpdateUserGroupRequest, UserGroup>().ReverseMap();
-            CreateMap<UserGroup, UserGroupResponse>().ReverseMap();
+            CreateMap<CreateGroupRequest, Group>().ReverseMap();
+            CreateMap<UpdateGroupRequest, Group>().ReverseMap();
+            CreateMap<Group, GroupResponse>().ReverseMap();
         }
     }
 }

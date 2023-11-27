@@ -46,7 +46,7 @@
         /// 外键;分组id
         /// </summary>
         [Column(Name = "group_id", DbType = "int8")]
-        [Navigate(nameof(UserGroup.Id))]
+        [Navigate(nameof(Group.Id))]
         public int GroupId { get; set; }
 
         /// <summary>

@@ -16,7 +16,7 @@
         /// 外键;分组id
         /// </summary>
         [Column(Name = "group_id", DbType = "int8")]
-        [Navigate(nameof(UserGroup.Id))]
+        [Navigate(nameof(Group.Id))]
         public int GroupId { get; set; }
 
         /// <summary>
@@ -94,9 +94,9 @@
         /// <summary>
         /// 外键;版本id
         /// </summary>
-        [Column(Name = "version_id", DbType = "int8")]
-        [Navigate(nameof(VersionInfo.Id))]
-        public int? VersionId { get; set; }
+        //[Column(Name = "version_id", DbType = "int8")]
+        //[Navigate(nameof(VersionInfo.Id))]
+        //public int? VersionId { get; set; }
 
         /// <summary>
         /// 是否删除;t已删除,f未删除;默认f
