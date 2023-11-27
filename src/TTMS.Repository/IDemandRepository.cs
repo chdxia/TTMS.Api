@@ -29,7 +29,7 @@
         /// <param name="versionId"></param>
         /// <param name="demandIds"></param>
         /// <returns></returns>
-        Task<(bool, string)> UpdateDemandVersionAsync(UpdateDemandVersionRequest request);
+        Task<(bool, string)> UpdateDemandVersionInfoAsync(List<int> demandIds, List<int> versionInfoIds);
 
         /// <summary>
         /// 修改UserDemand关联表
@@ -37,7 +37,7 @@
         /// <param name="demandId"></param>
         /// <param name="userIds"></param>
         /// <returns></returns>
-        Task<(bool, string)> UpdateUserDemandAsync(int demandId, List<int> userIds);
+        Task<(bool, string)> UpdateDemandUserAsync(int demandId, List<int> userIds);
 
         /// <summary>
         /// 删除需求

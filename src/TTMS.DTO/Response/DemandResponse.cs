@@ -88,7 +88,7 @@
         /// <summary>
         /// 版本id
         /// </summary>
-        public int? VersionId { get; set; }
+        public List<VersionInfoResponse> VersionIds { get; set; } = new List<VersionInfoResponse>();
 
         /// <summary>
         /// 创建人

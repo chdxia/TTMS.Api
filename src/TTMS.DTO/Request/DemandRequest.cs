@@ -172,7 +172,7 @@
         /// <summary>
         /// 需求优先级;默认P3
         /// </summary>
-        public DemandPriority DemandPriority { get; set; } = DemandPriority.p3;
+        public DemandPriority DemandPriority { get; set; } = DemandPriority.P3;
 
         /// <summary>
         /// 开发
@@ -220,24 +220,24 @@
         /// <summary>
         /// 版本id
         /// </summary>
-        public int? VersionId { get; set; }
+        //public List<int> VersionIds { get; set; } = new List<int>();
     }
 
     /// <summary>
     /// 请求参数;批量关联版本
     /// </summary>
-    public class UpdateDemandVersionRequest
-    {
-        /// <summary>
-        /// 版本id
-        /// </summary>
-        public int VersionId { get; set; }
+    //public class UpdateDemandVersionRequest
+    //{
+    //    /// <summary>
+    //    /// 版本id
+    //    /// </summary>
+    //    public List<int> VersionIds { get; set; } = new List<int>();
 
-        /// <summary>
-        /// 需求id
-        /// </summary>
-        public List<int> DemandIds { get; set; } = new List<int>();
-    }
+    //    /// <summary>
+    //    /// 需求id
+    //    /// </summary>
+    //    public List<int> DemandIds { get; set; } = new List<int>();
+    //}
 
     /// <summary>
     /// 请求参数;批量删除需求

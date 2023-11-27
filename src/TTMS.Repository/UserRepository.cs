@@ -82,7 +82,7 @@
             {
                 return (false, "Account or email already exists.", null); // 新增失败，账户或邮箱已存在
             }
-            if (!_fsql.Select<UserGroup>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
+            if (!_fsql.Select<Group>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
             {
                 return (false, "Group does not exist.", null); // 新增失败，分组不存在
             }
@@ -124,7 +124,7 @@
             {
                 return (false, "Account or email already exists.", null); // 修改失败，账户或邮箱已存在
             }
-            if (!_fsql.Select<UserGroup>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
+            if (!_fsql.Select<Group>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
             {
                 return (false, "Group does not exist.", null); // 修改失败，分组不存在
             }

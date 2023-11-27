@@ -1,4 +1,6 @@
-﻿namespace TTMS.Repository
+﻿using TTMS.Domain;
+
+namespace TTMS.Repository
 {
     public class DemandRepository : DefaultRepository<Demand, long>, IDemandRepository
     {
@@ -18,7 +20,7 @@
         /// <returns></returns>
         public async Task<List<DemandResponse>> GetDemandPageListAsync(DemandRequest request)
         {
-            var demands = await _fsql.Select<Demand, UserDemand, VersionInfo>()
+            var demands = await _fsql.Select<Demand, DemandUser, VersionInfo>()
                 .LeftJoin(a => a.t1.Id == a.t2.DemandId)
                 .LeftJoin(a => a.t1.VersionId == a.t3.Id)
                 .Where(a => !a.t1.IsDelete)
@@ -57,7 +59,7 @@
         public async Task<(bool, string, DemandResponse?)> InsertDemandAsync(CreateDemandRequest request)
         {
             var model = _mapper.Map<CreateDemandRequest, Demand>(request);
-            model.DemandState = Enums.DemandState.toBePlanned; //新建均为待规划状态
+            model.DemandState = Enums.DemandState.待规划; //新建均为待规划状态
             model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
@@ -84,7 +86,7 @@
                 return (false, "Demand does not exist.", null);
             }
             _mapper.Map(request, model);
-            if (model.DemandType == Enums.DemandType.otherDemand && model.VersionId != null)
+            if (model.DemandType == Enums.DemandType.非项目需求 && model.VersionId != null)
             {
                 return (false, "非项目需求不允许关联版本", null);
             }
@@ -102,36 +104,60 @@
         }
 
         /// <summary>
-        /// 批量关联版本
+        /// 根据需求批量关联版本;修改DemandVersionInfo关联表
         /// </summary>
-        /// <param name="versionId"></param>
         /// <param name="demandIds"></param>
+        /// <param name="versionInfoIds"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> UpdateDemandVersionAsync(UpdateDemandVersionRequest request)
+        public async Task<(bool, string)> UpdateDemandVersionInfoAsync(List<int> demandIds, List<int> versionInfoIds)
         {
-            var demands = await _fsql.Select<Demand>().Where(a => request.DemandIds.Contains(a.Id)).ToListAsync();
-            foreach (var demand in demands)
+            // 检查请求数据中是否包含非项目需求
+            var otherDemands = await _fsql.Select<Demand>()
+                .Where(a => demandIds.Contains(a.Id))
+                .Where(a => a.DemandType == Enums.DemandType.非项目需求)
+                .ToListAsync();
+            if (otherDemands.Any())
             {
-                if (demand.DemandType == Enums.DemandType.otherDemand)
-                {
-                    return (false, "非项目需求不允许关联版本");
-                }
-                demand.VersionId = request.VersionId;
+                return (false, "非项目需求不允许关联版本");
             }
-            var affectedRows = await _fsql.Update<Demand>().SetSource(demands).ExecuteAffrowsAsync();
+            // 获取数据库中与demandIds相关的所有DemandVersionInfo记录
+            var existingDemandVersionInfos = await _fsql.Select<DemandVersionInfo>()
+                .Where(a => demandIds.Contains(a.DemandId))
+                .ToListAsync();
+            foreach (var demandId in demandIds)
+            {
+                var oneExistingDemandVersionInfos = existingDemandVersionInfos.Where(a => a.DemandId == demandId);
+                foreach (var existingDemandVersionInfo in oneExistingDemandVersionInfos)
+                {
+                    if (versionInfoIds.Contains(existingDemandVersionInfo.VersionInfoId))
+                    {
+                        existingDemandVersionInfo.IsDelete = false; // 请求数据中已存在的关联记录，将IsDelete设置为false
+                    }
+                    else
+                    {
+                        existingDemandVersionInfo.IsDelete = true; // 请求数据中不存在的关联记录，将IsDelete设置未true
+                    }
+                }
+                // 请求数据中存在，但数据库没有，直接新增关联记录
+                var newDemandVersionInfos = versionInfoIds.Where(versionInfoId => !oneExistingDemandVersionInfos.Any(a => a.VersionInfoId == versionInfoId))
+                    .Select(versionInfoId => new DemandVersionInfo { DemandId = demandId, VersionInfoId = versionInfoId, IsDelete = false})
+                    .ToList();
+                existingDemandVersionInfos.AddRange(newDemandVersionInfos);
+            }
+            var affectedRows = await _fsql.Update<DemandVersionInfo>().SetSource(existingDemandVersionInfos).ExecuteAffrowsAsync();
             return (affectedRows > 0, "UpdateDemandVersionAsync completed.");
         }
 
         /// <summary>
-        /// 修改UserDemand关联表
+        /// 修改DemandUser关联表
         /// </summary>
         /// <param name="demandId"></param>
         /// <param name="userIds"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> UpdateUserDemandAsync(int demandId, List<int> userIds)
+        public async Task<(bool, string)> UpdateDemandUserAsync(int demandId, List<int> userIds)
         {
             // 获取数据库中与demandId相关的所有UserDemand记录
-            var existingUserDemands = await _fsql.Select<UserDemand>().Where(a => a.DemandId == demandId).ToListAsync();
+            var existingUserDemands = await _fsql.Select<DemandUser>().Where(a => a.DemandId == demandId).ToListAsync();
 
             foreach (var existingUserDemand in existingUserDemands)
             {
@@ -145,10 +171,12 @@
                 }
             }
             // request中存在，但数据库没有，直接新增关联记录
-            var newUserDemands = userIds.Where(userId => !existingUserDemands.Any(a => a.UserId == userId)).Select(userId => new UserDemand { DemandId = demandId, UserId = userId, IsDelete = false }).ToList();
+            var newUserDemands = userIds.Where(userId => !existingUserDemands.Any(a => a.UserId == userId))
+                .Select(userId => new DemandUser { DemandId = demandId, UserId = userId, IsDelete = false })
+                .ToList();
             existingUserDemands.AddRange(newUserDemands);
-            var affectedRows = await _fsql.Update<UserDemand>().SetSource(existingUserDemands).ExecuteAffrowsAsync();
-            return (affectedRows > 0, "UpdateUserDemand completed.");
+            var affectedRows = await _fsql.Update<DemandUser>().SetSource(existingUserDemands).ExecuteAffrowsAsync();
+            return (affectedRows > 0, "UpdateDemandUser completed.");
         }
 
         /// <summary>
