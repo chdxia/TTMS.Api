@@ -8,10 +8,10 @@
         /// <summary>
         /// 用户id
         /// </summary>
-        public long? Id { get; set; }
+        public int? Id { get; set; }
 
         /// <summary>
-        /// 账号
+        /// 账户名
         /// </summary>
         public string? Account { get; set; }
 
@@ -26,19 +26,24 @@
         public string? Email { get; set; }
 
         /// <summary>
-        /// 用户角色
+        /// 分组id
         /// </summary>
-        public Role? RoleId { get; set; }
+        public int? GroupId { get; set; }
 
         /// <summary>
-        /// 账号状态
+        /// 用户角色
+        /// </summary>
+        public RoleType? RoleId { get; set; }
+
+        /// <summary>
+        /// 账户状态
         /// </summary>
         public bool? State { get; set; }
 
         /// <summary>
         /// 创建人
         /// </summary>
-        public long? CreateBy { get; set; }
+        public int? CreateBy { get; set; }
 
         /// <summary>
         /// 创建时间
@@ -51,17 +56,17 @@
         public DateTime? CreateTimeEnd { get; set; }
 
         /// <summary>
-        /// 更新人
+        /// 最后更新人
         /// </summary>
-        public long? UpdateBy { get; set; }
+        public int? UpdateBy { get; set; }
 
         /// <summary>
-        /// 更新时间
+        /// 最后更新时间
         /// </summary>
         public DateTime? UpdateTimeStart { get; set; }
 
         /// <summary>
-        /// 更新时间
+        /// 最后更新时间
         /// </summary>
         public DateTime? UpdateTimeEnd { get; set; }
     }
@@ -72,7 +77,7 @@
     public class CreateUserRequest
     {
         /// <summary>
-        /// 账号
+        /// 账户
         /// </summary>
         [Required(ErrorMessage = "Account is required.")]
         public string? Account { get; set; }
@@ -90,6 +95,12 @@
         public string? Email { get; set; }
 
         /// <summary>
+        /// 分组id
+        /// </summary>
+        [Required(ErrorMessage = "GroupId is required.")]
+        public int GroupId { get; set; }
+
+        /// <summary>
         /// 用户密码
         /// </summary>
         public string? PassWord { get; set; }
@@ -98,13 +109,7 @@
         /// 用户角色
         /// </summary>
         [Required(ErrorMessage = "RoleId is required.")]
-        public Role RoleId { get; set; }
-
-        /// <summary>
-        /// 账号状态
-        /// </summary>
-        [Required(ErrorMessage = "State is required.")]
-        public bool State { get; set; }
+        public RoleType RoleId { get; set; }
     }
 
     /// <summary>
@@ -116,7 +121,13 @@
         /// 用户Id
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
-        public long? Id { get; set; }
+        public int? Id { get; set; }
+
+        /// <summary>
+        /// 账户状态
+        /// </summary>
+        [Required(ErrorMessage = "State is required.")]
+        public bool State { get; set; }
     }
 
     /// <summary>
@@ -128,6 +139,6 @@
         /// 用户id
         /// </summary>
         [Required(ErrorMessage = "UserIds is required.")]
-        public List<long> UserIds { get; set; } = new List<long>();
+        public List<int> UserIds { get; set; } = new List<int>();
     }
 }

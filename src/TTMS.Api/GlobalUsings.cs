@@ -3,3 +3,4 @@ global using TTMS.DTO.Request;
 global using TTMS.DTO.Response;
 global using TTMS.Repository;
 global using TTMS.Service;
+global using TTMS.Api.Core;

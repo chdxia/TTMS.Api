@@ -1,44 +1,44 @@
 ﻿namespace TTMS.DTO.Response
 {
     /// <summary>
-    /// 返回参数;用户
+    /// 返回参数;版本
     /// </summary>
-    public class UserResponse
+    public class VersionInfoResponse
     {
         /// <summary>
-        /// 用户id
+        /// 版本id
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// 账户名
+        /// 版本开始时间;版本开始开发的时间
         /// </summary>
-        public string? Account { get; set; }
+        public DateTime VersionTimeStart { get; set; }
 
         /// <summary>
-        /// 用户名
+        /// 版本结束时间;版本发布时间
         /// </summary>
-        public string? UserName { get; set; }
+        public DateTime VersionTimeEnd { get; set; }
 
         /// <summary>
-        /// 用户邮箱
+        /// 版本号
         /// </summary>
-        public string? Email { get; set; }
+        public string? VersionNo { get; set; }
 
         /// <summary>
         /// 分组id
         /// </summary>
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
 
         /// <summary>
-        /// 用户角色
+        /// 版本状态
         /// </summary>
-        public RoleType RoleId { get; set; }
+        public DemandState VersionState { get; set; }
 
         /// <summary>
-        /// 账户状态
+        /// 版本需求
         /// </summary>
-        public bool State { get; set; }
+        public List<DemandResponse> Demands { get; set; } = new List<DemandResponse>();
 
         /// <summary>
         /// 创建人

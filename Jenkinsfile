@@ -11,19 +11,19 @@ pipeline {
         // 初始化参数
         script {server = getServer()}
         // 在目标服务器上获取最新代码
-        sshCommand remote: server, command: 'cd /root/TTMS-Api && git fetch'
+        sshCommand remote: server, command: 'cd /root/TTMS.Api && git pull'
       }
     }
     stage('远程构建') {
       steps {
         // 在目标服务器上构建docker镜像
-        sshCommand remote: server, command: 'cd /root/TTMS-Api/src && podman build -t ttms -f /TTMS.Api/Dockerfile .'
+        sshCommand remote: server, command: 'cd /root/TTMS.Api/src && podman build -t ttms -f TTMS.Api/Dockerfile .'
       }
     }
     stage('远程启动') {
       steps {
         // 在目标服务器上停止容器、并根据新构建的docker镜像启动容器
-        sshCommand remote: server, command: 'podman stop ttms && podman run --rm -d -p 8082:80 --name ttms ttms'
+        sshCommand remote: server, command: 'podman stop ttms; podman rm ttms; podman run --rm -d -p 8082:80 --name ttms ttms'
       }
     }
   }
@@ -40,7 +40,7 @@ def getServer() {
 
   // 这里不展示明文密码，所以在jenkins凭据里提取
   withCredentials([usernamePassword(
-    credentialsId: "f76fdeee-5bbb-46c2-8d2c-2916f45576c9",
+    credentialsId: "a94f0f8e-c562-434a-aed7-8e08afa3670b",
     usernameVariable: "username",
     passwordVariable: "password")]) {
     remote.user = "${username}"

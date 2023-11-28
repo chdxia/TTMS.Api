@@ -1,44 +1,39 @@
 ﻿namespace TTMS.DTO.Response
 {
     /// <summary>
-    /// 返回参数;用户
+    /// 返回参数;缺陷
     /// </summary>
-    public class UserResponse
+    public class DefectResponse
     {
         /// <summary>
-        /// 用户id
+        /// 缺陷id
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// 账户名
+        /// 需求id
         /// </summary>
-        public string? Account { get; set; }
+        public int DemandId { get; set; }
 
         /// <summary>
-        /// 用户名
+        /// 缺陷标题
         /// </summary>
-        public string? UserName { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
-        /// 用户邮箱
+        /// 缺陷描述
         /// </summary>
-        public string? Email { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
-        /// 分组id
+        /// 严重程度
         /// </summary>
-        public int GroupId { get; set; }
+        public DefectType DefectType { get; set; }
 
         /// <summary>
-        /// 用户角色
+        /// 缺陷状态
         /// </summary>
-        public RoleType RoleId { get; set; }
-
-        /// <summary>
-        /// 账户状态
-        /// </summary>
-        public bool State { get; set; }
+        public DefectState DefectState { get; set; }
 
         /// <summary>
         /// 创建人
@@ -48,7 +43,7 @@
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
 
         /// <summary>
         /// 最后更新人
@@ -58,6 +53,6 @@
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        public DateTime UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
     }
 }

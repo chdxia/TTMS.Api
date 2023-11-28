@@ -8,9 +8,34 @@
     {
         private readonly IUserRepository _userRepository;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="userRepository"></param>
         public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
+        }
+
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Login")]
+        public IActionResult UserLogin()
+        {
+            var data = new { Name = "John", Age = 30, City = "New York" };
+            return Ok(data);
+        }
+
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Logout")]
+        public IActionResult UserLogout()
+        {
+            return Ok("logout");
         }
 
         /// <summary>

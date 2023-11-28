@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace TTMS.Api.SwaggerConfig
+namespace TTMS.Api.Core
 {
     /// <summary>
     /// Swagger文档显示枚举值、枚举属性、枚举描述

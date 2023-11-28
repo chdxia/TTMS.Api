@@ -1,16 +1,23 @@
 ﻿namespace TTMS.Domain
 {
     /// <summary>
-    /// 用户任务表
+    /// 需求用户关联表
     /// </summary>
-    [Table(Name = "user_task")]
-    public class UserTask
+    [Table(Name = "demand_user")]
+    public class DemandUser
     {
         /// <summary>
         /// 主键id
         /// </summary>
         [Column(Name = "id", DbType = "int8", IsPrimary = true, IsIdentity = true)]
         public int Id { get; set; }
+
+        /// <summary>
+        /// 外键;需求id
+        /// </summary>
+        [Column(Name = "demand_id", DbType = "int8")]
+        [Navigate(nameof(Demand.Id))]
+        public int DemandId { get; set; }
 
         /// <summary>
         /// 外键;用户id
@@ -20,10 +27,9 @@
         public int UserId { get; set; }
 
         /// <summary>
-        /// 外键;任务id
+        /// 是否删除;t已删除,f未删除;默认f
         /// </summary>
-        [Column(Name = "task_id", DbType = "int8")]
-        [Navigate(nameof(TaskItem.Id))]
-        public int TaskId { get; set; }
+        [Column(Name = "is_delete", DbType = "bool")]
+        public bool IsDelete { get; set; } = false;
     }
 }

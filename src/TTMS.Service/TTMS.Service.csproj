@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TTMS.Repositorys\TTMS.Repository.csproj" />
+    <ProjectReference Include="..\TTMS.Repository\TTMS.Repository.csproj" />
   </ItemGroup>
 
 </Project>
