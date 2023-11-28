@@ -21,7 +21,7 @@
         /// 登录
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         public IActionResult UserLogin()
         {
             var data = new { Name = "John", Age = 30, City = "New York" };
@@ -32,7 +32,7 @@
         /// 退出登录
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Logout")]
+        [HttpPost("Logout")]
         public IActionResult UserLogout()
         {
             return Ok("logout");

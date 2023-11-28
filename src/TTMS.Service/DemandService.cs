@@ -21,15 +21,14 @@
             {
                 return (false, insertDemandResult.Item2, null);
             }
-            // 修改UserDemand关联表
+            // 修改DemandUser关联表
             List<int> developersAndTesters = new List<int>();
             developersAndTesters.AddRange(request.Developer);
             developersAndTesters.AddRange(request.Tester);
-            var updateUserDemandResult = await _demandRepository.UpdateUserDemandAsync(insertDemandResult.Item3.Id, developersAndTesters);
-            if (!updateUserDemandResult.Item1)
-            {
-                return (false, "关联用户失败", null);
-            }
+            await _demandRepository.UpdateDemandUserAsync(insertDemandResult.Item3.Id, developersAndTesters);
+            // 修改DemandVersionInfo关联表
+            var updateDemandVersionInfoRequest = new UpdateDemandVersionInfoRequest {DemandIds=new List<int> {insertDemandResult.Item3.Id}, VersionInfoIds=request.VersionInfoIds};
+            await _demandRepository.UpdateDemandVersionInfoAsync(updateDemandVersionInfoRequest);
             return (true, "", insertDemandResult.Item3);
         }
 
@@ -50,11 +49,10 @@
             List<int> developersAndTesters = new List<int>();
             developersAndTesters.AddRange(request.Developer);
             developersAndTesters.AddRange(request.Tester);
-            var updateUserDemandResult = await _demandRepository.UpdateUserDemandAsync(updateDemandResult.Item3.Id, developersAndTesters);
-            if (!updateUserDemandResult.Item1)
-            {
-                return (false, "关联用户失败", null);
-            }
+            await _demandRepository.UpdateDemandUserAsync(updateDemandResult.Item3.Id, developersAndTesters);
+            // 修改DemandVersionInfo关联表
+            var updateDemandVersionInfoRequest = new UpdateDemandVersionInfoRequest { DemandIds = new List<int> { updateDemandResult.Item3.Id }, VersionInfoIds = request.VersionInfoIds };
+            await _demandRepository.UpdateDemandVersionInfoAsync(updateDemandVersionInfoRequest);
             return (true, "", updateDemandResult.Item3);
         }
     }

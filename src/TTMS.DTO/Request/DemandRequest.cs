@@ -185,6 +185,11 @@
         public List<int> Tester { get; set; } = new List<int>();
 
         /// <summary>
+        /// 需求状态;默认待规划
+        /// </summary>
+        public DemandState DemandState { get; set; } = DemandState.待规划;
+
+        /// <summary>
         /// 预计工时
         /// </summary>
         public int? WorkHours { get; set; }
@@ -198,6 +203,11 @@
         /// 实际上线
         /// </summary>
         public DateTime? ActualOnlineTime { get; set; }
+
+        /// <summary>
+        /// 版本id
+        /// </summary>
+        public List<int> VersionInfoIds { get; set; } = new List<int>();
     }
 
     /// <summary>
@@ -210,34 +220,23 @@
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
         public int? Id { get; set; }
+    }
 
+    /// <summary>
+    /// 请求参数;根据需求批量关联版本
+    /// </summary>
+    public class UpdateDemandVersionInfoRequest
+    {
         /// <summary>
-        /// 需求状态
+        /// 需求id
         /// </summary>
-        [Required(ErrorMessage = "DemandState is required.")]
-        public DemandState DemandState { get; set; }
+        public List<int> DemandIds { get; set; } = new List<int>();
 
         /// <summary>
         /// 版本id
         /// </summary>
-        //public List<int> VersionIds { get; set; } = new List<int>();
+        public List<int> VersionInfoIds { get; set; } = new List<int>();
     }
-
-    /// <summary>
-    /// 请求参数;批量关联版本
-    /// </summary>
-    //public class UpdateDemandVersionRequest
-    //{
-    //    /// <summary>
-    //    /// 版本id
-    //    /// </summary>
-    //    public List<int> VersionIds { get; set; } = new List<int>();
-
-    //    /// <summary>
-    //    /// 需求id
-    //    /// </summary>
-    //    public List<int> DemandIds { get; set; } = new List<int>();
-    //}
 
     /// <summary>
     /// 请求参数;批量删除需求

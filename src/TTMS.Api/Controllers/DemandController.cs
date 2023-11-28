@@ -64,11 +64,11 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("UpdateDemandVersion")]
+        [HttpPost("UpdateDemandVersionInfo")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
-        public async Task<IActionResult> UpdateDemandVersionAsync([FromBody] UpdateDemandVersionRequest request)
+        public async Task<IActionResult> UpdateDemandVersionInfoAsync([FromBody] UpdateDemandVersionInfoRequest request)
         {
-            var (ok, message) = await _demandRepository.UpdateDemandVersionAsync(request);
+            var (ok, message) = await _demandRepository.UpdateDemandVersionInfoAsync(request);
             return ok ? ToSuccessResult() : ToFailResult(message);
         }
 

@@ -18,7 +18,7 @@
         /// <returns></returns>
         public async Task<List<VersionInfoResponse>> GetVersionInfoPageListAsync(VersionInfoRequest request)
         {
-            var versions = await _fsql.Select<VersionInfo>()
+            var versionInfos = await _fsql.Select<VersionInfo>()
                 .Where(a => !a.IsDelete)
                 .WhereIf(request.Id.HasValue, a => a.Id == request.Id)
                 .WhereIf(request.VertionTime.HasValue, a => a.VersionTimeStart <= request.VertionTime)
@@ -33,13 +33,18 @@
                 .ToListAsync();
             var groups = await _fsql.Select<Group>().WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToListAsync();
             var versionInfoList = new List<VersionInfoResponse>();
-            foreach (var version in versions)
+            foreach (var versionInfo in versionInfos)
             {
                 foreach (var group in groups)
                 {
-                    var versionInfoResponse = _mapper.Map<VersionInfo, VersionInfoResponse>(version);
+                    var versionInfoResponse = _mapper.Map<VersionInfo, VersionInfoResponse>(versionInfo);
                     versionInfoResponse.GroupId = group.Id;
-                    var demands = await _fsql.Select<Demand>().Where(a => a.GroupId == group.Id && a.VersionId == version.Id).ToListAsync();
+                    var demands = await _fsql.Select<Demand, DemandVersionInfo>()
+                        .LeftJoin(a => a.t1.Id == a.t2.DemandId)
+                        .Where(a => !a.t1.IsDelete)
+                        .Where(a => !a.t2.IsDelete)
+                        .Where(a => a.t1.GroupId == group.Id && a.t2.VersionInfoId == versionInfo.Id)
+                        .ToListAsync();
                     versionInfoResponse.Demands = _mapper.Map<List<Demand>, List<DemandResponse>>(demands);
                     versionInfoList.Add(versionInfoResponse);
                 }

@@ -24,20 +24,19 @@
         Task<(bool, string, DemandResponse?)> UpdateDemandAsync(UpdateDemandRequest request);
 
         /// <summary>
-        /// 批量关联版本
-        /// </summary>
-        /// <param name="versionId"></param>
-        /// <param name="demandIds"></param>
-        /// <returns></returns>
-        Task<(bool, string)> UpdateDemandVersionInfoAsync(List<int> demandIds, List<int> versionInfoIds);
-
-        /// <summary>
         /// 修改UserDemand关联表
         /// </summary>
         /// <param name="demandId"></param>
         /// <param name="userIds"></param>
         /// <returns></returns>
         Task<(bool, string)> UpdateDemandUserAsync(int demandId, List<int> userIds);
+
+        /// <summary>
+        /// 根据需求批量关联版本;修改DemandVersionInfo关联表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<(bool, string)> UpdateDemandVersionInfoAsync(UpdateDemandVersionInfoRequest request);
 
         /// <summary>
         /// 删除需求
