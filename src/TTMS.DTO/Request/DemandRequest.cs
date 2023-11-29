@@ -61,9 +61,9 @@
         public int? TesterId { get; set; }
 
         /// <summary>
-        /// 需求状态
+        /// 需求状态;多选
         /// </summary>
-        public DemandState? DemandState { get; set; }
+        public List<DemandState>? DemandState { get; set; }
 
         /// <summary>
         /// 预计上线时间
@@ -185,11 +185,6 @@
         public List<int> Tester { get; set; } = new List<int>();
 
         /// <summary>
-        /// 需求状态;默认待规划
-        /// </summary>
-        public DemandState DemandState { get; set; } = DemandState.待规划;
-
-        /// <summary>
         /// 预计工时
         /// </summary>
         public int? WorkHours { get; set; }
@@ -219,7 +214,12 @@
         /// 需求Id
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 需求状态
+        /// </summary>
+        public DemandState DemandState { get; set; }
     }
 
     /// <summary>
