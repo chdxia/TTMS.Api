@@ -61,24 +61,5 @@
             await _demandRepository.UpdateDemandVersionInfoAsync(updateDemandVersionInfoRequest);
             return (true, "", updateDemandResult.Item3);
         }
-
-        /// <summary>
-        /// 批量删除需求
-        /// </summary>
-        /// <returns></returns>
-        public async Task<(bool, string)> DeleteDemandAsync(DeleteDemandRequest request)
-        {
-            var demandRequest = new DemandRequest();
-            demandRequest.DemandState = Enum.GetValues(typeof(Enums.DemandState))
-                .Cast<Enums.DemandState>()
-                .Except(new List<Enums.DemandState>() {Enums.DemandState.待规划} )
-                .ToList();
-            var demands = await _demandRepository.GetDemandPageListAsync(demandRequest);
-            if (demands.Any())
-            {
-                return (false, "只能删除待规划的需求");
-            }
-            return await _demandRepository.DeleteDemandAsync(request);
-        }
     }
 }

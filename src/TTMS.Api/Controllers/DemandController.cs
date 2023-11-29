@@ -94,7 +94,7 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteDemandAsync([FromBody] DeleteDemandRequest request)
         {
-            var (ok, message) = await _demandService.DeleteDemandAsync(request);
+            var (ok, message) = await _demandRepository.DeleteDemandAsync(request);
             return ok ? ToSuccessResult(message) : ToFailResult(message);
         }
     }

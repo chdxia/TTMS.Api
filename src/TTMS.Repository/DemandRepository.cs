@@ -198,6 +198,10 @@
             var existingDemandIds = await _fsql.Select<Demand>()
                 .Where(a => request.DemandIds.Contains(a.Id))
                 .ToListAsync();
+            if (existingDemandIds.Where(a => a.DemandState != Enums.DemandState.待规划).Any())
+            {
+                return (false, "删除失败，只能删除待规划的需求");
+            }
             var nonExistingDemandIds = request.DemandIds.Except(existingDemandIds.Select(a => a.Id));
             if (nonExistingDemandIds.Any())
             {
