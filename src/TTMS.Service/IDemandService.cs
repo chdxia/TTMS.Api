@@ -15,5 +15,12 @@
         /// <param name="request"></param>
         /// <returns></returns>
         Task<(bool, string, DemandResponse?)> UpdateDemandAsync(UpdateDemandRequest request);
+
+        /// <summary>
+        /// 批量删除需求
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<(bool, string)> DeleteDemandAsync(DeleteDemandRequest request);
     }
 }

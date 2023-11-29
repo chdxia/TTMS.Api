@@ -21,6 +21,19 @@
         }
 
         /// <summary>
+        /// 根据id获取需求信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<DemandResponse>))]
+        public async Task<IActionResult> GetByIdAsync(int id)
+        {
+            var result = await _demandRepository.GetDemandByIdAsync(id);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
         /// 分页获取需求池列表
         /// </summary>
         /// <param name="request"></param>
@@ -81,7 +94,7 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteDemandAsync([FromBody] DeleteDemandRequest request)
         {
-            var (ok, message) = await _demandRepository.DeleteDemandAsync(request);
+            var (ok, message) = await _demandService.DeleteDemandAsync(request);
             return ok ? ToSuccessResult(message) : ToFailResult(message);
         }
     }

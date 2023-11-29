@@ -3,6 +3,13 @@
     public interface IDemandRepository : IBaseRepository<Demand, long>
     {
         /// <summary>
+        /// 根据id获取需求信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<DemandResponse> GetDemandByIdAsync(int id);
+
+        /// <summary>
         /// 分页获取需求列表
         /// </summary>
         /// <param name="request"></param>

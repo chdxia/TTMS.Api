@@ -92,13 +92,6 @@
         public DateTime? ActualOnlineTime { get; set; }
 
         /// <summary>
-        /// 外键;版本id
-        /// </summary>
-        //[Column(Name = "version_id", DbType = "int8")]
-        //[Navigate(nameof(VersionInfo.Id))]
-        //public int? VersionId { get; set; }
-
-        /// <summary>
         /// 是否删除;t已删除,f未删除;默认f
         /// </summary>
         [Column(Name = "is_delete", DbType = "bool")]
