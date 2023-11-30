@@ -44,7 +44,7 @@
                 .WhereIf(request.DemandPriority.HasValue, a => a.t1.DemandPriority == request.DemandPriority)
                 .WhereIf(request.DeveloperId.HasValue, a => a.t2.UserId == request.DeveloperId && !a.t2.IsDelete)
                 .WhereIf(request.TesterId.HasValue, a => a.t2.UserId == request.TesterId && !a.t2.IsDelete)
-                .WhereIf(request.DemandState != null && request.DemandState.Any(), a => request.DemandState.Contains(a.t1.DemandState))
+                .WhereIf(request.DemandState.HasValue, a => a.t1.DemandState == request.DemandState)
                 .WhereIf(request.PlanOnlineTimeStart.HasValue, a => a.t1.PlanOnlineTime >= request.PlanOnlineTimeStart)
                 .WhereIf(request.PlanOnlineTimeEnd.HasValue, a => a.t1.PlanOnlineTime <= request.PlanOnlineTimeEnd)
                 .WhereIf(request.ActualOnlineTimeStart.HasValue, a => a.t1.ActualOnlineTime >= request.ActualOnlineTimeStart)

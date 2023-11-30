@@ -61,9 +61,9 @@
         public int? TesterId { get; set; }
 
         /// <summary>
-        /// 需求状态;多选
+        /// 需求状态
         /// </summary>
-        public List<DemandState>? DemandState { get; set; }
+        public DemandState? DemandState { get; set; }
 
         /// <summary>
         /// 预计上线时间
