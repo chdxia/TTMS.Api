@@ -25,8 +25,22 @@
             {
                 return (false, "缺陷状态仅允许:待验收=>通过", null);
             }
+            // 更新缺陷
             var updateDefectResult = await _defectRepository.UpdateDefectAsync(request);
-            return (true, "", updateDefectResult.Item3);
+            // 新增缺陷明细
+            var createDefectDetailRequest = new CreateDefectDetailRequest
+            {
+                DefectId = request.Id,
+                Description = (request.DefectDetailDescription != null)? request.DefectDetailDescription : "",
+                OldState = defect.DefectState,
+                NewState = request.DefectState,
+            };
+            var insertDefectDetailResult = await _defectRepository.InsertDefectDetailAsync(createDefectDetailRequest);
+            if (!insertDefectDetailResult.Item1)
+            {
+                return (insertDefectDetailResult.Item1, insertDefectDetailResult.Item2, null);
+            }
+            return updateDefectResult;
         }
     }
 }

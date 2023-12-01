@@ -29,5 +29,19 @@
         /// <param name="request"></param>
         /// <returns></returns>
         Task<(bool, string, DefectResponse?)> UpdateDefectAsync(UpdateDefectRequest request);
+
+        /// <summary>
+        /// 新建缺陷明细
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<(bool, string, DefectDetailResponse?)> InsertDefectDetailAsync(CreateDefectDetailRequest request);
+
+        /// <summary>
+        /// 根据缺陷id获取缺陷明细列表
+        /// </summary>
+        /// <param name="defectId"></param>
+        /// <returns></returns>
+        Task<List<DefectDetailResponse>> GetDefectDetailListAsync(int defectId);
     }
 }

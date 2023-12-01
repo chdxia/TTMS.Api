@@ -71,5 +71,18 @@
             var (ok, message, result) = await _defectService.UpdateDefectAsync(request);
             return ok ? ToSuccessResult(result) : ToFailResult(message);
         }
+
+        /// <summary>
+        /// 根据缺陷id获取缺陷明细列表
+        /// </summary>
+        /// <param name="defectId"></param>
+        /// <returns></returns>
+        [HttpGet("{defectId}/DefectDetail/GetList")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectDetailResponse>>))]
+        public async Task<IActionResult> GetDefectDetailListAsync(int defectId)
+        {
+            var result = await _defectRepository.GetDefectDetailListAsync(defectId);
+            return ToSuccessResult(result);
+        }
     }
 }
