@@ -33,11 +33,15 @@ namespace TTMS.Api
 
             builder.Services.AddAutoMapper(typeof(DTO.Mapper.UserMapper).Assembly); // 注册映射规则
 
+            //builder.Services.AddSingleton<IConfiguration>(config); // 注册配置
+
             builder.Services.AddSingleton(FreeSqlProvider.CreateFreeSqlInstance(config)); // 注册FreeSql实例
 
             RepositoryRegisterHelper.RegisterRepositories(builder.Services); // 批量注册Repository层接口
 
             ServiceRegisterHelper.RegisterServices(builder.Services); // 批量注册Service层接口
+
+            builder.Services.AddScoped<UploadQiniuProvider>();
 
 
             var app = builder.Build();
