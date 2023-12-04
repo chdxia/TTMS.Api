@@ -41,8 +41,6 @@ namespace TTMS.Api
 
             ServiceRegisterHelper.RegisterServices(builder.Services); // 批量注册Service层接口
 
-            builder.Services.AddScoped<UploadQiniuProvider>();
-
 
             var app = builder.Build();
 

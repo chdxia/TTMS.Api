@@ -6,27 +6,27 @@
     [ApiExplorerSettings(GroupName = "七牛")]
     public class QiniuController : BaseApiController
     {
-        private readonly UploadQiniuProvider _uploadQiniuProvider;
+        private readonly QiniuService _qiniuServiece;
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="uploadQiniuProvider"></param>
-        public QiniuController(UploadQiniuProvider uploadQiniuProvider)
+        /// <param name="qiniuServiece"></param>
+        public QiniuController(QiniuService qiniuServiece)
         {
-            _uploadQiniuProvider = uploadQiniuProvider;
+            _qiniuServiece = qiniuServiece;
         }
 
         /// <summary>
         /// 上传文件
         /// </summary>
-        /// <param name="files"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("UploadFile")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
-        public async Task<IActionResult> UploadFileAsync(List<IFormFile> files)
+        public async Task<IActionResult> UploadFileAsync(UploadFileRequest request)
         {
-            var result = await _uploadQiniuProvider.UploadFileAsync(files);
+            var result = await _qiniuServiece.UploadFileAsync(request);
             return ToSuccessResult(result);
         }
     }

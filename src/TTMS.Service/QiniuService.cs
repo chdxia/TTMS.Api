@@ -1,25 +1,26 @@
-﻿using Qiniu.Http;
+﻿using Microsoft.Extensions.Configuration;
+using Qiniu.Http;
 using Qiniu.IO.Model;
 using Qiniu.IO;
 using Qiniu.Util;
 
-namespace TTMS.Api.Core
+namespace TTMS.Service
 {
     /// <summary>
     /// 七牛服务
     /// </summary>
-    public class UploadQiniuProvider
+    public class QiniuService : IQiniuService
     {
         private readonly string _accessKey;
         private readonly string _secretKey;
         private readonly string _bucket;
-        private readonly string[] permittedExtensions = {"jpg", "png"};
+        private readonly string[] permittedExtensions = { "jpg", "png" };
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="configuration"></param>
-        public UploadQiniuProvider(IConfiguration configuration)
+        public QiniuService(IConfiguration configuration)
         {
             _accessKey = configuration.GetSection("Qiniu:AccessKey").Value;
             _secretKey = configuration.GetSection("Qiniu:SecretKey").Value;
@@ -29,14 +30,14 @@ namespace TTMS.Api.Core
         /// <summary>
         /// 上传文件到七牛oss
         /// </summary>
-        /// <param name="files"></param>
+        /// <param name="fileCollection"></param>
         /// <returns></returns>
-        public async Task<(bool, List<string>)> UploadFileAsync(List<IFormFile> files)
+        public async Task<(bool, List<string>)> UploadFileAsync(UploadFileRequest request)
         {
             Mac mac = new Mac(_accessKey, _secretKey);
             List<string> savedKeys = new List<string>();
 
-            var tasks = files.Select(async file =>
+            var tasks = request.FileCollection.Select(async file =>
             {
                 string saveKey = Guid.NewGuid().ToString();
                 // 验证文件扩展名
@@ -65,7 +66,7 @@ namespace TTMS.Api.Core
                 HttpResult result = await uploadManager.UploadFileAsync(tempFilePath, saveKey, uploadToken);
                 if (result.Code == 200)
                 {
-                   savedKeys.Add(saveKey);
+                    savedKeys.Add(saveKey);
                 }
                 else
                 {
