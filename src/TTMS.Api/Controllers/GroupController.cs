@@ -66,7 +66,7 @@
         public async Task<IActionResult> DeleteGroupAsync([FromBody] DeleteGroupRequest request)
         {
             var (ok, message) = await _groupRepository.DeleteGroupAsync(request);
-            return ok ? ToSuccessResult(message) : ToFailResult(message);
+            return ok ? ToSuccessResult() : ToFailResult(message);
         }
     }
 }

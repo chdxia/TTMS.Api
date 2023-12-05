@@ -7,17 +7,23 @@
     public class DemandController : BaseApiController
     {
         private readonly IDemandRepository _demandRepository;
+        private readonly IDemandFileRepository _demandFileRepository;
         private readonly IDemandService _demandService;
+        private readonly IQiniuService _qiniuService;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="demandRepository"></param>
+        /// <param name="demandFileRepository"></param>
         /// <param name="demandService"></param>
-        public DemandController(IDemandRepository demandRepository, IDemandService demandService)
+        /// <param name="qiniuService"></param>
+        public DemandController(IDemandRepository demandRepository, IDemandFileRepository demandFileRepository, IDemandService demandService, IQiniuService qiniuService)
         {
             _demandRepository = demandRepository;
+            _demandFileRepository = demandFileRepository;
             _demandService = demandService;
+            _qiniuService = qiniuService;
         }
 
         /// <summary>
@@ -95,7 +101,48 @@
         public async Task<IActionResult> DeleteDemandAsync([FromBody] DeleteDemandRequest request)
         {
             var (ok, message) = await _demandRepository.DeleteDemandAsync(request);
-            return ok ? ToSuccessResult(message) : ToFailResult(message);
+            return ok ? ToSuccessResult() : ToFailResult(message);
+        }
+
+        /// <summary>
+        /// 根据需求id获取需求文件列表
+        /// </summary>
+        /// <param name="demandId"></param>
+        /// <returns></returns>
+        [HttpGet("{demandId}/GetFileList")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DemandFileResponse>>))]
+        public async Task<IActionResult> GetDemandFileListByDemandIdAsync(int demandId)
+        {
+            var result = await _demandFileRepository.GetDemandFileListByDemandIdAsync(demandId);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 批量上传需求文件
+        /// </summary>
+        /// <param name="demandId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("{demandId}/UploadFile")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DemandFileResponse>>))]
+        public async Task<IActionResult> UploadDemandFileAsync(int demandId, UploadFileRequest request)
+        {
+            var uploadResult = await _qiniuService.UploadFileAsync(request);
+            var result = await _demandFileRepository.InsertDemandFileAsync(demandId, uploadResult.Item2);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 删除需求文件
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteFile/{fileId}")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel))]
+        public async Task<IActionResult> DeleteDemandFileAsync(int fileId)
+        {
+            var (ok, message) = await _demandFileRepository.DeleteDemandFileAsync(fileId);
+            return ok ? ToSuccessResult() : ToFailResult(message);
         }
     }
 }

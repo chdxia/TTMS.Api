@@ -7,17 +7,35 @@
     public class DefectController : BaseApiController
     {
         private readonly IDefectRepository _defectRepository;
+        private readonly IDefectFileRepository _defectFileRepository;
+        private readonly IDefectDetailRepository _defectDetailRepository;
+        private readonly IDefectDetailFileRepository _defectDetailFileRepository;
         private readonly IDefectService _defectService;
+        private readonly IQiniuService _qiniuService;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="defectRepository"></param>
+        /// <param name="defectFileRepository"></param>
+        /// <param name="defectDetailRepository"></param>
+        /// <param name="defectDetailFileRepository"></param>
         /// <param name="defectService"></param>
-        public DefectController(IDefectRepository defectRepository, IDefectService defectService)
+        /// <param name="qiniuService"></param>
+        public DefectController(
+            IDefectRepository defectRepository,
+            IDefectFileRepository defectFileRepository,
+            IDefectDetailRepository defectDetailRepository,
+            IDefectDetailFileRepository defectDetailFileRepository,
+            IDefectService defectService,
+            IQiniuService qiniuService)
         {
             _defectRepository = defectRepository;
+            _defectFileRepository = defectFileRepository;
+            _defectDetailRepository = defectDetailRepository;
+            _defectDetailFileRepository = defectDetailFileRepository;
             _defectService = defectService;
+            _qiniuService = qiniuService;
         }
 
         /// <summary>
@@ -73,6 +91,47 @@
         }
 
         /// <summary>
+        /// 根据缺陷id获取缺陷文件列表
+        /// </summary>
+        /// <param name="defectId"></param>
+        /// <returns></returns>
+        [HttpGet("{defectId}/GetFileList")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectFileResponse>>))]
+        public async Task<IActionResult> GetDefectFileListByDefectIdAsync(int defectId)
+        {
+            var result = await _defectFileRepository.GetDefectFileListByDefectIdAsync(defectId);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 批量上传缺陷文件
+        /// </summary>
+        /// <param name="defectId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("{defectId}/UploadFile")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectFileResponse>>))]
+        public async Task<IActionResult> UploadDefectFileAsync(int defectId, UploadFileRequest request)
+        {
+            var uploadResult = await _qiniuService.UploadFileAsync(request);
+            var result = await _defectFileRepository.InsertDefectFileAsync(defectId, uploadResult.Item2);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 删除缺陷文件
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteFile/{fileId}")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel))]
+        public async Task<IActionResult> DeleteDefectFileAsync(int fileId)
+        {
+            var (ok, message) = await _defectFileRepository.DeleteDefectFileAsync(fileId);
+            return ok ? ToSuccessResult() : ToFailResult(message);
+        }
+
+        /// <summary>
         /// 根据缺陷id获取缺陷明细列表
         /// </summary>
         /// <param name="defectId"></param>
@@ -81,8 +140,49 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectDetailResponse>>))]
         public async Task<IActionResult> GetDefectDetailListAsync(int defectId)
         {
-            var result = await _defectRepository.GetDefectDetailListAsync(defectId);
+            var result = await _defectDetailRepository.GetDefectDetailListByDefectIdAsync(defectId);
             return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 根据缺陷明细id获取缺陷明细文件列表
+        /// </summary>
+        /// <param name="defectDetailId"></param>
+        /// <returns></returns>
+        [HttpGet("DefectDetail/{defectDetailId}/GetFileList")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectDetailFileResponse>>))]
+        public async Task<IActionResult> GetDefectDetailFileListByDefectDetailIdAsync(int defectDetailId)
+        {
+            var result = await _defectDetailFileRepository.GetDefectDetailFileListByDefectDetailIdAsync(defectDetailId);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 批量上传缺陷明细文件
+        /// </summary>
+        /// <param name="defectDetailId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("DefectDetail/{defectDetailId}/UploadFile")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectDetailFileResponse>>))]
+        public async Task<IActionResult> UploadDefectDetailFileAsync(int defectDetailId, UploadFileRequest request)
+        {
+            var uploadResult = await _qiniuService.UploadFileAsync(request);
+            var result = await _defectDetailFileRepository.InsertDefectDetailFileAsync(defectDetailId, uploadResult.Item2);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
+        /// 删除缺陷明细文件
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        [HttpDelete("DefectDetail/DeleteFile/{fileId}")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel))]
+        public async Task<IActionResult> DeleteDefectDetailFileAsync(int fileId)
+        {
+            var (ok, message) = await _defectDetailFileRepository.DeleteDefectDetailFileAsync(fileId);
+            return ok ? ToSuccessResult() : ToFailResult(message);
         }
     }
 }

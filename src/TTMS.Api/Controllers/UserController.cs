@@ -111,7 +111,7 @@
         public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request)
         {
             var (ok, message) = await _userRepository.DeleteUserAsync(request);
-            return ok? ToSuccessResult(message) : ToFailResult(message);
+            return ok? ToSuccessResult() : ToFailResult(message);
         }
     }
 }

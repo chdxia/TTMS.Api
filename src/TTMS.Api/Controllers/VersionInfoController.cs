@@ -66,7 +66,7 @@
         public async Task<IActionResult> DeleteVersionInfoAsync([FromBody] DeleteVersionInfoRequest request)
         {
             var (ok, message) = await _versionInfoRepository.DeleteVersionInfoAsync(request);
-            return ok ? ToSuccessResult(message) : ToFailResult(message);
+            return ok ? ToSuccessResult() : ToFailResult(message);
         }
     }
 }

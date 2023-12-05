@@ -3,9 +3,11 @@
     public class DefectService : IDefectService
     {
         private readonly IDefectRepository _defectRepository;
-        public DefectService(IDefectRepository defectRepository)
+        private readonly IDefectDetailRepository _defectDetailRepository;
+        public DefectService(IDefectRepository defectRepository, IDefectDetailRepository defectDetailRepository)
         {
             _defectRepository = defectRepository;
+            _defectDetailRepository = defectDetailRepository;
         }
 
         /// <summary>
@@ -35,7 +37,7 @@
                 OldState = defect.DefectState,
                 NewState = request.DefectState,
             };
-            var insertDefectDetailResult = await _defectRepository.InsertDefectDetailAsync(createDefectDetailRequest);
+            var insertDefectDetailResult = await _defectDetailRepository.InsertDefectDetailAsync(createDefectDetailRequest);
             if (!insertDefectDetailResult.Item1)
             {
                 return (insertDefectDetailResult.Item1, insertDefectDetailResult.Item2, null);
