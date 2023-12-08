@@ -1,3 +1,5 @@
+using Hangfire;
+
 namespace TTMS.Api
 {
     /// <summary>
@@ -37,9 +39,13 @@ namespace TTMS.Api
 
             builder.Services.AddSingleton(FreeSqlProvider.CreateFreeSqlInstance(config)); // 注册FreeSql实例
 
+            HangfireRegisterHelper.RegisterHangfire(builder.Services, config); // 注册hangfire
+
             RepositoryRegisterHelper.RegisterRepositories(builder.Services); // 批量注册Repository层接口
 
             ServiceRegisterHelper.RegisterServices(builder.Services); // 批量注册Service层接口
+
+            builder.Services.AddHangfireServer();
 
 
             var app = builder.Build();
@@ -51,6 +57,11 @@ namespace TTMS.Api
             //}
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
+            });
 
             app.UseHttpsRedirection();
 

@@ -5,17 +5,6 @@
     /// </summary>
     public class FreeSqlProvider
     {
-        private readonly IConfiguration _config;
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="config"></param>
-        public FreeSqlProvider(IConfiguration config)
-        {
-            _config = config;
-        }
-
         /// <summary>
         /// 创建FreeSql实例
         /// </summary>
