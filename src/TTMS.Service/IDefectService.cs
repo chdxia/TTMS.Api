@@ -8,6 +8,6 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, DefectResponse?)> UpdateDefectAsync(UpdateDefectRequest request);
+        Task<DefectResponse> UpdateDefectAsync(UpdateDefectRequest request);
     }
 }

@@ -14,20 +14,20 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, VersionInfoResponse?)> InsertVersionInfoAsync(CreateVersionInfoRequest request);
+        Task<VersionInfoResponse> InsertVersionInfoAsync(CreateVersionInfoRequest request);
 
         /// <summary>
         /// 编辑版本
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, VersionInfoResponse?)> UpdateVersionInfoAsync(UpdateVersionInfoRequest request);
+        Task<VersionInfoResponse> UpdateVersionInfoAsync(UpdateVersionInfoRequest request);
 
         /// <summary>
         /// 删除版本
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string)> DeleteVersionInfoAsync(DeleteVersionInfoRequest request);
+        Task DeleteVersionInfoAsync(DeleteVersionInfoRequest request);
     }
 }

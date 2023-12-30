@@ -14,20 +14,20 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, GroupResponse?)> InsertGroupAsync(CreateGroupRequest request);
+        Task<GroupResponse> InsertGroupAsync(CreateGroupRequest request);
 
         /// <summary>
         /// 编辑分组
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, GroupResponse?)> UpdateGroupAsync(UpdateGroupRequest request);
+        Task<GroupResponse> UpdateGroupAsync(UpdateGroupRequest request);
 
         /// <summary>
         /// 删除分组
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string)> DeleteGroupAsync(DeleteGroupRequest request);
+        Task DeleteGroupAsync(DeleteGroupRequest request);
     }
 }

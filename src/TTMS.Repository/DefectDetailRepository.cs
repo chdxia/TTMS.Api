@@ -26,19 +26,17 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, DefectDetailResponse?)> InsertDefectDetailAsync(CreateDefectDetailRequest request)
+        public async Task<DefectDetailResponse> InsertDefectDetailAsync(CreateDefectDetailRequest request)
         {
             var model = _mapper.Map<CreateDefectDetailRequest, DefectDetail>(request);
-            model.CreateTime = DateTime.Now;
             try
             {
                 await _fsql.Insert<DefectDetail>().AppendData(model).ExecuteAffrowsAsync();
-                var result = _mapper.Map<DefectDetail, DefectDetailResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<DefectDetail, DefectDetailResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
     }

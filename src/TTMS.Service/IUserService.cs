@@ -2,6 +2,6 @@
 {
     public interface IUserService
     {
-        Task<(bool, string, UserResponse?)> CreateUserAsync(CreateUserRequest request);
+        Task<UserResponse?> CreateUserAsync(CreateUserRequest request);
     }
 }

@@ -61,8 +61,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<DemandResponse>))]
         public async Task<IActionResult> CreateDemandAsync([FromBody] CreateDemandRequest request)
         {
-            var (ok, message, result) = await _demandService.CreateDemandAsync(request); 
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _demandService.CreateDemandAsync(request); 
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -74,8 +74,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<DemandResponse>))]
         public async Task<IActionResult> UpdateDemandAsync([FromBody] UpdateDemandRequest request)
         {
-            var (ok, message, result) = await _demandService.UpdateDemandAsync(request);
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _demandService.UpdateDemandAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -87,8 +87,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> UpdateDemandVersionInfoAsync([FromBody] UpdateDemandVersionInfoRequest request)
         {
-            var (ok, message) = await _demandRepository.UpdateDemandVersionInfoAsync(request);
-            return ok ? ToSuccessResult() : ToFailResult(message);
+            await _demandRepository.UpdateDemandVersionInfoAsync(request);
+            return ToSuccessResult();
         }
 
         /// <summary>
@@ -100,8 +100,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteDemandAsync([FromBody] DeleteDemandRequest request)
         {
-            var (ok, message) = await _demandRepository.DeleteDemandAsync(request);
-            return ok ? ToSuccessResult() : ToFailResult(message);
+            await _demandRepository.DeleteDemandAsync(request);
+            return ToSuccessResult();
         }
 
         /// <summary>
@@ -128,7 +128,7 @@
         public async Task<IActionResult> UploadDemandFileAsync(int demandId, UploadFileRequest request)
         {
             var uploadResult = await _qiniuService.UploadFileAsync(request);
-            var result = await _demandFileRepository.InsertDemandFileAsync(demandId, uploadResult.Item2);
+            var result = await _demandFileRepository.InsertDemandFileAsync(demandId, uploadResult);
             return ToSuccessResult(result);
         }
 
@@ -141,8 +141,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteDemandFileAsync(int fileId)
         {
-            var (ok, message) = await _demandFileRepository.DeleteDemandFileAsync(fileId);
-            return ok ? ToSuccessResult() : ToFailResult(message);
+            await _demandFileRepository.DeleteDemandFileAsync(fileId);
+            return ToSuccessResult();
         }
     }
 }

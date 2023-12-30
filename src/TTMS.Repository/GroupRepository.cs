@@ -37,19 +37,17 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, GroupResponse?)> InsertGroupAsync(CreateGroupRequest request)
+        public async Task<GroupResponse> InsertGroupAsync(CreateGroupRequest request)
         {
             var model = _mapper.Map<CreateGroupRequest, Group>(request);
-            model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
                 await InsertAsync(model);
-                var result = _mapper.Map<Group, GroupResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<Group, GroupResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -58,24 +56,23 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, GroupResponse?)> UpdateGroupAsync(UpdateGroupRequest request)
+        public async Task<GroupResponse> UpdateGroupAsync(UpdateGroupRequest request)
         {
             var model = await _fsql.Select<Group>().Where(a => a.Id == request.Id).FirstAsync();
             if(model == null)
             {
-                return (false, "Group does not exist.", null);
+                throw new Exception("Group does not exist.");
             }
             _mapper.Map(request, model);
             model.UpdateTime = DateTime.Now;
             try
             {
                 await UpdateAsync(model);
-                var result = _mapper.Map<Group, GroupResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<Group, GroupResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -84,11 +81,11 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> DeleteGroupAsync(DeleteGroupRequest request)
+        public async Task DeleteGroupAsync(DeleteGroupRequest request)
         {
             if (!request.GroupIds.Any())
             {
-                return (false, "分组Id为空，请填写有效分组Id.");
+                throw new Exception("分组Id为空，请填写有效分组Id.");
             }
             var existingGroupIds = await _fsql.Select<Group>()
                 .Where(a => request.GroupIds.Contains(a.Id))
@@ -96,14 +93,17 @@
             var nonExistingGroupIds = request.GroupIds.Except(existingGroupIds.Select(a => a.Id));
             if (nonExistingGroupIds.Any())
             {
-                return (false, $"删除失败，以下分组ID不存在: {string.Join(", ", nonExistingGroupIds)}.");
+                throw new Exception($"删除失败，以下分组ID不存在: {string.Join(", ", nonExistingGroupIds)}.");
             }
             var affectedRows = await _fsql.Update<Group>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
                 .Where(a => request.GroupIds.Contains(a.Id))
                 .ExecuteAffrowsAsync();
-            return affectedRows > 0? (true, "") : (false, "删除失败.");
+            if (affectedRows <= 0)
+            {
+                throw new Exception("删除失败.");
+            }
         }
     }
 }

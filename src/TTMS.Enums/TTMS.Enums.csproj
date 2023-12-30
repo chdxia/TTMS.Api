@@ -21,4 +21,8 @@
     <PackageReference Include="Qiniu.Shared" Version="7.2.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TTMS.Utility\TTMS.Utility.csproj" />
+  </ItemGroup>
+
 </Project>

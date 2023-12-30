@@ -1,6 +1,24 @@
 ﻿namespace TTMS.DTO.Request
 {
     /// <summary>
+    /// 请求参数;用户登录
+    /// </summary>
+    public class UserLoginRequest
+    {
+        /// <summary>
+        /// 账户名
+        /// </summary>
+        [Required(ErrorMessage = "Account is required.")]
+        public string Account { get; set; }
+
+        /// <summary>
+        /// 用户密码
+        /// </summary>
+        [Required(ErrorMessage = "PassWord is required.")]
+        public string PassWord { get; set; }
+    }
+
+    /// <summary>
     /// 请求参数;查询用户
     /// </summary>
     public class UserRequest
@@ -77,22 +95,22 @@
     public class CreateUserRequest
     {
         /// <summary>
-        /// 账户
+        /// 账户名
         /// </summary>
         [Required(ErrorMessage = "Account is required.")]
-        public string? Account { get; set; }
+        public string Account { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户名
         /// </summary>
-        public string UserName { get; set; } = string.Empty;
+        public string? UserName { get; set; }
 
         /// <summary>
         /// 用户邮箱
         /// </summary>
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
-        public string? Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// 分组id
@@ -103,7 +121,8 @@
         /// <summary>
         /// 用户密码
         /// </summary>
-        public string? PassWord { get; set; }
+        [Required(ErrorMessage = "PassWord is required.")]
+        public string PassWord { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户角色
@@ -121,13 +140,18 @@
         /// 用户Id
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// 账户状态
         /// </summary>
         [Required(ErrorMessage = "State is required.")]
         public bool State { get; set; }
+
+        /// <summary>
+        /// 用户密码
+        /// </summary>
+        public new string? PassWord { get; set; }
     }
 
     /// <summary>

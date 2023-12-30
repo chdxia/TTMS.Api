@@ -8,6 +8,6 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, List<string>)> UploadFileAsync(UploadFileRequest request);
+        Task<List<string>> UploadFileAsync(UploadFileRequest request);
     }
 }

@@ -8,10 +8,10 @@
             _userRepository = userRepository;
         }
 
-        public async Task<(bool, string, UserResponse?)> CreateUserAsync(CreateUserRequest request)
+        public async Task<UserResponse?> CreateUserAsync(CreateUserRequest request)
         {
             await Task.CompletedTask;
-            return (true, "", null);
+            return null;
         }
     }
 }

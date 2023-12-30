@@ -39,8 +39,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<VersionInfoResponse>))]
         public async Task<IActionResult> CreateVersionInfoAsync([FromBody] CreateVersionInfoRequest request)
         {
-            var (ok, message, result) = await _versionInfoRepository.InsertVersionInfoAsync(request);
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _versionInfoRepository.InsertVersionInfoAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -52,8 +52,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<VersionInfoResponse>))]
         public async Task<IActionResult> UpdateVersionInfoAsync([FromBody] UpdateVersionInfoRequest request)
         {
-            var (ok, message, result) = await _versionInfoRepository.UpdateVersionInfoAsync(request);
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _versionInfoRepository.UpdateVersionInfoAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -65,8 +65,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteVersionInfoAsync([FromBody] DeleteVersionInfoRequest request)
         {
-            var (ok, message) = await _versionInfoRepository.DeleteVersionInfoAsync(request);
-            return ok ? ToSuccessResult() : ToFailResult(message);
+            await _versionInfoRepository.DeleteVersionInfoAsync(request);
+            return ToSuccessResult();
         }
     }
 }

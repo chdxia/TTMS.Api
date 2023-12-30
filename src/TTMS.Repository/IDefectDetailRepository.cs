@@ -14,6 +14,6 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, DefectDetailResponse?)> InsertDefectDetailAsync(CreateDefectDetailRequest request);
+        Task<DefectDetailResponse> InsertDefectDetailAsync(CreateDefectDetailRequest request);
     }
 }

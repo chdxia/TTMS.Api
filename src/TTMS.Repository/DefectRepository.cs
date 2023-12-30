@@ -56,20 +56,17 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, DefectResponse?)> InsertDefectAsync(CreateDefectRequest request)
+        public async Task<DefectResponse> InsertDefectAsync(CreateDefectRequest request)
         {
             var model = _mapper.Map<CreateDefectRequest, Defect>(request);
-            model.DefectState = Enums.DefectState.待处理; // 新建均为待处理状态
-            model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
                 await InsertAsync(model);
-                var result = _mapper.Map<Defect, DefectResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<Defect, DefectResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -78,24 +75,23 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, DefectResponse?)> UpdateDefectAsync(UpdateDefectRequest request)
+        public async Task<DefectResponse> UpdateDefectAsync(UpdateDefectRequest request)
         {
             var model = await _fsql.Select<Defect>().Where(a => a.Id == request.Id).FirstAsync();
             if (model == null)
             {
-                return (false, "Defect does not exist.", null);
+                throw new Exception("Defect does not exist.");
             }
             _mapper.Map(request, model);
             model.UpdateTime = DateTime.Now;
             try
             {
                 await UpdateAsync(model);
-                var result = _mapper.Map<Defect, DefectResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<Defect, DefectResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
     }

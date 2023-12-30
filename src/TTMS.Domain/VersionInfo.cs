@@ -39,7 +39,7 @@
         /// <summary>
         /// 报告生成时间
         /// </summary>
-        [Column(Name = "report_time", DbType = "timestamp")]
+        [Column(Name = "report_time", DbType = "timestamp", IsNullable = true)]
         public DateTime? ReportTime { get; set; }
 
         /// <summary>
@@ -64,7 +64,7 @@
         /// 创建时间
         /// </summary>
         [Column(Name = "create_time", DbType = "timestamp")]
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 最后更新人
@@ -76,6 +76,6 @@
         /// 最后更新时间
         /// </summary>
         [Column(Name = "update_time", DbType = "timestamp")]
-        public DateTime? UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
     }
 }

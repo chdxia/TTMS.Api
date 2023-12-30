@@ -54,7 +54,7 @@
         /// <summary>
         /// 分组名
         /// </summary>
-        public string GroupName { get; set; } = string.Empty;
+        public string? GroupName { get; set; }
     }
 
     /// <summary>
@@ -66,7 +66,7 @@
         /// 分组Id
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
     }
 
     /// <summary>

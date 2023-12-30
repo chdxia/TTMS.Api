@@ -27,7 +27,7 @@
         /// <param name="demandId"></param>
         /// <param name="listUrl"></param>
         /// <returns></returns>
-        public async Task<(bool, string, List<DemandFileResponse>?)> InsertDemandFileAsync(int demandId, List<string> listUrl)
+        public async Task<List<DemandFileResponse>> InsertDemandFileAsync(int demandId, List<string> listUrl)
         {
             var models = new List<DemandFile>();
             foreach (var url in listUrl)
@@ -35,18 +35,16 @@
                 var model = new DemandFile();
                 model.DemandId = demandId;
                 model.Url = url;
-                model.CreateTime = model.UpdateTime = DateTime.Now;
                 models.Add(model);
             }
             try
             {
                 await InsertAsync(models);
-                var result = _mapper.Map<List<DemandFile>, List<DemandFileResponse>>(models);
-                return (true, "", result);
+                return _mapper.Map<List<DemandFile>, List<DemandFileResponse>>(models);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -55,14 +53,17 @@
         /// </summary>
         /// <param name="demandFileId"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> DeleteDemandFileAsync(int demandFileId)
+        public async Task DeleteDemandFileAsync(int demandFileId)
         {
             var affectedRows = await _fsql.Update<DemandFile>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
                 .Where(a => a.Id == demandFileId)
                 .ExecuteAffrowsAsync();
-            return affectedRows > 0 ? (true, "") : (false, "文件不存在或已被删除.");
+            if (affectedRows <= 0)
+            {
+                throw new Exception("文件不存在或已被删除.");
+            }
         }
     }
 }

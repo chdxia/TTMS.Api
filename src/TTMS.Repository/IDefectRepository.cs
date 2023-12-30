@@ -21,13 +21,13 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, DefectResponse?)> InsertDefectAsync(CreateDefectRequest request);
+        Task<DefectResponse> InsertDefectAsync(CreateDefectRequest request);
 
         /// <summary>
         /// 编辑缺陷
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, DefectResponse?)> UpdateDefectAsync(UpdateDefectRequest request);
+        Task<DefectResponse> UpdateDefectAsync(UpdateDefectRequest request);
     }
 }

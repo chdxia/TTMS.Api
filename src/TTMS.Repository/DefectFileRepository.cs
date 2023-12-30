@@ -27,7 +27,7 @@
         /// <param name="defectId"></param>
         /// <param name="listUrl"></param>
         /// <returns></returns>
-        public async Task<(bool, string, List<DefectFileResponse>?)> InsertDefectFileAsync(int defectId, List<string> listUrl)
+        public async Task<List<DefectFileResponse>> InsertDefectFileAsync(int defectId, List<string> listUrl)
         {
             var models = new List<DefectFile>();
             foreach (var url in listUrl)
@@ -41,12 +41,11 @@
             try
             {
                 await InsertAsync(models);
-                var result = _mapper.Map<List<DefectFile>, List<DefectFileResponse>>(models);
-                return (true, "", result);
+                return _mapper.Map<List<DefectFile>, List<DefectFileResponse>>(models);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -55,14 +54,17 @@
         /// </summary>
         /// <param name="defectFileId"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> DeleteDefectFileAsync(int defectFileId)
+        public async Task DeleteDefectFileAsync(int defectFileId)
         {
             var affectedRows = await _fsql.Update<DefectFile>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
                 .Where(a => a.Id == defectFileId)
                 .ExecuteAffrowsAsync();
-            return affectedRows > 0 ? (true, "") : (false, "文件不存在或已被删除.");
+            if (affectedRows <= 0)
+            {
+                throw new Exception("文件不存在或已被删除.");
+            }
         }
     }
 }

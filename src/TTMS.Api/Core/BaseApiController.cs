@@ -95,14 +95,17 @@ namespace TTMS.Api.Core
     public abstract class AuthorizeApiController : BaseApiController
     {
         private readonly IAuthPermissionService _authPermissionService;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="authPermissionService"></param>
-        public AuthorizeApiController(IAuthPermissionService authPermissionService)
+        /// <param name="userRepository"></param>
+        public AuthorizeApiController(IAuthPermissionService authPermissionService, IUserRepository userRepository)
         {
             _authPermissionService = authPermissionService;
+            _userRepository = userRepository;
         }
         
         /// <summary>
@@ -114,7 +117,15 @@ namespace TTMS.Api.Core
             // 获取当前访问的接口名称
 
             // 获取当前用户的身份标识 token或者id
-
+            string authorizationHeader = context.HttpContext.Request.Headers["Authorization"];
+            var authorizationUser = _userRepository.GetUserByTokenAsync(authorizationHeader);
+            if (authorizationUser == null)
+            {
+                // 用户认证未通过，可以返回一个认证未通过的结果，需要重新登录
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+            context.HttpContext.Items["User"] = authorizationUser;
             // 检查当前用户是否有访问该接口的权限
             bool hasPermission = await _authPermissionService.HasPermissionAsync("interfaceName", "userId");
 

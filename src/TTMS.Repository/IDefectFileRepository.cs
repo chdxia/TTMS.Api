@@ -15,13 +15,13 @@
         /// <param name="defectId"></param>
         /// <param name="listUrl"></param>
         /// <returns></returns>
-        Task<(bool, string, List<DefectFileResponse>?)> InsertDefectFileAsync(int defectId, List<string> listUrl);
+        Task<List<DefectFileResponse>> InsertDefectFileAsync(int defectId, List<string> listUrl);
 
         /// <summary>
         /// 删除缺陷文件
         /// </summary>
         /// <param name="defectFileId"></param>
         /// <returns></returns>
-        Task<(bool, string)> DeleteDefectFileAsync(int defectFileId);
+        Task DeleteDefectFileAsync(int defectFileId);
     }
 }

@@ -24,10 +24,18 @@ namespace TTMS.Api
 
 
             // 注册服务
+            //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            //{
+            //    // 配置 JWT Bearer 认证选项
+            //    // ...
+            //});
+
             builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute)))
                 .AddDataAnnotationsLocalization(); // 注册控制器以及自定义全局过滤器
 
             builder.Services.AddScoped<ValidateModelAttribute>(); // 自定义全局过滤器
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -40,6 +48,8 @@ namespace TTMS.Api
             builder.Services.AddSingleton(FreeSqlProvider.CreateFreeSqlInstance(config)); // 注册FreeSql实例
 
             HangfireRegisterHelper.RegisterHangfire(builder.Services, config); // 注册hangfire
+
+            //builder.Services.AddScoped<AuthorizeApiController>();
 
             RepositoryRegisterHelper.RegisterRepositories(builder.Services); // 批量注册Repository层接口
 
@@ -65,7 +75,11 @@ namespace TTMS.Api
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // 身份验证
+
+            app.UseAuthorization(); // 权限验证
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>(); // 异常处理中间件
 
             app.MapControllers();
 

@@ -65,20 +65,17 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, DemandResponse?)> InsertDemandAsync(CreateDemandRequest request)
+        public async Task<DemandResponse> InsertDemandAsync(CreateDemandRequest request)
         {
             var model = _mapper.Map<CreateDemandRequest, Demand>(request);
-            model.DemandState = Enums.DemandState.待规划; //新建均为待规划状态
-            model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
                 await InsertAsync(model);
-                var result = _mapper.Map<Demand, DemandResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<Demand, DemandResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -87,24 +84,23 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, DemandResponse?)> UpdateDemandAsync(UpdateDemandRequest request)
+        public async Task<DemandResponse> UpdateDemandAsync(UpdateDemandRequest request)
         {
             var model = await _fsql.Select<Demand>().Where(a => a.Id == request.Id).FirstAsync();
             if (model == null)
             {
-                return (false, "Demand does not exist.", null);
+                throw new Exception("Demand does not exist.");
             }
             _mapper.Map(request, model);
             model.UpdateTime = DateTime.Now;
             try
             {
                 await UpdateAsync(model);
-                var result = _mapper.Map<Demand, DemandResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<Demand, DemandResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -114,7 +110,7 @@
         /// <param name="demandId"></param>
         /// <param name="userIds"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> UpdateDemandUserAsync(int demandId, List<int> userIds)
+        public async Task UpdateDemandUserAsync(int demandId, List<int> userIds)
         {
             // 获取数据库中与demandId相关的所有UserDemand记录
             var existingDemandUsers = await _fsql.Select<DemandUser>().Where(a => a.DemandId == demandId).ToListAsync();
@@ -136,7 +132,6 @@
                 .ToList();
             await _fsql.Update<DemandUser>().SetSource(existingDemandUsers).ExecuteAffrowsAsync();
             await _fsql.Insert<DemandUser>().AppendData(newDemandUsers).ExecuteAffrowsAsync();
-            return (true, "UpdateDemandUser completed.");
         }
 
         /// <summary>
@@ -144,7 +139,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> UpdateDemandVersionInfoAsync(UpdateDemandVersionInfoRequest request)
+        public async Task UpdateDemandVersionInfoAsync(UpdateDemandVersionInfoRequest request)
         {
             // 检查请求数据中是否包含非项目需求
             var otherDemands = await _fsql.Select<Demand>()
@@ -153,7 +148,7 @@
                 .ToListAsync();
             if (otherDemands.Any())
             {
-                return (false, "非项目需求不允许关联版本");
+                throw new Exception("非项目需求不允许关联版本.");
             }
             // 获取数据库中与demandIds相关的所有DemandVersionInfo记录
             var existingDemandVersionInfos = await _fsql.Select<DemandVersionInfo>()
@@ -182,37 +177,39 @@
             }
             await _fsql.Update<DemandVersionInfo>().SetSource(existingDemandVersionInfos).ExecuteAffrowsAsync();
             await _fsql.Insert<DemandVersionInfo>().AppendData(newDemandVersionInfoList).ExecuteAffrowsAsync();
-            return (true, "UpdateDemandVersionAsync completed.");
         }
 
         /// <summary>
         /// 批量删除需求
         /// </summary>
         /// <returns></returns>
-        public async Task<(bool, string)> DeleteDemandAsync(DeleteDemandRequest request)
+        public async Task DeleteDemandAsync(DeleteDemandRequest request)
         {
             if (!request.DemandIds.Any())
             {
-                return (false, "需求Id为空，请填写有效需求Id.");
+                throw new Exception("需求Id为空，请填写有效需求Id.");
             }
             var existingDemandIds = await _fsql.Select<Demand>()
                 .Where(a => request.DemandIds.Contains(a.Id))
                 .ToListAsync();
             if (existingDemandIds.Where(a => a.DemandState != Enums.DemandState.待规划).Any())
             {
-                return (false, "删除失败，只能删除待规划的需求");
+                throw new Exception("删除失败，只能删除待规划的需求");
             }
             var nonExistingDemandIds = request.DemandIds.Except(existingDemandIds.Select(a => a.Id));
             if (nonExistingDemandIds.Any())
             {
-                return (false, $"删除失败，以下需求ID不存在: {string.Join(", ", nonExistingDemandIds)}.");
+                throw new Exception($"删除失败，以下需求ID不存在: {string.Join(", ", nonExistingDemandIds)}.");
             }
             var affectedRows = await _fsql.Update<Demand>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
                 .Where(a => request.DemandIds.Contains(a.Id))
                 .ExecuteAffrowsAsync();
-            return affectedRows > 0 ? (true, "") : (false, "删除失败.");
+            if (affectedRows <= 0)
+            {
+                throw new Exception("删除失败.");
+            }
         }
     }
 }

@@ -20,12 +20,14 @@
         /// <summary>
         /// 登录
         /// </summary>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("Login")]
-        public IActionResult UserLogin()
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<UserLoginResponse>))]
+        public async Task<IActionResult> UserLogin(UserLoginRequest request)
         {
-            var data = new { Name = "John", Age = 30, City = "New York" };
-            return Ok(data);
+            var result = await _userRepository.UserLogin(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -33,9 +35,11 @@
         /// </summary>
         /// <returns></returns>
         [HttpPost("Logout")]
-        public IActionResult UserLogout()
+        [ProducesResponseType(200, Type = typeof(ApiResultModel))]
+        public async Task<IActionResult> UserLogout()
         {
-            return Ok("logout");
+            await _userRepository.UserLogout();
+            return ToSuccessResult();
         }
 
         /// <summary>
@@ -84,8 +88,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest request)
         {
-            var (ok, message, result) = await _userRepository.InsertUserAsync(request);
-            return ok? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _userRepository.InsertUserAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -97,8 +101,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserRequest request)
         {
-            var (ok, message, result) = await _userRepository.UpdateUserAsync(request);
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _userRepository.UpdateUserAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -110,8 +114,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request)
         {
-            var (ok, message) = await _userRepository.DeleteUserAsync(request);
-            return ok? ToSuccessResult() : ToFailResult(message);
+            await _userRepository.DeleteUserAsync(request);
+            return ToSuccessResult();
         }
     }
 }

@@ -13,6 +13,7 @@
             CreateMap<CreateUserRequest, User>().ReverseMap();
             CreateMap<UpdateUserRequest, User>().ReverseMap();
             CreateMap<User, UserResponse>().ReverseMap();
+            CreateMap<User, UserLoginResponse>().ReverseMap();
         }
     }
 }

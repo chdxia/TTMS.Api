@@ -60,4 +60,15 @@
         /// </summary>
         public DateTime UpdateTime { get; set; }
     }
+
+    /// <summary>
+    /// 返回参数;用户登录
+    /// </summary>
+    public class UserLoginResponse : UserResponse
+    {
+        /// <summary>
+        /// 账户token
+        /// </summary>
+        public string? AccessToken { get; set; }
+    }
 }

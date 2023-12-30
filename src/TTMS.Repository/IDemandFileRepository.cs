@@ -15,13 +15,13 @@
         /// <param name="demandId"></param>
         /// <param name="listUrl"></param>
         /// <returns></returns>
-        Task<(bool, string, List<DemandFileResponse>?)> InsertDemandFileAsync(int demandId, List<string> listUrl);
+        Task<List<DemandFileResponse>> InsertDemandFileAsync(int demandId, List<string> listUrl);
 
         /// <summary>
         /// 删除需求文件
         /// </summary>
         /// <param name="demandFileId"></param>
         /// <returns></returns>
-        Task<(bool, string)> DeleteDemandFileAsync(int demandFileId);
+        Task DeleteDemandFileAsync(int demandFileId);
     }
 }

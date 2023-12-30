@@ -30,9 +30,11 @@ namespace TTMS.Service
         /// <summary>
         /// 上传文件到七牛oss
         /// </summary>
-        /// <param name="fileCollection"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, List<string>)> UploadFileAsync(UploadFileRequest request)
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="Exception"></exception>
+        public async Task<List<string>> UploadFileAsync(UploadFileRequest request)
         {
             Mac mac = new Mac(_accessKey, _secretKey);
             List<string> savedKeys = new List<string>();
@@ -77,7 +79,7 @@ namespace TTMS.Service
             });
             // 等待所有上传任务完成
             await Task.WhenAll(tasks);
-            return (true, savedKeys);
+            return savedKeys;
         }
     }
 }

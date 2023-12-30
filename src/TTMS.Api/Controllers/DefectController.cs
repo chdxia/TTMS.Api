@@ -73,8 +73,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<DefectResponse>))]
         public async Task<IActionResult> CreateDefectAsync([FromBody] CreateDefectRequest request)
         {
-            var (ok, message, result) = await _defectRepository.InsertDefectAsync(request); 
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _defectRepository.InsertDefectAsync(request); 
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -86,8 +86,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<DefectResponse>))]
         public async Task<IActionResult> UpdateDefectAsync([FromBody] UpdateDefectRequest request)
         {
-            var (ok, message, result) = await _defectService.UpdateDefectAsync(request);
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _defectService.UpdateDefectAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@
         public async Task<IActionResult> UploadDefectFileAsync(int defectId, UploadFileRequest request)
         {
             var uploadResult = await _qiniuService.UploadFileAsync(request);
-            var result = await _defectFileRepository.InsertDefectFileAsync(defectId, uploadResult.Item2);
+            var result = await _defectFileRepository.InsertDefectFileAsync(defectId, uploadResult);
             return ToSuccessResult(result);
         }
 
@@ -127,8 +127,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteDefectFileAsync(int fileId)
         {
-            var (ok, message) = await _defectFileRepository.DeleteDefectFileAsync(fileId);
-            return ok ? ToSuccessResult() : ToFailResult(message);
+            await _defectFileRepository.DeleteDefectFileAsync(fileId);
+            return ToSuccessResult();
         }
 
         /// <summary>
@@ -168,7 +168,7 @@
         public async Task<IActionResult> UploadDefectDetailFileAsync(int defectDetailId, UploadFileRequest request)
         {
             var uploadResult = await _qiniuService.UploadFileAsync(request);
-            var result = await _defectDetailFileRepository.InsertDefectDetailFileAsync(defectDetailId, uploadResult.Item2);
+            var result = await _defectDetailFileRepository.InsertDefectDetailFileAsync(defectDetailId, uploadResult);
             return ToSuccessResult(result);
         }
 
@@ -181,8 +181,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteDefectDetailFileAsync(int fileId)
         {
-            var (ok, message) = await _defectDetailFileRepository.DeleteDefectDetailFileAsync(fileId);
-            return ok ? ToSuccessResult() : ToFailResult(message);
+            await _defectDetailFileRepository.DeleteDefectDetailFileAsync(fileId);
+            return ToSuccessResult();
         }
     }
 }
