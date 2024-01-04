@@ -43,12 +43,6 @@
         public string Salt { get; set; } = string.Empty;
 
         /// <summary>
-        /// 账户token
-        /// </summary>
-        [Column(Name = "access_token", DbType = "varchar", IsNullable = true)]
-        public string? AccessToken { get; set; }
-
-        /// <summary>
         /// 外键;分组id
         /// </summary>
         [Column(Name = "group_id", DbType = "int8")]

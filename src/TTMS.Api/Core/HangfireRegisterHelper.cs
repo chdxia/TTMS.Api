@@ -12,16 +12,16 @@ namespace TTMS.Api.Core
         /// 注册hangfire
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="config"></param>
-        public static void RegisterHangfire(IServiceCollection services, IConfiguration config)
+        /// <param name="Configuration"></param>
+        public static void RegisterHangfire(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddHangfire(configuration => configuration
+            services.AddHangfire(options => options
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
                 .UsePostgreSqlStorage(options =>
                 {
-                    options.UseNpgsqlConnection(config.GetConnectionString("HangfireDBConnection"));
+                    options.UseNpgsqlConnection(Configuration.GetConnectionString("HangfireDBConnection"));
                 }));
         }
     }

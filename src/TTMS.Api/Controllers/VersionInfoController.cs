@@ -3,6 +3,7 @@
     /// <summary>
     /// 迭代版本
     /// </summary>
+    [Authorize]
     [ApiExplorerSettings(GroupName = "迭代版本")]
     public class VersionInfoController : BaseApiController
     {

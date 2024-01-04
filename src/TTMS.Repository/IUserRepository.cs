@@ -7,20 +7,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<UserLoginResponse> UserLogin(UserLoginRequest request);
-
-        /// <summary>
-        /// 用户退出登录
-        /// </summary>
-        /// <returns></returns>
-        Task UserLogout();
-
-        /// <summary>
-        /// 根据accessToken获取用户信息;用于获取并存储当前用户的身份信息
-        /// </summary>
-        /// <param name="accessToken"></param>
-        /// <returns></returns>
-        Task<UserLoginResponse> GetUserByTokenAsync(string accessToken);
+        Task<UserLoginResponse> UserLoginAsync(UserLoginRequest request);
 
         /// <summary>
         /// 根据id获取用户信息

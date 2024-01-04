@@ -3,6 +3,7 @@
     /// <summary>
     /// 缺陷
     /// </summary>
+    [Authorize]
     [ApiExplorerSettings(GroupName = "缺陷")]
     public class DefectController : BaseApiController
     {

@@ -7,14 +7,17 @@
     public class UserController : BaseApiController
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="userRepository"></param>
-        public UserController(IUserRepository userRepository)
+        /// <param name="userService"></param>
+        public UserController(IUserRepository userRepository, IUserService userService)
         {
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         /// <summary>
@@ -26,20 +29,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserLoginResponse>))]
         public async Task<IActionResult> UserLogin(UserLoginRequest request)
         {
-            var result = await _userRepository.UserLogin(request);
+            var result = await _userService.UserLoginAsync(request);
             return ToSuccessResult(result);
-        }
-
-        /// <summary>
-        /// 退出登录
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("Logout")]
-        [ProducesResponseType(200, Type = typeof(ApiResultModel))]
-        public async Task<IActionResult> UserLogout()
-        {
-            await _userRepository.UserLogout();
-            return ToSuccessResult();
         }
 
         /// <summary>
@@ -47,6 +38,7 @@
         /// </summary>
         /// <param name="id">用户id</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
         public async Task<IActionResult> GetByIdAsync(int id)
@@ -59,6 +51,7 @@
         /// 获取用户列表
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("GetList")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<List<UserResponse>>))]
         public async Task<IActionResult> GetListAsync([FromBody] UserRequest request)
@@ -71,6 +64,7 @@
         /// 分页获取用户列表
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("GetPageList")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<List<UserResponse>>))]
         public async Task<IActionResult> GetPageListAsync([FromBody] UserRequest request)
@@ -84,6 +78,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("CreateUser")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest request)
@@ -97,6 +92,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("UpdateUser")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserResponse>))]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserRequest request)
@@ -110,6 +106,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("DeleteUser")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteUserRequest request)

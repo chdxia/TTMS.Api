@@ -9,13 +9,13 @@
         /// 账户名
         /// </summary>
         [Required(ErrorMessage = "Account is required.")]
-        public string Account { get; set; }
+        public string Account { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户密码
         /// </summary>
         [Required(ErrorMessage = "PassWord is required.")]
-        public string PassWord { get; set; }
+        public string PassWord { get; set; } = string.Empty;
     }
 
     /// <summary>

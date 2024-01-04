@@ -2,6 +2,6 @@
 {
     public interface IUserService
     {
-        Task<UserResponse?> CreateUserAsync(CreateUserRequest request);
+        Task<UserLoginResponse> UserLoginAsync(UserLoginRequest request);
     }
 }

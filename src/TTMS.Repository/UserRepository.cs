@@ -6,13 +6,11 @@ namespace TTMS.Repository
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(fsql)
+        public UserRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -20,55 +18,14 @@ namespace TTMS.Repository
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<UserLoginResponse> UserLogin(UserLoginRequest request)
+        public async Task<UserLoginResponse> UserLoginAsync(UserLoginRequest request)
         {
-            var model = await _fsql.Select<User>().Where(a => a.Account == request.Account).FirstAsync();
+            var model = await _fsql.Select<User>().Where(a => a.Account == request.Account).ToOneAsync();
             if (model == null || model.PassWord != SecurityUtility.HashWithSalt(request.PassWord, model.Salt))
             {
                 throw new Exception("Incorrect Account or PassWord."); // 账户或密码错误
             }
-            model.AccessToken = SecurityUtility.GenerateRandomString(20); // AccessToken认证，暂时使用20随机字符串，暂时存入PostgreSQL，后续优化
-            try
-            {
-                await UpdateAsync(model);
-                return _mapper.Map<User, UserLoginResponse>(model);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// 用户退出登录
-        /// </summary>
-        /// <returns></returns>
-        public async Task UserLogout()
-        {
-            var userId = ((User)_httpContextAccessor.HttpContext.Items["User"]).Id;
-            var model = await _fsql.Select<User>().Where(a => a.Id == userId).FirstAsync();
-            if (model != null)
-            {
-                model.AccessToken = null;
-                try
-                {
-                    await UpdateAsync(model);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 根据accessToken获取用户信息;用于获取并存储当前用户的身份信息
-        /// </summary>
-        /// <param name="accessToken"></param>
-        /// <returns></returns>
-        public async Task<UserLoginResponse> GetUserByTokenAsync(string accessToken)
-        {
-            return await _fsql.Select<User>().Where(a => a.AccessToken == accessToken).FirstAsync<UserLoginResponse>();
+            return _mapper.Map<User, UserLoginResponse>(model);
         }
 
         /// <summary>

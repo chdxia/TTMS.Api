@@ -3,6 +3,7 @@
     /// <summary>
     /// 需求池
     /// </summary>
+    [Authorize]
     [ApiExplorerSettings(GroupName = "需求池")]
     public class DemandController : BaseApiController
     {
@@ -18,7 +19,11 @@
         /// <param name="demandFileRepository"></param>
         /// <param name="demandService"></param>
         /// <param name="qiniuService"></param>
-        public DemandController(IDemandRepository demandRepository, IDemandFileRepository demandFileRepository, IDemandService demandService, IQiniuService qiniuService)
+        public DemandController(
+            IDemandRepository demandRepository,
+            IDemandFileRepository demandFileRepository,
+            IDemandService demandService,
+            IQiniuService qiniuService)
         {
             _demandRepository = demandRepository;
             _demandFileRepository = demandFileRepository;

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Qiniu.Http;
+﻿using Qiniu.Http;
 using Qiniu.IO.Model;
 using Qiniu.IO;
 using Qiniu.Util;
@@ -22,9 +21,9 @@ namespace TTMS.Service
         /// <param name="configuration"></param>
         public QiniuService(IConfiguration configuration)
         {
-            _accessKey = configuration.GetSection("Qiniu:AccessKey").Value;
-            _secretKey = configuration.GetSection("Qiniu:SecretKey").Value;
-            _bucket = configuration.GetSection("Qiniu:Bucket").Value;
+            _accessKey = configuration.GetSection("QiniuConfig:AccessKey").Value;
+            _secretKey = configuration.GetSection("QiniuConfig:SecretKey").Value;
+            _bucket = configuration.GetSection("QiniuConfig:Bucket").Value;
         }
 
         /// <summary>

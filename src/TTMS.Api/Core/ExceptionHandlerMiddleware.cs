@@ -2,15 +2,27 @@
 
 namespace TTMS.Api.Core
 {
+    /// <summary>
+    /// 异常处理中间件
+    /// </summary>
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="next"></param>
         public ExceptionHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        /// 调用中间件
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
             try
@@ -21,14 +33,14 @@ namespace TTMS.Api.Core
             catch (Exception ex)
             {
                 // 处理异常并返回指定的格式
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, ex.Message);
             }
         }
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+        private async Task HandleExceptionAsync(HttpContext context, string message)
         {
             // 调用 ToFailResult 方法获取错误响应对象
-            var errorResponse = ToFailResult(ex.Message, 100);
+            var errorResponse = ToFailResult(message, 100);
 
             // 设置响应的状态码和内容类型
             context.Response.StatusCode = 200;

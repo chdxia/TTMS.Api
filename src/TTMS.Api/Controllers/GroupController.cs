@@ -3,6 +3,7 @@
     /// <summary>
     /// 分组
     /// </summary>
+    [Authorize]
     [ApiExplorerSettings(GroupName = "分组")]
     public class GroupController : BaseApiController
     {

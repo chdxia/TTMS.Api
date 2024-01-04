@@ -9,7 +9,7 @@
         /// 批量注册repository
         /// </summary>
         /// <param name="services"></param>
-        public static void RegisterRepositories(IServiceCollection services)
+        public static void RegisterRepositories(this IServiceCollection services)
         {
             // 获取TTMS.Repository命名空间中所有以"Repository"结尾的接口类型
             var interfaceTypes = typeof(IUserRepository).Assembly.GetTypes()
