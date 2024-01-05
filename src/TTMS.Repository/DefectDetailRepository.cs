@@ -4,11 +4,13 @@
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
+        private readonly string? _accessUserId;
 
-        public DefectDetailRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
+        public DefectDetailRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor contextAccessor) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
+            _accessUserId = contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         /// <summary>
@@ -29,6 +31,10 @@
         public async Task<DefectDetailResponse> InsertDefectDetailAsync(CreateDefectDetailRequest request)
         {
             var model = _mapper.Map<CreateDefectDetailRequest, DefectDetail>(request);
+            if (_accessUserId != null)
+            {
+                model.CreateBy = int.Parse(_accessUserId);
+            }
             try
             {
                 await _fsql.Insert<DefectDetail>().AppendData(model).ExecuteAffrowsAsync();

@@ -4,11 +4,13 @@
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
+        private readonly string? _accessUserId;
 
-        public DefectRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
+        public DefectRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor contextAccessor) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
+            _accessUserId = contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         /// <summary>
@@ -59,6 +61,10 @@
         public async Task<DefectResponse> InsertDefectAsync(CreateDefectRequest request)
         {
             var model = _mapper.Map<CreateDefectRequest, Defect>(request);
+            if (_accessUserId != null)
+            {
+                model.CreateBy = model.UpdateBy = int.Parse(_accessUserId);
+            }
             try
             {
                 await InsertAsync(model);
@@ -83,6 +89,10 @@
                 throw new Exception("Defect does not exist.");
             }
             _mapper.Map(request, model);
+            if (_accessUserId != null)
+            {
+                model.UpdateBy = int.Parse(_accessUserId);
+            }
             model.UpdateTime = DateTime.Now;
             try
             {

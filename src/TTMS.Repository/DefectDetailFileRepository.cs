@@ -4,11 +4,13 @@
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
+        private readonly string? _accessUserId;
 
-        public DefectDetailFileRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
+        public DefectDetailFileRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor contextAccessor) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
+            _accessUserId = contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         /// <summary>
@@ -35,7 +37,10 @@
                 var model = new DefectDetailFile();
                 model.DefectDetailId = defectDetailId;
                 model.Url = url;
-                model.CreateTime = model.UpdateTime = DateTime.Now;
+                if (_accessUserId != null)
+                {
+                    model.CreateBy = model.UpdateBy = int.Parse(_accessUserId);
+                }
                 models.Add(model);
             }
             try
@@ -56,11 +61,15 @@
         /// <returns></returns>
         public async Task DeleteDefectDetailFileAsync(int defectDetailFileId)
         {
-            var affectedRows = await _fsql.Update<DefectDetailFile>()
+            var update = _fsql.Update<DefectDetailFile>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
-                .Where(a => a.Id == defectDetailFileId)
-                .ExecuteAffrowsAsync();
+                .Where(a => a.Id == defectDetailFileId);
+            if (_accessUserId != null)
+            {
+                update = update.Set(a => a.UpdateBy, int.Parse(_accessUserId));
+            }
+            var affectedRows = await update.ExecuteAffrowsAsync();
             if (affectedRows <= 0)
             {
                 throw new Exception("文件不存在或已被删除.");

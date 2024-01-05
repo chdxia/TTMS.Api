@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace TTMS.Repository
+﻿namespace TTMS.Repository
 {
     public class UserRepository : DefaultRepository<User, long>, IUserRepository
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
+        private readonly string? _accessUserId;
 
-        public UserRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
+        public UserRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor contextAccessor) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
+            _accessUserId = contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         /// <summary>
@@ -107,6 +107,10 @@ namespace TTMS.Repository
             var hashWithNewSalt = SecurityUtility.HashWithNewSalt(request.PassWord);
             model.PassWord = hashWithNewSalt.hashedValue;
             model.Salt = hashWithNewSalt.salt;
+            if (_accessUserId != null)
+            {
+                model.CreateBy = model.UpdateBy = int.Parse(_accessUserId);
+            }
             try
             {
                 await InsertAsync(model);
@@ -149,6 +153,10 @@ namespace TTMS.Repository
                 model.PassWord = hashWithNewSalt.hashedValue;
                 model.Salt = hashWithNewSalt.salt;
             }
+            if (_accessUserId != null)
+            {
+                model.UpdateBy = int.Parse(_accessUserId);
+            }
             model.UpdateTime = DateTime.Now;
             try
             {
@@ -180,11 +188,15 @@ namespace TTMS.Repository
             {
                 throw new Exception($"删除失败，以下用户ID不存在: {string.Join(", ", nonExistingUserIds)}.");
             }
-            var affectedRows = await _fsql.Update<User>()
+            var update = _fsql.Update<User>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
-                .Where(a => request.UserIds.Contains(a.Id))
-                .ExecuteAffrowsAsync();
+                .Where(a => request.UserIds.Contains(a.Id));
+            if (_accessUserId != null)
+            {
+                update = update.Set(a => a.UpdateBy, int.Parse(_accessUserId));
+            }
+            var affectedRows = await update.ExecuteAffrowsAsync();
             if (affectedRows <= 0)
             {
                 throw new Exception("删除失败.");

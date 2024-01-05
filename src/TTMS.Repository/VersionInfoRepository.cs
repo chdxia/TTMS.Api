@@ -4,11 +4,13 @@
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
+        private readonly string? _accessUserId;
 
-        public VersionInfoRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
+        public VersionInfoRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor contextAccessor) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
+            _accessUserId = contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
 
         /// <summary>
@@ -60,6 +62,10 @@
         public async Task<VersionInfoResponse> InsertVersionInfoAsync(CreateVersionInfoRequest request)
         {
             var model = _mapper.Map<CreateVersionInfoRequest, VersionInfo>(request);
+            if (_accessUserId != null)
+            {
+                model.CreateBy = model.UpdateBy = int.Parse(_accessUserId);
+            }
             try
             {
                 await InsertAsync(model);
@@ -84,6 +90,10 @@
                 throw new Exception("Group does not exist.");
             }
             _mapper.Map(request, model);
+            if (_accessUserId != null)
+            {
+                model.UpdateBy = int.Parse(_accessUserId);
+            }
             model.UpdateTime = DateTime.Now;
             try
             {
@@ -114,11 +124,15 @@
             {
                 throw new Exception($"删除失败，以下版本ID不存在: {string.Join(", ", nonExistingGroupIds)}.");
             }
-            var affectedRows = await _fsql.Update<VersionInfo>()
+            var update = _fsql.Update<VersionInfo>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
-                .Where(a => request.VersionIds.Contains(a.Id))
-                .ExecuteAffrowsAsync();
+                .Where(a => request.VersionIds.Contains(a.Id));
+            if (_accessUserId != null)
+            {
+                update = update.Set(a => a.UpdateBy, int.Parse(_accessUserId));
+            }
+            var affectedRows = await update.ExecuteAffrowsAsync();
             if (affectedRows <= 0)
             {
                 throw new Exception("删除失败.");
