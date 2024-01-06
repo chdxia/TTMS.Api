@@ -9,7 +9,7 @@
         /// 批量注册service
         /// </summary>
         /// <param name="services"></param>
-        public static void RegisterServices(IServiceCollection services)
+        public static void RegisterServices(this IServiceCollection services)
         {
             // 获取TTMS.Service命名空间中所有以"Service"结尾的接口类型
             var interfaceTypes = typeof(IUserService).Assembly.GetTypes()

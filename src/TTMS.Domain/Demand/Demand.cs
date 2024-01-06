@@ -59,7 +59,7 @@
         /// 需求提出时间
         /// </summary>
         [Column(Name = "propose_time", DbType = "timestamp")]
-        public DateTime? ProposeTime { get; set; }
+        public DateTime ProposeTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 需求优先级
@@ -71,32 +71,25 @@
         /// 需求状态
         /// </summary>
         [Column(Name = "demand_state", DbType = "int8")]
-        public DemandState DemandState { get; set; }
+        public DemandState DemandState { get; set; } = DemandState.待规划;
 
         /// <summary>
         /// 预计工时
         /// </summary>
-        [Column(Name = "work_hours", DbType = "int8")]
+        [Column(Name = "work_hours", DbType = "int8", IsNullable = true)]
         public int? WorkHours { get; set; }
 
         /// <summary>
         /// 预计上线时间
         /// </summary>
-        [Column(Name = "plan_online_time", DbType = "timestamp")]
+        [Column(Name = "plan_online_time", DbType = "timestamp", IsNullable = true)]
         public DateTime? PlanOnlineTime { get; set; }
 
         /// <summary>
         /// 实际上线时间
         /// </summary>
-        [Column(Name = "actual_online_time", DbType = "timestamp")]
+        [Column(Name = "actual_online_time", DbType = "timestamp", IsNullable = true)]
         public DateTime? ActualOnlineTime { get; set; }
-
-        /// <summary>
-        /// 外键;版本id
-        /// </summary>
-        //[Column(Name = "version_id", DbType = "int8")]
-        //[Navigate(nameof(VersionInfo.Id))]
-        //public int? VersionId { get; set; }
 
         /// <summary>
         /// 是否删除;t已删除,f未删除;默认f
@@ -114,7 +107,7 @@
         /// 创建时间
         /// </summary>
         [Column(Name = "create_time", DbType = "timestamp")]
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 最后更新人
@@ -126,6 +119,6 @@
         /// 最后更新时间
         /// </summary>
         [Column(Name = "update_time", DbType = "timestamp")]
-        public DateTime? UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
     }
 }

@@ -92,17 +92,21 @@ namespace TTMS.Api.Core
     /// <summary>
     /// AuthorizeApiController 需要认证的控制器基类
     /// </summary>
+    [Authorize]
     public abstract class AuthorizeApiController : BaseApiController
     {
         private readonly IAuthPermissionService _authPermissionService;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="authPermissionService"></param>
-        public AuthorizeApiController(IAuthPermissionService authPermissionService)
+        /// <param name="userRepository"></param>
+        public AuthorizeApiController(IAuthPermissionService authPermissionService, IUserRepository userRepository)
         {
             _authPermissionService = authPermissionService;
+            _userRepository = userRepository;
         }
         
         /// <summary>
@@ -114,14 +118,24 @@ namespace TTMS.Api.Core
             // 获取当前访问的接口名称
 
             // 获取当前用户的身份标识 token或者id
-
+            string authorizationHeader = context.HttpContext.Request.Headers["Authorization"];
+            //var authorizationUser = await _userRepository.GetUserByTokenAsync(authorizationHeader);
+            //if (authorizationUser == null)
+            //{
+            //    // 用户认证未通过，可以返回一个认证未通过的结果，需要重新登录
+            //    //context.Result = new UnauthorizedResult();
+            //    context.Result = ToFailResult("认证未通过，请重新登录");
+            //    return;
+            //}
+            //context.HttpContext.Items["User"] = authorizationUser;
             // 检查当前用户是否有访问该接口的权限
             bool hasPermission = await _authPermissionService.HasPermissionAsync("interfaceName", "userId");
 
             if (!hasPermission)
             {
                 // 如果用户没有权限，可以返回一个未授权的结果，或者执行其他相应的操作
-                context.Result = new UnauthorizedResult();
+                //context.Result = new UnauthorizedResult();
+                context.Result = ToFailResult("没有权限.");
                 return;
             }
 

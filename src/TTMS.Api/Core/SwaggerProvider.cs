@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.SwaggerGen;
+﻿using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace TTMS.Api.Core
 {
@@ -23,6 +24,31 @@ namespace TTMS.Api.Core
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "TTMS.Api.xml")); // 启用 XML 注释
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "TTMS.DTO.xml"));
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "TTMS.Enums.xml"));
+
+            // 添加 JWT 认证支持
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    },
+                    new List<string>()
+                }
+            });
         }
     }
 }

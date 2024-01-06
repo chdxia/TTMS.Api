@@ -107,11 +107,6 @@
         /// </summary>
         [Required(ErrorMessage = "DefectType is required.")]
         public DefectType DefectType { get; set; }
-
-        /// <summary>
-        /// 缺陷状态;默认待处理
-        /// </summary>
-        public DefectState DefectState { get; set; } = DefectState.待处理;
     }
 
     /// <summary>
@@ -124,5 +119,16 @@
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
         public int Id { get; set; }
+
+        /// <summary>
+        /// 缺陷状态
+        /// </summary>
+        [Required(ErrorMessage = "DefectState is required.")]
+        public DefectState DefectState { get; set; }
+
+        /// <summary>
+        /// 缺陷状态修改描述
+        /// </summary>
+        public string? DefectDetailDescription { get; set; }
     }
 }

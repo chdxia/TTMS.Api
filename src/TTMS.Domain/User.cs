@@ -16,7 +16,7 @@
         /// 账户名;唯一
         /// </summary>
         [Column(Name = "account", DbType = "varchar")]
-        public string? Account { get; set; }
+        public string Account { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户名
@@ -28,19 +28,19 @@
         /// 用户邮箱;唯一
         /// </summary>
         [Column(Name = "email", DbType = "varchar")]
-        public string? Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// 用户密码
         /// </summary>
-        [Column(Name = "password", DbType = "varchar", IsNullable = true)]
-        public string? PassWord { get; set; }
+        [Column(Name = "password", DbType = "varchar")]
+        public string PassWord { get; set; } = string.Empty;
 
         /// <summary>
-        /// 账户token
+        /// 盐值
         /// </summary>
-        [Column(Name = "access_token", DbType = "varchar", IsNullable = true)]
-        public string? AccessToken { get; set; }
+        [Column(Name = "salt", DbType = "varchar")]
+        public string Salt { get; set; } = string.Empty;
 
         /// <summary>
         /// 外键;分组id
@@ -77,7 +77,7 @@
         /// 创建时间
         /// </summary>
         [Column(Name = "create_time", DbType = "timestamp")]
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 最后更新人
@@ -89,6 +89,6 @@
         /// 最后更新时间
         /// </summary>
         [Column(Name = "update_time", DbType = "timestamp")]
-        public DateTime? UpdateTime { get; set; }
+        public DateTime? UpdateTime { get; set; } = DateTime.Now;
     }
 }

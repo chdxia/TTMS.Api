@@ -3,6 +3,7 @@
     /// <summary>
     /// 分组
     /// </summary>
+    [Authorize]
     [ApiExplorerSettings(GroupName = "分组")]
     public class GroupController : BaseApiController
     {
@@ -39,8 +40,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<GroupResponse>))]
         public async Task<IActionResult> CreateGroupAsync([FromBody] CreateGroupRequest request)
         {
-            var (ok, message, result) = await _groupRepository.InsertGroupAsync(request); 
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _groupRepository.InsertGroupAsync(request); 
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -52,8 +53,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel<GroupResponse>))]
         public async Task<IActionResult> UpdateGroupAsync([FromBody] UpdateGroupRequest request)
         {
-            var (ok, message, result) = await _groupRepository.UpdateGroupAsync(request);
-            return ok ? ToSuccessResult(result) : ToFailResult(message);
+            var result = await _groupRepository.UpdateGroupAsync(request);
+            return ToSuccessResult(result);
         }
 
         /// <summary>
@@ -65,8 +66,8 @@
         [ProducesResponseType(200, Type = typeof(ApiResultModel))]
         public async Task<IActionResult> DeleteGroupAsync([FromBody] DeleteGroupRequest request)
         {
-            var (ok, message) = await _groupRepository.DeleteGroupAsync(request);
-            return ok ? ToSuccessResult(message) : ToFailResult(message);
+            await _groupRepository.DeleteGroupAsync(request);
+            return ToSuccessResult();
         }
     }
 }

@@ -3,6 +3,13 @@
     public interface IUserRepository : IBaseRepository<User, long>
     {
         /// <summary>
+        /// 用户登录
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<UserLoginResponse> UserLoginAsync(UserLoginRequest request);
+
+        /// <summary>
         /// 根据id获取用户信息
         /// </summary>
         /// <param name="id"></param>
@@ -28,20 +35,20 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, UserResponse?)> InsertUserAsync(CreateUserRequest request);
+        Task<UserResponse> InsertUserAsync(CreateUserRequest request);
 
         /// <summary>
         /// 编辑用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string, UserResponse?)> UpdateUserAsync(UpdateUserRequest request);
+        Task<UserResponse> UpdateUserAsync(UpdateUserRequest request);
 
         /// <summary>
         /// 删除用户
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<(bool, string)> DeleteUserAsync(DeleteUserRequest request);
+        Task DeleteUserAsync(DeleteUserRequest request);
     }
 }

@@ -4,11 +4,28 @@
     {
         private readonly IFreeSql _fsql;
         private readonly IMapper _mapper;
+        private readonly string? _accessUserId;
 
-        public UserRepository(IFreeSql fsql, IMapper mapper) : base(fsql)
+        public UserRepository(IFreeSql fsql, IMapper mapper, IHttpContextAccessor contextAccessor) : base(fsql)
         {
             _fsql = fsql;
             _mapper = mapper;
+            _accessUserId = contextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        /// <summary>
+        /// 用户登录
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<UserLoginResponse> UserLoginAsync(UserLoginRequest request)
+        {
+            var model = await _fsql.Select<User>().Where(a => a.Account == request.Account).ToOneAsync();
+            if (model == null || model.PassWord != SecurityUtility.HashWithSalt(request.PassWord, model.Salt))
+            {
+                throw new Exception("Incorrect Account or PassWord."); // 账户或密码错误
+            }
+            return _mapper.Map<User, UserLoginResponse>(model);
         }
 
         /// <summary>
@@ -76,31 +93,32 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, UserResponse?)> InsertUserAsync(CreateUserRequest request)
+        public async Task<UserResponse> InsertUserAsync(CreateUserRequest request)
         {
             if (_fsql.Select<User>().Where(a => a.Account == request.Account || a.Email == request.Email).Where(a => a.IsDelete == false).ToList().Any())
             {
-                return (false, "Account or email already exists.", null); // 新增失败，账户或邮箱已存在
+                throw new Exception("Account or email already exists."); // 新增失败，账户或邮箱已存在
             }
             if (!_fsql.Select<Group>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
             {
-                return (false, "Group does not exist.", null); // 新增失败，分组不存在
+                throw new Exception("Group does not exist."); // 新增失败，分组不存在
             }
             var model = _mapper.Map<CreateUserRequest, User>(request);
-            if (!string.IsNullOrEmpty(request.PassWord))
+            var hashWithNewSalt = SecurityUtility.HashWithNewSalt(request.PassWord);
+            model.PassWord = hashWithNewSalt.hashedValue;
+            model.Salt = hashWithNewSalt.salt;
+            if (_accessUserId != null)
             {
-                model.PassWord = request.PassWord;
+                model.CreateBy = model.UpdateBy = int.Parse(_accessUserId);
             }
-            model.CreateTime = model.UpdateTime = DateTime.Now;
             try
             {
                 await InsertAsync(model);
-                var result = _mapper.Map<User, UserResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<User, UserResponse>(model);
             }
             catch (Exception ex)
             {
-                return (false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -109,12 +127,12 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string, UserResponse?)> UpdateUserAsync(UpdateUserRequest request)
+        public async Task<UserResponse> UpdateUserAsync(UpdateUserRequest request)
         {
             var model = await _fsql.Select<User>().Where(a => a.Id == request.Id).FirstAsync();
             if(model == null) // 如果用户表没有这个用户Id
             {
-                return (false, "User does not exist.", null); // 修改失败，用户不存在
+                throw new Exception("User does not exist."); // 修改失败，用户不存在
             }
             else if (_fsql.Select<User>() // 如果Account或Email和其它未删除用户一样
                 .Where(a => a.Id != request.Id)
@@ -122,23 +140,32 @@
                 .Where(a => a.IsDelete == false)
                 .ToList().Any())
             {
-                return (false, "Account or email already exists.", null); // 修改失败，账户或邮箱已存在
+                throw new Exception("Account or email already exists."); // 修改失败，账户或邮箱已存在
             }
             if (!_fsql.Select<Group>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
             {
-                return (false, "Group does not exist.", null); // 修改失败，分组不存在
+                throw new Exception("Group does not exist."); // 修改失败，分组不存在
             }
             _mapper.Map(request, model);
+            if (!string.IsNullOrEmpty(request.PassWord))
+            {
+                var hashWithNewSalt = SecurityUtility.HashWithNewSalt(request.PassWord);
+                model.PassWord = hashWithNewSalt.hashedValue;
+                model.Salt = hashWithNewSalt.salt;
+            }
+            if (_accessUserId != null)
+            {
+                model.UpdateBy = int.Parse(_accessUserId);
+            }
             model.UpdateTime = DateTime.Now;
             try
             {
                 await UpdateAsync(model);
-                var result = _mapper.Map<User, UserResponse>(model);
-                return (true, "", result);
+                return _mapper.Map<User, UserResponse>(model);
             }
             catch (Exception ex)
             {
-                return(false, ex.Message, null);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -147,11 +174,11 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<(bool, string)> DeleteUserAsync(DeleteUserRequest request)
+        public async Task DeleteUserAsync(DeleteUserRequest request)
         {
             if (!request.UserIds.Any())
             {
-                return (false, "用户Id为空，请填写有效用户Id.");
+                throw new Exception("用户Id为空，请填写有效用户Id.");
             }
             var existingUserIds = await _fsql.Select<User>()
                 .Where(a => request.UserIds.Contains(a.Id))
@@ -159,14 +186,21 @@
             var nonExistingUserIds = request.UserIds.Except(existingUserIds.Select(a => a.Id));
             if (nonExistingUserIds.Any())
             {
-                return (false, $"删除失败，以下用户ID不存在: {string.Join(", ", nonExistingUserIds)}.");
+                throw new Exception($"删除失败，以下用户ID不存在: {string.Join(", ", nonExistingUserIds)}.");
             }
-            var affectedRows = await _fsql.Update<User>()
+            var update = _fsql.Update<User>()
                 .Set(a => a.IsDelete, true)
                 .Set(a => a.UpdateTime, DateTime.Now)
-                .Where(a => request.UserIds.Contains(a.Id))
-                .ExecuteAffrowsAsync();
-            return affectedRows > 0? (true, "") : (false, "删除失败.");
+                .Where(a => request.UserIds.Contains(a.Id));
+            if (_accessUserId != null)
+            {
+                update = update.Set(a => a.UpdateBy, int.Parse(_accessUserId));
+            }
+            var affectedRows = await update.ExecuteAffrowsAsync();
+            if (affectedRows <= 0)
+            {
+                throw new Exception("删除失败.");
+            }
         }
     }
 }

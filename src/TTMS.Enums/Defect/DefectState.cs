@@ -17,13 +17,13 @@ namespace TTMS.Enums
         /// 待验收
         /// </summary>
         [Description("待验收")]
-        待验收 = 3,
+        待验收 = 1,
 
         /// <summary>
         /// 通过
         /// </summary>
         [Description("通过")]
-        通过 = 4,
+        通过 = 2,
 
         /// <summary>
         /// 已拒绝

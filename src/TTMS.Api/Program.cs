@@ -1,3 +1,5 @@
+using Hangfire;
+
 namespace TTMS.Api
 {
     /// <summary>
@@ -13,19 +15,18 @@ namespace TTMS.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-            // 获取配置
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.Dev.json")
-                .Build();
+            // 自定义配置文件
+            builder.Configuration.AddJsonFile("appsettings.Dev.json");
 
 
             // 注册服务
-            builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute)))
-                .AddDataAnnotationsLocalization(); // 注册控制器以及自定义全局过滤器
+            builder.Services.AddCustomAuthentication(builder.Configuration); // 注册身份验证
+
+            builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute))).AddDataAnnotationsLocalization(); // 注册控制器以及自定义全局过滤器
 
             builder.Services.AddScoped<ValidateModelAttribute>(); // 自定义全局过滤器
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -33,11 +34,15 @@ namespace TTMS.Api
 
             builder.Services.AddAutoMapper(typeof(DTO.Mapper.UserMapper).Assembly); // 注册映射规则
 
-            builder.Services.AddSingleton(FreeSqlProvider.CreateFreeSqlInstance(config)); // 注册FreeSql实例
+            builder.Services.AddSingleton(FreeSqlProvider.CreateFreeSqlInstance(builder.Configuration)); // 注册FreeSql实例
 
-            RepositoryRegisterHelper.RegisterRepositories(builder.Services); // 批量注册Repository层接口
+            builder.Services.RegisterHangfire(builder.Configuration); // 注册hangfire
 
-            ServiceRegisterHelper.RegisterServices(builder.Services); // 批量注册Service层接口
+            builder.Services.RegisterRepositories(); // 批量注册Repository层接口
+
+            builder.Services.RegisterServices(); // 批量注册Service层接口
+
+            builder.Services.AddHangfireServer(); // hangfire服务
 
 
             var app = builder.Build();
@@ -48,11 +53,17 @@ namespace TTMS.Api
             //    app.UseSwaggerUI();
             //}
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI( options => { options.OAuthUseBasicAuthenticationWithAccessCodeGrant(); } ); // swagger支持jwt认证
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions {Authorization = new[] { new HangfireDashboardAuthorizationFilter() }}); // hangfire面板
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseMiddleware<ExceptionHandlerMiddleware>(); // 异常处理中间件
+
+            app.UseAuthentication(); // 身份验证
+
+            app.UseAuthorization(); // 权限验证
 
             app.MapControllers();
 

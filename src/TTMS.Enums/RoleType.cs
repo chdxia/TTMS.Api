@@ -11,42 +11,42 @@ namespace TTMS.Enums
         /// 管理员
         /// </summary>
         [Description("管理员")]
-        admin = 0,
+        管理员 = 0,
 
         /// <summary>
-        /// ProjectManager;项目经理;ProductManager;产品经理
+        /// 总项目经理;总产品经理
         /// </summary>
         [Description("项目经理")]
-        pm = 1,
+        项目经理 = 1,
 
         /// <summary>
-        /// GroupManager;组长
+        /// 组长
         /// </summary>
         [Description("组长")]
-        gm = 2,
+        组长 = 2,
 
         /// <summary>
         /// 产品
         /// </summary>
         [Description("产品")]
-        product = 3,
+        产品 = 3,
 
         /// <summary>
         /// 开发
         /// </summary>
         [Description("开发")]
-        developer = 4,
+        开发 = 4,
 
         /// <summary>
         /// 测试
         /// </summary>
         [Description("测试")]
-        tester = 5,
+        测试 = 5,
 
         /// <summary>
         /// 访客
         /// </summary>
         [Description("访客")]
-        visitor = 6
+        访客 = 6
     }
 }

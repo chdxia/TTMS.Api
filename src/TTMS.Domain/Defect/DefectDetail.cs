@@ -47,6 +47,6 @@
         /// 创建时间
         /// </summary>
         [Column(Name = "create_time", DbType = "timestamp")]
-        public DateTime? CreateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
     }
 }

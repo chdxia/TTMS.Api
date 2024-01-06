@@ -93,7 +93,7 @@
         /// 版本Id
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
     }
 
     /// <summary>
