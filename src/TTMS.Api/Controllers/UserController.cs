@@ -27,7 +27,7 @@
         /// <returns></returns>
         [HttpPost("Login")]
         [ProducesResponseType(200, Type = typeof(ApiResultModel<UserLoginResponse>))]
-        public async Task<IActionResult> UserLogin(UserLoginRequest request)
+        public async Task<IActionResult> UserLogin([FromBody] UserLoginRequest request)
         {
             var result = await _userService.UserLoginAsync(request);
             return ToSuccessResult(result);
