@@ -22,7 +22,9 @@ namespace TTMS.Api
             // 注册服务
             builder.Services.AddCustomAuthentication(builder.Configuration); // 注册身份验证
 
-            builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute))).AddDataAnnotationsLocalization(); // 注册控制器以及自定义全局过滤器
+            builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidateModelAttribute))) // 注册控制器以及自定义全局过滤器
+                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null) // 禁用默认的属性命名策略，JSON字符串中的属性名将保持原样
+                .AddDataAnnotationsLocalization(); 
 
             builder.Services.AddScoped<ValidateModelAttribute>(); // 自定义全局过滤器
 
