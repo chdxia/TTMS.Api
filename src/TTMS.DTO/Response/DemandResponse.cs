@@ -86,9 +86,9 @@
         public DateTime? ActualOnlineTime { get; set; }
 
         /// <summary>
-        /// 版本id
+        /// 版本信息
         /// </summary>
-        public List<VersionInfoResponse> VersionIds { get; set; } = new List<VersionInfoResponse>();
+        public List<VersionInfoResponse> VersionInfos { get; set; } = new List<VersionInfoResponse>();
 
         /// <summary>
         /// 创建人
@@ -109,5 +109,16 @@
         /// 最后更新时间
         /// </summary>
         public DateTime UpdateTime { get; set; }
+    }
+
+    /// <summary>
+    /// 返回分页数据;需求
+    /// </summary>
+    public class PageListDemandResponse : BasePageListResponse
+    {
+        /// <summary>
+        /// Items
+        /// </summary>
+        public new List<DemandResponse> Items { get; set; } = new List<DemandResponse>();
     }
 }

@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<DemandResponse>> GetDemandPageListAsync(DemandRequest request);
+        Task<PageListDemandResponse> GetDemandPageListAsync(DemandRequest request);
 
         /// <summary>
         /// 新增需求

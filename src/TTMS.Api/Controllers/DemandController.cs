@@ -50,7 +50,7 @@
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("GetPageList")]
-        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DemandResponse>>))]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<PageListDemandResponse>))]
         public async Task<IActionResult> GetPageListAsync([FromBody] DemandRequest request)
         {
             var result = await _demandRepository.GetDemandPageListAsync(request);

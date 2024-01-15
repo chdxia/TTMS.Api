@@ -28,9 +28,9 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<DemandResponse>> GetDemandPageListAsync(DemandRequest request)
+        public async Task<PageListDemandResponse> GetDemandPageListAsync(DemandRequest request)
         {
-            var demands = await _fsql.Select<Demand, DemandUser, DemandVersionInfo, VersionInfo>()
+            var demands = _fsql.Select<Demand, DemandUser, DemandVersionInfo, VersionInfo>()
                 .LeftJoin(a => a.t1.Id == a.t2.DemandId)
                 .LeftJoin(a => a.t1.Id == a.t3.DemandId)
                 .LeftJoin(a => a.t4.Id == a.t3.VersionInfoId)
@@ -58,8 +58,38 @@
                 .WhereIf(request.UpdateTimeStart.HasValue, a => a.t1.UpdateTime >= request.UpdateTimeStart)
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
-                .ToListAsync<DemandResponse>();
-            return demands;
+                .Distinct();
+            var totalCount = await demands.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / request.PageSize);
+            var demandItems = await demands.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DemandResponse>();
+            var pageListResponse = new PageListDemandResponse
+            {
+                Items = new List<DemandResponse>(),
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalPages = totalPages,
+                TotalCount = totalCount
+            };
+            foreach (var item in demandItems)
+            {
+                item.Developer = await _fsql.Select<User, DemandUser>()
+                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                    .Where(a => a.t2.DemandId == item.Id)
+                    .Where(a => a.t1.RoleType == RoleType.开发)
+                    .ToListAsync<UserResponse>();
+                item.Tester = await _fsql.Select<User, DemandUser>()
+                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                    .Where(a => a.t2.DemandId == item.Id)
+                    .Where(a => a.t1.RoleType == RoleType.测试)
+                    .ToListAsync<UserResponse>();
+                item.VersionInfos = await _fsql.Select<VersionInfo, DemandVersionInfo>()
+                    .LeftJoin(a => a.t1.Id == a.t2.VersionInfoId)
+                    .Where(a => !a.t2.IsDelete)
+                    .Where(a => a.t2.DemandId == item.Id)
+                    .ToListAsync<VersionInfoResponse>();
+                pageListResponse.Items.Add(item);
+            }
+            return pageListResponse;
         }
 
         /// <summary>
