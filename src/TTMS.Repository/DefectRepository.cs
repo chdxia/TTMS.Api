@@ -28,9 +28,9 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<DefectResponse>> GetDefectPageListAsync(DefectRequest request)
+        public async Task<PageListDefectResponse> GetDefectPageListAsync(DefectRequest request)
         {
-            var defects = await _fsql.Select<Defect, Demand, DemandUser>()
+            var query = _fsql.Select<Defect, Demand, DemandUser>()
                 .LeftJoin(a => a.t1.DemandId == a.t2.Id)
                 .LeftJoin(a => a.t2.Id == a.t3.DemandId)
                 .Where(a => !a.t2.IsDelete)
@@ -48,9 +48,17 @@
                 .WhereIf(request.CreateBy.HasValue, a => a.t1.CreateBy == request.CreateBy)
                 .WhereIf(request.UpdateTimeStart.HasValue, a => a.t1.UpdateTime >= request.UpdateTimeStart)
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
-                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
-                .ToListAsync<DefectResponse>();
-            return defects;
+                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy);
+            var totalCount = await query.CountAsync();
+            var GroupItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DefectResponse>();
+            var pageListResponse = new PageListDefectResponse
+            {
+                Items = GroupItems,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalCount = totalCount
+            };
+            return pageListResponse;
         }
 
         /// <summary>

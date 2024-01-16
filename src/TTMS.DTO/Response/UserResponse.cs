@@ -71,4 +71,15 @@
         /// </summary>
         public string? AccessToken { get; set; }
     }
+
+    /// <summary>
+    /// 返回分页数据;用户
+    /// </summary>
+    public class PageListUserResponse : BasePageListResponse
+    {
+        /// <summary>
+        /// Items
+        /// </summary>
+        public new List<UserResponse> Items { get; set; } = new List<UserResponse>();
+    }
 }

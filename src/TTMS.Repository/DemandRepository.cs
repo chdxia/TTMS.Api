@@ -30,7 +30,7 @@
         /// <returns></returns>
         public async Task<PageListDemandResponse> GetDemandPageListAsync(DemandRequest request)
         {
-            var demands = _fsql.Select<Demand, DemandUser, DemandVersionInfo, VersionInfo>()
+            var query = _fsql.Select<Demand, DemandUser, DemandVersionInfo, VersionInfo>()
                 .LeftJoin(a => a.t1.Id == a.t2.DemandId)
                 .LeftJoin(a => a.t1.Id == a.t3.DemandId)
                 .LeftJoin(a => a.t4.Id == a.t3.VersionInfoId)
@@ -59,15 +59,13 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
                 .Distinct();
-            var totalCount = await demands.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalCount / request.PageSize);
-            var demandItems = await demands.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DemandResponse>();
+            var totalCount = await query.CountAsync();
+            var demandItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DemandResponse>();
             var pageListResponse = new PageListDemandResponse
             {
                 Items = new List<DemandResponse>(),
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
-                TotalPages = totalPages,
                 TotalCount = totalCount
             };
             foreach (var item in demandItems)

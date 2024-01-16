@@ -23,7 +23,13 @@
         /// <summary>
         /// 总页数
         /// </summary>
-        public int TotalPages { get; set; }
+        public int TotalPages
+        {
+            get
+            {
+                return (int)Math.Ceiling((double)TotalCount/PageSize);
+            }
+        }
 
         /// <summary>
         /// 总数据条数

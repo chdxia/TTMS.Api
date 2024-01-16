@@ -59,8 +59,8 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
-            var List = await query.ToListAsync<UserResponse>();
-            return List;
+            var listResponse = await query.ToListAsync<UserResponse>();
+            return listResponse;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<UserResponse>> GetUserPageListAsync(UserRequest request)
+        public async Task<PageListUserResponse> GetUserPageListAsync(UserRequest request)
         {
             var query = _fsql.Select<User>()
                 .Where(a => !a.IsDelete)
@@ -78,14 +78,22 @@
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
                 .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
                 .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
-                .WhereIf(request.CreateTimeEnd.HasValue, a=> a.CreateTime <= request.CreateTimeEnd)
-                .WhereIf(request.CreateBy.HasValue, a=> a.CreateBy == request.CreateBy)
-                .WhereIf(request.UpdateTimeStart.HasValue, a=> a.UpdateTime >= request.UpdateTimeStart)
-                .WhereIf(request.UpdateTimeEnd.HasValue, a=> a.UpdateTime <= request.UpdateTimeEnd)
-                .WhereIf(request.UpdateBy.HasValue, a=> a.UpdateBy == request.UpdateBy)
+                .WhereIf(request.CreateTimeEnd.HasValue, a => a.CreateTime <= request.CreateTimeEnd)
+                .WhereIf(request.CreateBy.HasValue, a => a.CreateBy == request.CreateBy)
+                .WhereIf(request.UpdateTimeStart.HasValue, a => a.UpdateTime >= request.UpdateTimeStart)
+                .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
+                .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
-            var List = await query.ToListAsync<UserResponse>();
-            return List;
+            var totalCount = await query.CountAsync();
+            var userItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<UserResponse>();
+            var pageListResponse = new PageListUserResponse
+            {
+                Items = userItems,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalCount = totalCount
+            };
+            return pageListResponse;
         }
 
         /// <summary>

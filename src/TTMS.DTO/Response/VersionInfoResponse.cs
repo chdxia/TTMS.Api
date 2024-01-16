@@ -38,7 +38,7 @@
         /// <summary>
         /// 版本需求
         /// </summary>
-        public List<DemandResponse> Demands { get; set; } = new List<DemandResponse>();
+        public List<DemandResponse> DemandItems { get; set; } = new List<DemandResponse>();
 
         /// <summary>
         /// 创建人
@@ -59,5 +59,16 @@
         /// 最后更新时间
         /// </summary>
         public DateTime UpdateTime { get; set; }
+    }
+
+    /// <summary>
+    /// 返回分页数据;版本
+    /// </summary>
+    public class PageListVersionInfoResponse : BasePageListResponse
+    {
+        /// <summary>
+        /// Items
+        /// </summary>
+        public new List<VersionInfoResponse> Items { get; set; } = new List<VersionInfoResponse>();
     }
 }

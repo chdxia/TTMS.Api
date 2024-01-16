@@ -24,7 +24,7 @@
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("GetPageList")]
-        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<VersionInfoResponse>>))]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<PageListVersionInfoResponse>))]
         public async Task<IActionResult> GetPageListAsync([FromBody] VersionInfoRequest request)
         {
             var result = await _versionInfoRepository.GetVersionInfoPageListAsync(request);

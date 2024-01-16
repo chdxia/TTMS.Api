@@ -3,6 +3,7 @@
 namespace TTMS.Api.Core
 {
     #region BaseApiController 控制器基类
+
     /// <summary>
     /// BaseApiController 控制器基类
     /// </summary>
@@ -73,22 +74,24 @@ namespace TTMS.Api.Core
         /// 成功返回，带body
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="body"></param>
+        /// <param name="data"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        protected virtual JsonResult ToSuccessResult<T>(T body, string msg = "")
+        protected virtual JsonResult ToSuccessResult<T>(T data, string msg = "")
         {
             return Json(new ApiResultModel<T>
             {
-                Body = body,
+                Data = data,
                 ErrorCode = 0,
                 Msg = msg
             });
         }
     }
+
     #endregion
 
     #region AuthorizeApiController 需要认证的控制器基类
+
     /// <summary>
     /// AuthorizeApiController 需要认证的控制器基类
     /// </summary>
@@ -142,9 +145,11 @@ namespace TTMS.Api.Core
             base.OnActionExecuting(context);
         }
     }
+
     #endregion
 
     #region ApiResultModel 返回格式，带body
+    
     /// <summary>
     /// 返回格式，带body
     /// </summary>
@@ -164,7 +169,7 @@ namespace TTMS.Api.Core
         /// <summary>
         /// 数据内容
         /// </summary>
-        public T? Body { get; set; }
+        public T? Data { get; set; }
 
         /// <summary>
         /// 是否成功
@@ -187,21 +192,23 @@ namespace TTMS.Api.Core
         /// <summary>
         /// 操作成功
         /// </summary>
-        /// <param name="body"></param>
+        /// <param name="data"></param>
         /// <param name="msg"></param>
         /// <param name="errCode"></param>
         /// <returns></returns>
-        public ApiResultModel<T> ToSucceedResult(T body = default, string msg = "操作成功", int errCode = 0)
+        public ApiResultModel<T> ToSucceedResult(T data = default, string msg = "操作成功", int errCode = 0)
         {
             Msg = msg;
             ErrorCode = errCode;
-            Body = body;
+            Data = data;
             return this;
         }
     }
+
     #endregion
 
     #region ApiResultModel 返回格式，不带body
+
     /// <summary>
     /// 返回格式，不带body
     /// </summary>
@@ -212,7 +219,7 @@ namespace TTMS.Api.Core
         /// </summary>
         public ApiResultModel()
         {
-            Body = string.Empty;
+            Data = string.Empty;
         }
 
         /// <summary>
@@ -231,17 +238,18 @@ namespace TTMS.Api.Core
         /// <summary>
         /// ToSucceedResult
         /// </summary>
-        /// <param name="body"></param>
+        /// <param name="data"></param>
         /// <param name="msg"></param>
         /// <param name="errCode"></param>
         /// <returns></returns>
-        public new ApiResultModel ToSucceedResult(string body = "", string msg = "操作成功", int errCode = 0)
+        public new ApiResultModel ToSucceedResult(string data = "", string msg = "操作成功", int errCode = 0)
         {
             Msg = msg;
             ErrorCode = errCode;
-            Body = body;
+            Data = data;
             return this;
         }
     }
+
     #endregion
 }

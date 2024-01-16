@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<VersionInfoResponse>> GetVersionInfoPageListAsync(VersionInfoRequest request);
+        Task<PageListVersionInfoResponse> GetVersionInfoPageListAsync(VersionInfoRequest request);
 
         /// <summary>
         /// 新增版本

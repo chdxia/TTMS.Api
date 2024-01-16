@@ -55,4 +55,15 @@
         /// </summary>
         public DateTime? UpdateTime { get; set; }
     }
+
+    /// <summary>
+    /// 返回分页数据;缺陷
+    /// </summary>
+    public class PageListDefectResponse : BasePageListResponse
+    {
+        /// <summary>
+        /// Items
+        /// </summary>
+        public new List<DefectResponse> Items { get; set; } = new List<DefectResponse>();
+    }
 }

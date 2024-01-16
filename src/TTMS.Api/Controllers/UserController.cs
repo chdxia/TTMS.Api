@@ -66,7 +66,7 @@
         /// <returns></returns>
         [Authorize]
         [HttpPost("GetPageList")]
-        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<UserResponse>>))]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<PageListUserResponse>))]
         public async Task<IActionResult> GetPageListAsync([FromBody] UserRequest request)
         {
             var result = await _userRepository.GetUserPageListAsync(request);

@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<DefectResponse>> GetDefectPageListAsync(DefectRequest request);
+        Task<PageListDefectResponse> GetDefectPageListAsync(DefectRequest request);
 
         /// <summary>
         /// 新增缺陷

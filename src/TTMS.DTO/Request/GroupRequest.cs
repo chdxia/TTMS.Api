@@ -44,6 +44,16 @@
         /// 最后更新时间
         /// </summary>
         public DateTime? UpdateTimeEnd { get; set; }
+
+        /// <summary>
+        /// 当前索引页
+        /// </summary>
+        public int PageIndex { get; set; } = 1;
+
+        /// <summary>
+        /// 页码大小
+        /// </summary>
+        public int PageSize { get; set; } = 20;
     }
 
     /// <summary>

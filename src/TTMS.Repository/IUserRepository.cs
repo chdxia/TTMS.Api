@@ -28,7 +28,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<UserResponse>> GetUserPageListAsync(UserRequest request);
+        Task<PageListUserResponse> GetUserPageListAsync(UserRequest request);
 
         /// <summary>
         /// 新增用户

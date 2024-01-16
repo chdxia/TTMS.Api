@@ -18,40 +18,46 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<VersionInfoResponse>> GetVersionInfoPageListAsync(VersionInfoRequest request)
+        public async Task<PageListVersionInfoResponse> GetVersionInfoPageListAsync(VersionInfoRequest request)
         {
-            var versionInfos = await _fsql.Select<VersionInfo>()
+            var query = _fsql.Select<VersionInfo>()
                 .Where(a => !a.IsDelete)
                 .WhereIf(request.Id.HasValue, a => a.Id == request.Id)
                 .WhereIf(request.VertionTime.HasValue, a => a.VersionTimeStart <= request.VertionTime)
                 .WhereIf(request.VertionTime.HasValue, a => request.VertionTime <= a.VersionTimeEnd)
-                .WhereIf(!string.IsNullOrEmpty(request.VersionNo), a =>  a.VersionNo.Contains(request.VersionNo))
+                .WhereIf(!string.IsNullOrEmpty(request.VersionNo), a => a.VersionNo.Contains(request.VersionNo))
                 .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
                 .WhereIf(request.CreateTimeEnd.HasValue, a => a.CreateTime <= request.CreateTimeEnd)
                 .WhereIf(request.CreateBy.HasValue, a => a.CreateBy == request.CreateBy)
                 .WhereIf(request.UpdateTimeStart.HasValue, a => a.UpdateTime >= request.UpdateTimeStart)
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
-                .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
-                .ToListAsync();
-            var groups = await _fsql.Select<Group>().WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToListAsync();
-            var versionInfoList = new List<VersionInfoResponse>();
-            foreach (var versionInfo in versionInfos)
+                .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy);
+            var totalCount = await query.CountAsync();
+            var versionInfoItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<VersionInfoResponse>();
+            var groupItems = await _fsql.Select<Group>().WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToListAsync();
+            var pageListResponse = new PageListVersionInfoResponse
             {
-                foreach (var group in groups)
+                Items = new List<VersionInfoResponse>(),
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalCount = totalCount
+            };
+            foreach (var versionInfo in versionInfoItems)
+            {
+                foreach (var group in groupItems)
                 {
-                    var versionInfoResponse = _mapper.Map<VersionInfo, VersionInfoResponse>(versionInfo);
-                    versionInfoResponse.GroupId = group.Id;
-                    var demands = await _fsql.Select<Demand, DemandVersionInfo>()
+                    versionInfo.GroupId = group.Id;
+                    var demandItems = await _fsql.Select<Demand, DemandVersionInfo>()
                         .LeftJoin(a => a.t1.Id == a.t2.DemandId)
                         .Where(a => !a.t1.IsDelete)
                         .Where(a => !a.t2.IsDelete)
                         .Where(a => a.t1.GroupId == group.Id && a.t2.VersionInfoId == versionInfo.Id)
-                        .ToListAsync();
-                    versionInfoResponse.Demands = _mapper.Map<List<Demand>, List<DemandResponse>>(demands);
-                    versionInfoList.Add(versionInfoResponse);
+                        .ToListAsync<DemandResponse>();
+                    versionInfo.DemandItems = demandItems;
+                    pageListResponse.Items.Add(versionInfo);
                 }
             }
-            return versionInfoList;
+            return pageListResponse;
         }
 
         /// <summary>

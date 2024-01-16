@@ -24,7 +24,7 @@
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("GetPageList")]
-        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<GroupResponse>>))]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<PageListGroupResponse>))]
         public async Task<IActionResult> GetPageListAsync([FromBody] GroupRequest request)
         {
             var result = await _groupRepository.GetGroupPageListAsync(request);

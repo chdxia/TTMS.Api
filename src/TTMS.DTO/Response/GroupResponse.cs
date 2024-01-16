@@ -35,4 +35,15 @@
         /// </summary>
         public DateTime UpdateTime { get; set; }
     }
+
+    /// <summary>
+    /// 返回分页数据;分组
+    /// </summary>
+    public class PageListGroupResponse : BasePageListResponse
+    {
+        /// <summary>
+        /// Items
+        /// </summary>
+        public new List<GroupResponse> Items { get; set; } = new List<GroupResponse>();
+    }
 }

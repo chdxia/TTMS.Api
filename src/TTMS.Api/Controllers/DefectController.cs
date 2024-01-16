@@ -58,7 +58,7 @@
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("GetPageList")]
-        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectResponse>>))]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<PageListDefectResponse>))]
         public async Task<IActionResult> GetPageListAsync([FromBody] DefectRequest request)
         {
             var result = await _defectRepository.GetDefectPageListAsync(request);

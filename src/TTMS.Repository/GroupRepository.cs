@@ -18,7 +18,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<List<GroupResponse>> GetGroupPageListAsync(GroupRequest request)
+        public async Task<PageListGroupResponse> GetGroupPageListAsync(GroupRequest request)
         {
             var query = _fsql.Select<Group>()
                 .Where(a => !a.IsDelete)
@@ -30,8 +30,16 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a=> a.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a=> a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
-            var List = await query.ToListAsync<GroupResponse>();
-            return List;
+            var totalCount = await query.CountAsync();
+            var GroupItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<GroupResponse>();
+            var pageListResponse = new PageListGroupResponse
+            {
+                Items = GroupItems,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalCount = totalCount
+            };
+            return pageListResponse;
         }
 
         /// <summary>

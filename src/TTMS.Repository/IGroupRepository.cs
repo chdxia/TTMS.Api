@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<GroupResponse>> GetGroupPageListAsync(GroupRequest request);
+        Task<PageListGroupResponse> GetGroupPageListAsync(GroupRequest request);
 
         /// <summary>
         /// 新增分组
