@@ -3,6 +3,13 @@
     public interface IGroupRepository : IBaseRepository<Group, long>
     {
         /// <summary>
+        /// 获取分组列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<List<GroupResponse>> GetGroupListAsync(GroupRequest request);
+
+        /// <summary>
         /// 分页获取分组列表
         /// </summary>
         /// <param name="request"></param>

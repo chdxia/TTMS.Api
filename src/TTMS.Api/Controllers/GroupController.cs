@@ -19,6 +19,19 @@
         }
 
         /// <summary>
+        /// 获取分组列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("GetList")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<GroupResponse>>))]
+        public async Task<IActionResult> GetListAsync([FromBody] GroupRequest request)
+        {
+            var result = await _groupRepository.GetGroupListAsync(request);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
         /// 分页获取分组列表
         /// </summary>
         /// <param name="request"></param>

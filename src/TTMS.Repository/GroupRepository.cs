@@ -14,6 +14,27 @@
         }
 
         /// <summary>
+        /// 获取分组列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<List<GroupResponse>> GetGroupListAsync(GroupRequest request)
+        {
+            var query = _fsql.Select<Group>()
+                .Where(a => !a.IsDelete)
+                .WhereIf(!string.IsNullOrEmpty(request.GroupName), a => a.GroupName.Contains(request.GroupName))
+                .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
+                .WhereIf(request.CreateTimeEnd.HasValue, a => a.CreateTime <= request.CreateTimeEnd)
+                .WhereIf(request.CreateBy.HasValue, a => a.CreateBy == request.CreateBy)
+                .WhereIf(request.UpdateTimeStart.HasValue, a => a.UpdateTime >= request.UpdateTimeStart)
+                .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
+                .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
+                .OrderByDescending(a => a.CreateTime);
+            var listResponse = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<GroupResponse>();
+            return listResponse;
+        }
+
+        /// <summary>
         /// 分页获取分组列表
         /// </summary>
         /// <param name="request"></param>
