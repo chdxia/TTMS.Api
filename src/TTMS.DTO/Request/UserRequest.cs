@@ -39,6 +39,11 @@
         public string? UserName { get; set; }
 
         /// <summary>
+        /// 账户或用户名
+        /// </summary>
+        public string? AccountOrUserName { get; set; }
+
+        /// <summary>
         /// 用户邮箱
         /// </summary>
         public string? Email { get; set; }
@@ -125,8 +130,7 @@
         /// <summary>
         /// 分组id
         /// </summary>
-        [Required(ErrorMessage = "GroupId is required.")]
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
 
         /// <summary>
         /// 用户密码
@@ -139,6 +143,11 @@
         /// </summary>
         [Required(ErrorMessage = "RoleId is required.")]
         public RoleType RoleId { get; set; }
+
+        /// <summary>
+        /// 账户状态;t启用,f停用;默认t
+        /// </summary>
+        public bool State { get; set; } = true;
     }
 
     /// <summary>
@@ -156,7 +165,7 @@
         /// 账户状态
         /// </summary>
         [Required(ErrorMessage = "State is required.")]
-        public bool State { get; set; }
+        public new bool State { get; set; }
 
         /// <summary>
         /// 用户密码

@@ -47,7 +47,7 @@
         /// </summary>
         [Column(Name = "group_id", DbType = "int8")]
         [Navigate(nameof(Group.Id))]
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
 
         /// <summary>
         /// 角色id
@@ -56,10 +56,10 @@
         public RoleType RoleType { get; set; }
 
         /// <summary>
-        /// 账户状态;t启用,f停用;默认t
+        /// 账户状态;t启用,f停用
         /// </summary>
         [Column(Name = "state", DbType = "bool")]
-        public bool State { get; set; } = true;
+        public bool State { get; set; }
 
         /// <summary>
         /// 是否删除;t已删除,f未删除;默认f

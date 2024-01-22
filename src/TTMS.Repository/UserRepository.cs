@@ -49,6 +49,7 @@
                 .Where(a => !a.IsDelete)
                 .WhereIf(!string.IsNullOrEmpty(request.Account), a => a.Account.Contains(request.Account))
                 .WhereIf(!string.IsNullOrEmpty(request.UserName), a => a.UserName.Contains(request.UserName))
+                .WhereIf(!string.IsNullOrEmpty(request.AccountOrUserName), a => a.Account.Contains(request.AccountOrUserName) || a.UserName.Contains(request.AccountOrUserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
                 .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
                 .WhereIf(request.RoleId.HasValue, a => a.RoleType == request.RoleId)
@@ -75,6 +76,7 @@
                 .Where(a => !a.IsDelete)
                 .WhereIf(!string.IsNullOrEmpty(request.Account), a => a.Account.Contains(request.Account))
                 .WhereIf(!string.IsNullOrEmpty(request.UserName), a => a.UserName.Contains(request.UserName))
+                .WhereIf(!string.IsNullOrEmpty(request.AccountOrUserName), a => a.Account.Contains(request.AccountOrUserName) || a.UserName.Contains(request.AccountOrUserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
                 .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
                 .WhereIf(request.RoleId.HasValue, a => a.RoleType == request.RoleId)
@@ -109,7 +111,7 @@
             {
                 throw new Exception("Account or email already exists."); // 新增失败，账户或邮箱已存在
             }
-            if (!_fsql.Select<Group>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
+            if (!_fsql.Select<Group>().Where(a => a.IsDelete == false).WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToList().Any())
             {
                 throw new Exception("Group does not exist."); // 新增失败，分组不存在
             }
@@ -152,7 +154,7 @@
             {
                 throw new Exception("Account or email already exists."); // 修改失败，账户或邮箱已存在
             }
-            if (!_fsql.Select<Group>().Where(a => a.Id == request.GroupId).Where(a => a.IsDelete == false).ToList().Any())
+            if (!_fsql.Select<Group>().Where(a => a.IsDelete == false).WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToList().Any())
             {
                 throw new Exception("Group does not exist."); // 修改失败，分组不存在
             }
