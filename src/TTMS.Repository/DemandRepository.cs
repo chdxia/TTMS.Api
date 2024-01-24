@@ -204,7 +204,7 @@
                     }
                     else
                     {
-                        existingDemandVersionInfo.IsDelete = true; // 请求数据中不存在的关联记录，将IsDelete设置未true
+                        existingDemandVersionInfo.IsDelete = true; // 请求数据中不存在的关联记录，将IsDelete设置为true
                     }
                 }
                 // 请求数据中存在，但数据库没有，直接新增关联记录

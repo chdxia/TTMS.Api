@@ -30,7 +30,7 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
-            var listResponse = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<GroupResponse>();
+            var listResponse = await query.ToListAsync<GroupResponse>();
             return listResponse;
         }
 

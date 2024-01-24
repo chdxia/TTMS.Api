@@ -10,6 +10,13 @@
         Task<DefectResponse> GetDefectByIdAsync(int id);
 
         /// <summary>
+        /// 获取缺陷列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<List<DefectResponse>> GetDefectListAsync(DefectRequest request);
+
+        /// <summary>
         /// 分页获取缺陷列表
         /// </summary>
         /// <param name="request"></param>

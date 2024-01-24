@@ -53,6 +53,19 @@
         }
 
         /// <summary>
+        /// 获取缺陷列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("GetList")]
+        [ProducesResponseType(200, Type = typeof(ApiResultModel<List<DefectResponse>>))]
+        public async Task<IActionResult> GetListAsync([FromBody] DefectRequest request)
+        {
+            var result = await _defectRepository.GetDefectListAsync(request);
+            return ToSuccessResult(result);
+        }
+
+        /// <summary>
         /// 分页获取缺陷列表
         /// </summary>
         /// <param name="request"></param>

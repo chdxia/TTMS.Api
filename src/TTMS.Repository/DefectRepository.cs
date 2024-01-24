@@ -24,6 +24,36 @@
         }
 
         /// <summary>
+        /// 获取缺陷列表
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<List<DefectResponse>> GetDefectListAsync(DefectRequest request)
+        {
+            var query = _fsql.Select<Defect, Demand, DemandUser>()
+                .LeftJoin(a => a.t1.DemandId == a.t2.Id)
+                .LeftJoin(a => a.t2.Id == a.t3.DemandId)
+                .Where(a => !a.t2.IsDelete)
+                .WhereIf(request.Id.HasValue, a => a.t1.Id == request.Id)
+                .WhereIf(request.GroupId.HasValue, a => a.t2.GroupId == request.GroupId)
+                .WhereIf(!string.IsNullOrEmpty(request.ModuleName), a => a.t2.ModuleName == request.ModuleName)
+                .WhereIf(!string.IsNullOrEmpty(request.DemandName), a => a.t2.DemandName == request.DemandName)
+                .WhereIf(request.DeveloperId.HasValue, a => a.t3.UserId == request.DeveloperId && !a.t3.IsDelete)
+                .WhereIf(request.TesterId.HasValue, a => a.t3.UserId == request.TesterId && !a.t3.IsDelete)
+                .WhereIf(!string.IsNullOrEmpty(request.Title), a => a.t1.Title == request.Title)
+                .WhereIf(request.DefectType.HasValue, a => a.t1.DefectType == request.DefectType)
+                .WhereIf(request.DefectState.HasValue, a => a.t1.DefectState == request.DefectState)
+                .WhereIf(request.CreateTimeStart.HasValue, a => a.t1.CreateTime >= request.CreateTimeStart)
+                .WhereIf(request.CreateTimeEnd.HasValue, a => a.t1.CreateTime <= request.CreateTimeEnd)
+                .WhereIf(request.CreateBy.HasValue, a => a.t1.CreateBy == request.CreateBy)
+                .WhereIf(request.UpdateTimeStart.HasValue, a => a.t1.UpdateTime >= request.UpdateTimeStart)
+                .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
+                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy);
+            var listResponse = await query.ToListAsync<DefectResponse>();
+            return listResponse;
+        }
+
+        /// <summary>
         /// 分页获取缺陷列表
         /// </summary>
         /// <param name="request"></param>
