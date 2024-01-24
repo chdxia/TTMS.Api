@@ -34,7 +34,6 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy);
             var totalCount = await query.CountAsync();
             var versionInfoItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<VersionInfoResponse>();
-            var groupItems = await _fsql.Select<Group>().WhereIf(request.GroupId.HasValue, a => a.Id == request.GroupId).ToListAsync();
             var pageListResponse = new PageListVersionInfoResponse
             {
                 Items = new List<VersionInfoResponse>(),
@@ -44,18 +43,17 @@
             };
             foreach (var versionInfo in versionInfoItems)
             {
-                foreach (var group in groupItems)
+                var demandItems = await _fsql.Select<Demand, DemandVersionInfo>()
+                    .LeftJoin(a => a.t1.Id == a.t2.DemandId)
+                    .Where(a => !a.t1.IsDelete)
+                    .Where(a => !a.t2.IsDelete)
+                    .Where(a => a.t2.VersionInfoId == versionInfo.Id)
+                    .ToListAsync<DemandResponse>();
+                if (demandItems != null && !demandItems.All(demand => demand.DemandState >= DemandState.已上线))
                 {
-                    versionInfo.GroupId = group.Id;
-                    var demandItems = await _fsql.Select<Demand, DemandVersionInfo>()
-                        .LeftJoin(a => a.t1.Id == a.t2.DemandId)
-                        .Where(a => !a.t1.IsDelete)
-                        .Where(a => !a.t2.IsDelete)
-                        .Where(a => a.t1.GroupId == group.Id && a.t2.VersionInfoId == versionInfo.Id)
-                        .ToListAsync<DemandResponse>();
-                    versionInfo.DemandItems = demandItems;
-                    pageListResponse.Items.Add(versionInfo);
+                    versionInfo.VersionState = "任务未完成";
                 }
+                pageListResponse.Items.Add(versionInfo);
             }
             return pageListResponse;
         }

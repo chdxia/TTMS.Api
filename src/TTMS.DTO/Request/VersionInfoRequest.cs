@@ -21,16 +21,6 @@
         public string? VersionNo { get; set; }
 
         /// <summary>
-        /// 分组id
-        /// </summary>
-        public int? GroupId { get; set; }
-
-        /// <summary>
-        /// 版本状态
-        /// </summary>
-        public DemandState? VersionState { get; set; }
-
-        /// <summary>
         /// 创建人
         /// </summary>
         public int? CreateBy { get; set; }

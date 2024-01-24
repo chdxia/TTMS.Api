@@ -26,19 +26,9 @@
         public string? VersionNo { get; set; }
 
         /// <summary>
-        /// 分组id
+        /// 版本状态;任务未完成;任务已完成
         /// </summary>
-        public int? GroupId { get; set; }
-
-        /// <summary>
-        /// 版本状态
-        /// </summary>
-        public DemandState VersionState { get; set; }
-
-        /// <summary>
-        /// 版本需求
-        /// </summary>
-        public List<DemandResponse> DemandItems { get; set; } = new List<DemandResponse>();
+        public string VersionState { get; set; } = "任务已完成";
 
         /// <summary>
         /// 创建人
