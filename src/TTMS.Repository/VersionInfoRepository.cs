@@ -34,27 +34,27 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy);
             var totalCount = await query.CountAsync();
             var versionInfoItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<VersionInfoResponse>();
-            var pageListResponse = new PageListVersionInfoResponse
-            {
-                Items = new List<VersionInfoResponse>(),
-                PageIndex = request.PageIndex,
-                PageSize = request.PageSize,
-                TotalCount = totalCount
-            };
-            foreach (var versionInfo in versionInfoItems)
+            foreach (var item in versionInfoItems)
             {
                 var demandItems = await _fsql.Select<Demand, DemandVersionInfo>()
                     .LeftJoin(a => a.t1.Id == a.t2.DemandId)
                     .Where(a => !a.t1.IsDelete)
                     .Where(a => !a.t2.IsDelete)
-                    .Where(a => a.t2.VersionInfoId == versionInfo.Id)
+                    .Where(a => a.t2.VersionInfoId == item.Id)
                     .ToListAsync<DemandResponse>();
                 if (demandItems != null && !demandItems.All(demand => demand.DemandState >= DemandState.已上线))
                 {
-                    versionInfo.VersionState = "任务未完成";
+                    item.VersionState = "任务未完成";
                 }
-                pageListResponse.Items.Add(versionInfo);
             }
+            var pageListResponse = new PageListVersionInfoResponse
+            {
+                Items = versionInfoItems,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalCount = totalCount
+            };
+            
             return pageListResponse;
         }
 

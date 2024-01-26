@@ -52,7 +52,7 @@
                 .WhereIf(!string.IsNullOrEmpty(request.AccountOrUserName), a => a.Account.Contains(request.AccountOrUserName) || a.UserName.Contains(request.AccountOrUserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
                 .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
-                .WhereIf(request.RoleId.HasValue, a => a.RoleType == request.RoleId)
+                .WhereIf(request.RoleId.HasValue, a => a.RoleId == request.RoleId)
                 .WhereIf(request.State.HasValue, a => request.State == a.State)
                 .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
                 .WhereIf(request.CreateTimeEnd.HasValue, a => a.CreateTime <= request.CreateTimeEnd)
@@ -62,6 +62,13 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
             var listResponse = await query.ToListAsync<UserResponse>();
+            foreach (var item in listResponse)
+            {
+                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
+                item.CreateByName = createByUser?.UserName;
+                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
+                item.UpdateByName = updateByUser?.UserName;
+            }
             return listResponse;
         }
 
@@ -79,7 +86,7 @@
                 .WhereIf(!string.IsNullOrEmpty(request.AccountOrUserName), a => a.Account.Contains(request.AccountOrUserName) || a.UserName.Contains(request.AccountOrUserName))
                 .WhereIf(!string.IsNullOrEmpty(request.Email), a => a.Email.Contains(request.Email))
                 .WhereIf(request.GroupId.HasValue, a => a.GroupId == request.GroupId)
-                .WhereIf(request.RoleId.HasValue, a => a.RoleType == request.RoleId)
+                .WhereIf(request.RoleId.HasValue, a => a.RoleId == request.RoleId)
                 .WhereIf(request.State.HasValue, a => request.State == a.State)
                 .WhereIf(request.CreateTimeStart.HasValue, a => a.CreateTime >= request.CreateTimeStart)
                 .WhereIf(request.CreateTimeEnd.HasValue, a => a.CreateTime <= request.CreateTimeEnd)
@@ -90,6 +97,13 @@
                 .OrderByDescending(a => a.CreateTime);
             var totalCount = await query.CountAsync();
             var userItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<UserResponse>();
+            foreach (var item in userItems)
+            {
+                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
+                item.CreateByName = createByUser?.UserName;
+                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
+                item.UpdateByName = updateByUser?.UserName;
+            }
             var pageListResponse = new PageListUserResponse
             {
                 Items = userItems,

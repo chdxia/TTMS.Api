@@ -229,6 +229,7 @@
         /// <summary>
         /// 需求状态
         /// </summary>
+        [Required(ErrorMessage = "DemandState is required.")]
         public DemandState DemandState { get; set; }
     }
 

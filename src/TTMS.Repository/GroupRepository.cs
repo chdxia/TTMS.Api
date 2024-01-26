@@ -31,6 +31,13 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
             var listResponse = await query.ToListAsync<GroupResponse>();
+            foreach (var item in listResponse)
+            {
+                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
+                item.CreateByName = createByUser?.UserName;
+                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
+                item.UpdateByName = updateByUser?.UserName;
+            }
             return listResponse;
         }
 
@@ -53,6 +60,13 @@
                 .OrderByDescending(a => a.CreateTime);
             var totalCount = await query.CountAsync();
             var GroupItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<GroupResponse>();
+            foreach (var item in GroupItems)
+            {
+                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
+                item.CreateByName = createByUser?.UserName;
+                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
+                item.UpdateByName = updateByUser?.UserName;
+            }
             var pageListResponse = new PageListGroupResponse
             {
                 Items = GroupItems,

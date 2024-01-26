@@ -53,7 +53,7 @@
         /// 角色id
         /// </summary>
         [Column(Name = "role_type", DbType = "int8")]
-        public RoleType RoleType { get; set; }
+        public RoleType RoleId { get; set; }
 
         /// <summary>
         /// 账户状态;t启用,f停用

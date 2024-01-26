@@ -48,8 +48,26 @@
                 .WhereIf(request.CreateBy.HasValue, a => a.t1.CreateBy == request.CreateBy)
                 .WhereIf(request.UpdateTimeStart.HasValue, a => a.t1.UpdateTime >= request.UpdateTimeStart)
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
-                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy);
+                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
+                .Distinct();
             var listResponse = await query.ToListAsync<DefectResponse>();
+            foreach (var item in listResponse)
+            {
+                item.Developer = await _fsql.Select<User, DemandUser>()
+                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                    .Where(a => a.t2.DemandId == item.DemandId)
+                    .Where(a => a.t1.RoleId == RoleType.开发)
+                    .ToListAsync<UserResponse>();
+                item.Tester = await _fsql.Select<User, DemandUser>()
+                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                    .Where(a => a.t2.DemandId == item.DemandId)
+                    .Where(a => a.t1.RoleId == RoleType.测试)
+                    .ToListAsync<UserResponse>();
+                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
+                item.CreateByName = createByUser?.UserName;
+                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
+                item.UpdateByName = updateByUser?.UserName;
+            }
             return listResponse;
         }
 
@@ -78,12 +96,30 @@
                 .WhereIf(request.CreateBy.HasValue, a => a.t1.CreateBy == request.CreateBy)
                 .WhereIf(request.UpdateTimeStart.HasValue, a => a.t1.UpdateTime >= request.UpdateTimeStart)
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
-                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy);
+                .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
+                .Distinct();
             var totalCount = await query.CountAsync();
-            var GroupItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DefectResponse>();
+            var defectItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DefectResponse>();
+            foreach (var item in defectItems)
+            {
+                item.Developer = await _fsql.Select<User, DemandUser>()
+                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                    .Where(a => a.t2.DemandId == item.DemandId)
+                    .Where(a => a.t1.RoleId == RoleType.开发)
+                    .ToListAsync<UserResponse>();
+                item.Tester = await _fsql.Select<User, DemandUser>()
+                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                    .Where(a => a.t2.DemandId == item.DemandId)
+                    .Where(a => a.t1.RoleId == RoleType.测试)
+                    .ToListAsync<UserResponse>();
+                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
+                item.CreateByName = createByUser?.UserName;
+                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
+                item.UpdateByName = updateByUser?.UserName;
+            }
             var pageListResponse = new PageListDefectResponse
             {
-                Items = GroupItems,
+                Items = defectItems,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalCount = totalCount
