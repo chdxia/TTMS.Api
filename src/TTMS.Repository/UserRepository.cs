@@ -62,12 +62,12 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
             var listResponse = await query.ToListAsync<UserResponse>();
+            var createByAndUpdateByIds = listResponse.Select(item => item.CreateBy).Union(listResponse.Select(item => item.UpdateBy)).Distinct();
+            var createByAndUpdateByUsers = await _fsql.Select<User>().Where(a => createByAndUpdateByIds.Contains(a.Id)).ToListAsync();
             foreach (var item in listResponse)
             {
-                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
-                item.CreateByName = createByUser?.UserName;
-                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
-                item.UpdateByName = updateByUser?.UserName;
+                item.CreateByName = createByAndUpdateByUsers.FirstOrDefault(a => a.Id == item.CreateBy)?.UserName;
+                item.UpdateByName = createByAndUpdateByUsers.FirstOrDefault(a => a.Id == item.UpdateBy)?.UserName;
             }
             return listResponse;
         }
@@ -96,13 +96,13 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy)
                 .OrderByDescending(a => a.CreateTime);
             var totalCount = await query.CountAsync();
-            var userItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<UserResponse>();
+            var userItems = await query.Page(request.PageIndex, request.PageSize).ToListAsync<UserResponse>();
+            var createByAndUpdateByIds = userItems.Select(item => item.CreateBy).Union(userItems.Select(item => item.UpdateBy)).Distinct();
+            var createByAndUpdateByUsers = await _fsql.Select<User>().Where(a => createByAndUpdateByIds.Contains(a.Id)).ToListAsync();
             foreach (var item in userItems)
             {
-                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
-                item.CreateByName = createByUser?.UserName;
-                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
-                item.UpdateByName = updateByUser?.UserName;
+                item.CreateByName = createByAndUpdateByUsers.FirstOrDefault(a => a.Id == item.CreateBy)?.UserName;
+                item.UpdateByName = createByAndUpdateByUsers.FirstOrDefault(a => a.Id == item.UpdateBy)?.UserName;
             }
             var pageListResponse = new PageListUserResponse
             {

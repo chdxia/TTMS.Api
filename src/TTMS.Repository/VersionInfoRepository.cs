@@ -33,16 +33,22 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.UpdateBy == request.UpdateBy);
             var totalCount = await query.CountAsync();
-            var versionInfoItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<VersionInfoResponse>();
+            var versionInfoItems = await query.Page(request.PageIndex, request.PageSize).ToListAsync<VersionInfoResponse>();
+            var createByAndUpdateByIds = versionInfoItems.Select(item => item.CreateBy).Union(versionInfoItems.Select(item => item.UpdateBy)).Distinct();
+            var createByAndUpdateByUsers = await _fsql.Select<User>().Where(a => createByAndUpdateByIds.Contains(a.Id)).ToListAsync();
+            var versionIds = versionInfoItems.Select(item => item.Id).Distinct();
+            var demands = await _fsql.Select<Demand, DemandVersionInfo>()
+                .LeftJoin(a => a.t1.Id == a.t2.DemandId)
+                .Where(a => !a.t1.IsDelete)
+                .Where(a => !a.t2.IsDelete)
+                .Where(a => versionIds.Contains(a.t2.VersionInfoId))
+                .ToListAsync<(DemandResponse, DemandVersionInfo)>();
             foreach (var item in versionInfoItems)
             {
-                var demandItems = await _fsql.Select<Demand, DemandVersionInfo>()
-                    .LeftJoin(a => a.t1.Id == a.t2.DemandId)
-                    .Where(a => !a.t1.IsDelete)
-                    .Where(a => !a.t2.IsDelete)
-                    .Where(a => a.t2.VersionInfoId == item.Id)
-                    .ToListAsync<DemandResponse>();
-                if (demandItems != null && !demandItems.All(demand => demand.DemandState >= DemandState.已上线))
+                item.CreateByName = createByAndUpdateByUsers.FirstOrDefault(a => a.Id == item.CreateBy)?.UserName;
+                item.UpdateByName = createByAndUpdateByUsers.FirstOrDefault(a => a.Id == item.UpdateBy)?.UserName;
+                var demandItems = demands.Where(a => a.Item2.VersionInfoId == item.Id).Distinct();
+                if (demandItems != null && !demandItems.All(demand => demand.Item1.DemandState >= DemandState.已上线)) // 如果该版本下存在未上线需求，则表示版本任务未完成
                 {
                     item.VersionState = "任务未完成";
                 }

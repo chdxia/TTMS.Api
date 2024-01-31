@@ -60,28 +60,26 @@
                 .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
                 .Distinct();
             var totalCount = await query.CountAsync();
-            var demandItems = await query.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync<DemandResponse>();
+            var demandItems = await query.Page(request.PageIndex, request.PageSize).ToListAsync<DemandResponse>();
+            var demandIds = demandItems.Select(item => item.Id).Distinct();
+            var createByAndUpdateByIds = demandItems.Select(item => item.CreateBy).Union(demandItems.Select(item => item.UpdateBy)).Distinct();
+            var users = await _fsql.Select<User, DemandUser>()
+                .LeftJoin(a => a.t1.Id == a.t2.UserId)
+                .Where(a => !a.t2.IsDelete)
+                .Where(a => demandIds.Contains(a.t2.DemandId) || createByAndUpdateByIds.Contains(a.t1.Id))
+                .ToListAsync<(UserResponse, DemandUser)>();
+            var versionInfos = await _fsql.Select<VersionInfo, DemandVersionInfo>()
+                .LeftJoin(a => a.t1.Id == a.t2.VersionInfoId)
+                .Where (a => !a.t2.IsDelete)
+                .Where(a => demandIds.Contains(a.t2.DemandId))
+                .ToListAsync<(VersionInfoResponse, DemandVersionInfo)>();
             foreach (var item in demandItems)
             {
-                item.Developer = await _fsql.Select<User, DemandUser>()
-                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
-                    .Where(a => a.t2.DemandId == item.Id)
-                    .Where(a => a.t1.RoleId == RoleType.开发)
-                    .ToListAsync<UserResponse>();
-                item.Tester = await _fsql.Select<User, DemandUser>()
-                    .LeftJoin(a => a.t1.Id == a.t2.UserId)
-                    .Where(a => a.t2.DemandId == item.Id)
-                    .Where(a => a.t1.RoleId == RoleType.测试)
-                    .ToListAsync<UserResponse>();
-                item.VersionInfos = await _fsql.Select<VersionInfo, DemandVersionInfo>()
-                    .LeftJoin(a => a.t1.Id == a.t2.VersionInfoId)
-                    .Where(a => !a.t2.IsDelete)
-                    .Where(a => a.t2.DemandId == item.Id)
-                    .ToListAsync<VersionInfoResponse>();
-                var createByUser = await _fsql.Select<User>().Where(a => a.Id == item.CreateBy).FirstAsync();
-                item.CreateByName = createByUser?.UserName;
-                var updateByUser = await _fsql.Select<User>().Where(a => a.Id == item.UpdateBy).FirstAsync();
-                item.UpdateByName = updateByUser?.UserName;
+                item.Developer = users.Where(a => a.Item2.DemandId == item.Id && a.Item1.RoleId == RoleType.开发).Select(a => a.Item1).ToList<UserResponse>();
+                item.Tester = users.Where(a => a.Item2.DemandId == item.Id && a.Item1.RoleId == RoleType.测试).Select(a => a.Item1).ToList<UserResponse>();
+                item.CreateByName = users.FirstOrDefault(a => a.Item1.Id == item.CreateBy).Item1.UserName;
+                item.UpdateByName = users.FirstOrDefault(a => a.Item1.Id == item.UpdateBy).Item1.UserName;
+                item.VersionInfos = versionInfos.Where(a => a.Item2.DemandId == item.Id).Select(a => a.Item1).ToList<VersionInfoResponse>();
             }
             var pageListResponse = new PageListDemandResponse
             {
