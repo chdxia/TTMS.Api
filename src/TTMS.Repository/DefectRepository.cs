@@ -50,20 +50,25 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
                 .Distinct();
-            var listResponse = await query.ToListAsync<DefectResponse>();
-            var demandIds = listResponse.Select(item => item.DemandId).Distinct();
-            var createByAndUpdateByIds = listResponse.Select(item => item.CreateBy).Union(listResponse.Select(item => item.UpdateBy)).Distinct();
-            var users = await _fsql.Select<User, DemandUser>()
-                .LeftJoin(a => a.t1.Id == a.t2.UserId)
-                .Where(a => !a.t2.IsDelete)
-                .Where(a => demandIds.Contains(a.t2.DemandId) || createByAndUpdateByIds.Contains(a.t1.Id))
-                .ToListAsync<(UserResponse, DemandUser)>();
+            var listResponse = await query.ToListAsync<DefectResponse>(); // 返回的数据
+            var demandIds = listResponse.Select(item => item.DemandId).Distinct(); // 查询返回数据的demandId
+            var createByAndUpdateByIds = listResponse.Select(item => item.CreateBy).Union(listResponse.Select(item => item.UpdateBy)).Distinct(); // 查询返回数据的创建人和修改人id
+            var demandUsers = await _fsql.Select<DemandUser>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync(); // 查询demandId对应的DemandUser表的数据
+            var users = await _fsql.Select<User>()
+                .Where(a => demandUsers.Select(demandUser => demandUser.UserId).Distinct().Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
+                .ToListAsync<UserResponse>(); // 查询所有创建人、修改人、DemandUser表所关联的用户信息
             foreach (var item in listResponse)
             {
-                item.Developer = users.Where(a => a.Item2.DemandId == item.DemandId && a.Item1.RoleId == RoleType.开发).Select(a => a.Item1).ToList();
-                item.Tester = users.Where(a => a.Item2.DemandId == item.DemandId && a.Item1.RoleId == RoleType.测试).Select(a => a.Item1).ToList();
-                item.CreateByName = users.FirstOrDefault(a => a.Item1.Id == item.CreateBy).Item1.UserName;
-                item.UpdateByName = users.FirstOrDefault(a => a.Item1.Id == item.UpdateBy).Item1.UserName;
+                // demandUsers中的DemandId与当前item中的DemandId匹配的用户，且用户角色为开发
+                item.Developer = users
+                    .Where(a => demandUsers.Where(demandUser => demandUser.DemandId == item.DemandId).Select(a => a.UserId).Distinct().Contains(a.Id) && a.RoleId == RoleType.开发)
+                    .ToList();
+                // demandUsers中的DemandId与当前item中的DemandId匹配的用户，且用户角色为测试
+                item.Tester = users
+                    .Where(a => demandUsers.Where(demandUser => demandUser.DemandId == item.DemandId).Select(a => a.UserId).Distinct().Contains(a.Id) && a.RoleId == RoleType.测试)
+                    .ToList();
+                item.CreateByName = users.FirstOrDefault(a => a.Id == item.CreateBy)?.UserName;
+                item.UpdateByName = users.FirstOrDefault(a => a.Id == item.UpdateBy)?.UserName;
             }
             return listResponse;
         }
@@ -95,21 +100,26 @@
                 .WhereIf(request.UpdateTimeEnd.HasValue, a => a.t1.UpdateTime <= request.UpdateTimeEnd)
                 .WhereIf(request.UpdateBy.HasValue, a => a.t1.UpdateBy == request.UpdateBy)
                 .Distinct();
-            var totalCount = await query.CountAsync();
-            var defectItems = await query.Page(request.PageIndex, request.PageSize).ToListAsync<DefectResponse>();
-            var demandIds = defectItems.Select(item => item.DemandId).Distinct();
-            var createByAndUpdateByIds = defectItems.Select(item => item.CreateBy).Union(defectItems.Select(item => item.UpdateBy)).Distinct();
-            var users = await _fsql.Select<User, DemandUser>()
-                .LeftJoin(a => a.t1.Id == a.t2.UserId)
-                .Where(a => !a.t2.IsDelete)
-                .Where(a => demandIds.Contains(a.t2.DemandId) || createByAndUpdateByIds.Contains(a.t1.Id))
-                .ToListAsync<(UserResponse, DemandUser)>();
+            var totalCount = await query.CountAsync(); // 分页前的总数据条数
+            var defectItems = await query.Page(request.PageIndex, request.PageSize).ToListAsync<DefectResponse>(); // 分页返回的数据
+            var demandIds = defectItems.Select(item => item.DemandId).Distinct(); // 查询返回数据的demandId
+            var createByAndUpdateByIds = defectItems.Select(item => item.CreateBy).Union(defectItems.Select(item => item.UpdateBy)).Distinct(); // 查询返回数据的创建人和修改人id
+            var demandUsers = await _fsql.Select<DemandUser>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync(); // 查询demandId对应的DemandUser表的数据
+            var users = await _fsql.Select<User>()
+                .Where(a => demandUsers.Select(demandUser => demandUser.UserId).Distinct().Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
+                .ToListAsync<UserResponse>(); // 查询所有创建人、修改人、DemandUser表所关联的用户信息
             foreach (var item in defectItems)
             {
-                item.Developer = users.Where(a => a.Item2.DemandId == item.DemandId && a.Item1.RoleId == RoleType.开发).Select(a => a.Item1).ToList();
-                item.Tester = users.Where(a => a.Item2.DemandId == item.DemandId && a.Item1.RoleId == RoleType.测试).Select(a => a.Item1).ToList();
-                item.CreateByName = users.FirstOrDefault(a => a.Item1.Id == item.CreateBy).Item1.UserName;
-                item.UpdateByName = users.FirstOrDefault(a => a.Item1.Id == item.UpdateBy).Item1.UserName;
+                // demandUsers中的DemandId与当前item中的DemandId匹配的用户，且用户角色为开发
+                item.Developer = users
+                    .Where(a => demandUsers.Where(demandUser => demandUser.DemandId == item.DemandId).Select(a => a.UserId).Distinct().Contains(a.Id) && a.RoleId == RoleType.开发)
+                    .ToList();
+                // demandUsers中的DemandId与当前item中的DemandId匹配的用户，且用户角色为测试
+                item.Tester = users
+                    .Where(a => demandUsers.Where(demandUser => demandUser.DemandId == item.DemandId).Select(a => a.UserId).Distinct().Contains(a.Id) && a.RoleId == RoleType.测试)
+                    .ToList();
+                item.CreateByName = users.FirstOrDefault(a => a.Id == item.CreateBy)?.UserName;
+                item.UpdateByName = users.FirstOrDefault(a => a.Id == item.UpdateBy)?.UserName;
             }
             var pageListResponse = new PageListDefectResponse
             {

@@ -63,23 +63,28 @@
             var demandItems = await query.Page(request.PageIndex, request.PageSize).ToListAsync<DemandResponse>();
             var demandIds = demandItems.Select(item => item.Id).Distinct();
             var createByAndUpdateByIds = demandItems.Select(item => item.CreateBy).Union(demandItems.Select(item => item.UpdateBy)).Distinct();
-            var users = await _fsql.Select<User, DemandUser>()
-                .LeftJoin(a => a.t1.Id == a.t2.UserId)
-                .Where(a => !a.t2.IsDelete)
-                .Where(a => demandIds.Contains(a.t2.DemandId) || createByAndUpdateByIds.Contains(a.t1.Id))
-                .ToListAsync<(UserResponse, DemandUser)>();
-            var versionInfos = await _fsql.Select<VersionInfo, DemandVersionInfo>()
-                .LeftJoin(a => a.t1.Id == a.t2.VersionInfoId)
-                .Where (a => !a.t2.IsDelete)
-                .Where(a => demandIds.Contains(a.t2.DemandId))
-                .ToListAsync<(VersionInfoResponse, DemandVersionInfo)>();
+            var demandUsers = await _fsql.Select<DemandUser>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync();
+            var demandVersionInfos = await _fsql.Select<DemandVersionInfo>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync();
+            var users = await _fsql.Select<User>()
+                .Where(a => demandUsers.Select(demandUser => demandUser.UserId).Distinct().Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
+                .ToListAsync<UserResponse>();
+            var versionInfos = await _fsql.Select<VersionInfo>()
+                .Where (a => !a.IsDelete)
+                .Where(a => demandVersionInfos.Select(demandVersionInfo => demandVersionInfo.VersionInfoId).Distinct().Contains(a.Id))
+                .ToListAsync<VersionInfoResponse>();
             foreach (var item in demandItems)
             {
-                item.Developer = users.Where(a => a.Item2.DemandId == item.Id && a.Item1.RoleId == RoleType.开发).Select(a => a.Item1).ToList<UserResponse>();
-                item.Tester = users.Where(a => a.Item2.DemandId == item.Id && a.Item1.RoleId == RoleType.测试).Select(a => a.Item1).ToList<UserResponse>();
-                item.CreateByName = users.FirstOrDefault(a => a.Item1.Id == item.CreateBy).Item1.UserName;
-                item.UpdateByName = users.FirstOrDefault(a => a.Item1.Id == item.UpdateBy).Item1.UserName;
-                item.VersionInfos = versionInfos.Where(a => a.Item2.DemandId == item.Id).Select(a => a.Item1).ToList<VersionInfoResponse>();
+                item.Developer = users
+                    .Where(a => demandUsers.Where(demandUser => demandUser.DemandId == item.Id).Select(a => a.UserId).Distinct().Contains(a.Id) && a.RoleId == RoleType.开发)
+                    .ToList();
+                item.Tester = users
+                    .Where(a => demandUsers.Where(demandUser => demandUser.DemandId == item.Id).Select(a => a.UserId).Distinct().Contains(a.Id) && a.RoleId == RoleType.测试)
+                    .ToList();
+                item.CreateByName = users.FirstOrDefault(a => a.Id == item.CreateBy)?.UserName;
+                item.UpdateByName = users.FirstOrDefault(a => a.Id == item.UpdateBy)?.UserName;
+                item.VersionInfos = versionInfos
+                    .Where(a => demandVersionInfos.Where(demandVersionInfo => demandVersionInfo.DemandId == item.Id).Select(a => a.VersionInfoId).Distinct().Contains(a.Id))
+                    .ToList();
             }
             var pageListResponse = new PageListDemandResponse
             {
