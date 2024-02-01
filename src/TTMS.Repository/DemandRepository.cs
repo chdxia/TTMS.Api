@@ -64,13 +64,15 @@
             var demandIds = demandItems.Select(item => item.Id).Distinct();
             var createByAndUpdateByIds = demandItems.Select(item => item.CreateBy).Union(demandItems.Select(item => item.UpdateBy)).Distinct();
             var demandUsers = await _fsql.Select<DemandUser>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync();
+            var demandUserIds = demandUsers.Select(a => a.UserId).Distinct();
             var demandVersionInfos = await _fsql.Select<DemandVersionInfo>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync();
+            var demandVersionInfoIds = demandVersionInfos.Select(a => a.VersionInfoId).Distinct();
             var users = await _fsql.Select<User>()
-                .Where(a => demandUsers.Select(demandUser => demandUser.UserId).Distinct().Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
+                .Where(a => demandUserIds.Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
                 .ToListAsync<UserResponse>();
             var versionInfos = await _fsql.Select<VersionInfo>()
                 .Where (a => !a.IsDelete)
-                .Where(a => demandVersionInfos.Select(demandVersionInfo => demandVersionInfo.VersionInfoId).Distinct().Contains(a.Id))
+                .Where(a => demandVersionInfoIds.Contains(a.Id))
                 .ToListAsync<VersionInfoResponse>();
             foreach (var item in demandItems)
             {

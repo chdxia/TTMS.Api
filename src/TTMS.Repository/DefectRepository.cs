@@ -54,8 +54,9 @@
             var demandIds = listResponse.Select(item => item.DemandId).Distinct(); // 查询返回数据的demandId
             var createByAndUpdateByIds = listResponse.Select(item => item.CreateBy).Union(listResponse.Select(item => item.UpdateBy)).Distinct(); // 查询返回数据的创建人和修改人id
             var demandUsers = await _fsql.Select<DemandUser>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync(); // 查询demandId对应的DemandUser表的数据
+            var demandUserIds = demandUsers.Select(a => a.UserId).Distinct(); // 查询demandUsers中所有的UserId
             var users = await _fsql.Select<User>()
-                .Where(a => demandUsers.Select(demandUser => demandUser.UserId).Distinct().Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
+                .Where(a => demandUserIds.Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
                 .ToListAsync<UserResponse>(); // 查询所有创建人、修改人、DemandUser表所关联的用户信息
             foreach (var item in listResponse)
             {
@@ -105,8 +106,9 @@
             var demandIds = defectItems.Select(item => item.DemandId).Distinct(); // 查询返回数据的demandId
             var createByAndUpdateByIds = defectItems.Select(item => item.CreateBy).Union(defectItems.Select(item => item.UpdateBy)).Distinct(); // 查询返回数据的创建人和修改人id
             var demandUsers = await _fsql.Select<DemandUser>().Where(a => !a.IsDelete).Where(a => demandIds.Contains(a.DemandId)).ToListAsync(); // 查询demandId对应的DemandUser表的数据
+            var demandUserIds = demandUsers.Select(a => a.UserId).Distinct(); // 查询demandUsers中所有的UserId
             var users = await _fsql.Select<User>()
-                .Where(a => demandUsers.Select(demandUser => demandUser.UserId).Distinct().Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
+                .Where(a => demandUserIds.Contains(a.Id) || createByAndUpdateByIds.Contains(a.Id))
                 .ToListAsync<UserResponse>(); // 查询所有创建人、修改人、DemandUser表所关联的用户信息
             foreach (var item in defectItems)
             {

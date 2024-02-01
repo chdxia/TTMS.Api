@@ -37,13 +37,11 @@
             var createByAndUpdateByIds = versionInfoItems.Select(item => item.CreateBy).Union(versionInfoItems.Select(item => item.UpdateBy)).Distinct();
             var createByAndUpdateByUsers = await _fsql.Select<User>().Where(a => createByAndUpdateByIds.Contains(a.Id)).ToListAsync();
             var versionIds = versionInfoItems.Select(item => item.Id).Distinct();
-            var demandVersionInfos = await _fsql.Select<DemandVersionInfo>()
-                .Where(a => !a.IsDelete)
-                .Where(a => versionIds.Contains(a.VersionInfoId))
-                .ToListAsync();
+            var demandVersionInfos = await _fsql.Select<DemandVersionInfo>().Where(a => !a.IsDelete).Where(a => versionIds.Contains(a.VersionInfoId)).ToListAsync();
+            var demandVersionInfoIds = demandVersionInfos.Select(a => a.DemandId).Distinct();
             var demands = await _fsql.Select<Demand>()
                 .Where(a => !a.IsDelete)
-                .Where(a => demandVersionInfos.Select(demandversionInfo => demandversionInfo.DemandId).Distinct().Contains(a.Id))
+                .Where(a => demandVersionInfoIds.Contains(a.Id))
                 .ToListAsync<DemandResponse>();
             foreach (var item in versionInfoItems)
             {
