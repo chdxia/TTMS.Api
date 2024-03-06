@@ -36,9 +36,9 @@
         public RoleType RoleId { get; set; }
 
         /// <summary>
-        /// 账户状态
+        /// 是否禁用
         /// </summary>
-        public bool State { get; set; }
+        public bool IsDisable { get; set; }
 
         /// <summary>
         /// 创建人

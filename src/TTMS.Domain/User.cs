@@ -56,10 +56,10 @@
         public RoleType RoleId { get; set; }
 
         /// <summary>
-        /// 账户状态;t启用,f停用
+        /// 账户状态;t禁用,f启用
         /// </summary>
-        [Column(Name = "state", DbType = "bool")]
-        public bool State { get; set; }
+        [Column(Name = "is_disable", DbType = "bool")]
+        public bool IsDisable { get; set; }
 
         /// <summary>
         /// 是否删除;t已删除,f未删除;默认f

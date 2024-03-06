@@ -59,9 +59,9 @@
         public RoleType? RoleId { get; set; }
 
         /// <summary>
-        /// 账户状态
+        /// 是否禁用
         /// </summary>
-        public bool? State { get; set; }
+        public bool? IsDisable { get; set; }
 
         /// <summary>
         /// 创建人
@@ -145,9 +145,9 @@
         public RoleType RoleId { get; set; }
 
         /// <summary>
-        /// 账户状态;t启用,f停用;默认t
+        /// 是否禁用;t禁用,f启用;默认f
         /// </summary>
-        public bool State { get; set; } = true;
+        public bool IsDisable { get; set; } = false;
     }
 
     /// <summary>
@@ -162,10 +162,10 @@
         public int Id { get; set; }
 
         /// <summary>
-        /// 账户状态
+        /// 是否禁用
         /// </summary>
-        [Required(ErrorMessage = "State is required.")]
-        public new bool State { get; set; }
+        [Required(ErrorMessage = "IsDisable is required.")]
+        public new bool IsDisable { get; set; }
 
         /// <summary>
         /// 用户密码
