@@ -16,7 +16,7 @@
 
 ### 技术栈（PgSql&Nginx&Jenkins都是自建服务）
 
-前端：Vue3+TS（[vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)模板）
+前端：Vue3+TS+ElementUI（[vue-pure-admin](https://github.com/pure-admin/vue-pure-admin)模板）
 
 后端：.Net 6
 

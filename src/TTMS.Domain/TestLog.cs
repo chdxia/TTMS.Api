@@ -1,10 +1,10 @@
 ﻿namespace TTMS.Domain
 {
     /// <summary>
-    /// 自动化测试记录表
+    /// 自动化测试日志记录表
     /// </summary>
-    [Table(Name = "auto_test")]
-    public class AutoTest
+    [Table(Name = "test_log")]
+    public class TestLog
     {
         /// <summary>
         /// 主键id
